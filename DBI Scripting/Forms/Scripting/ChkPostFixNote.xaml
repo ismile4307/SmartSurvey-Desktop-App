@@ -1,0 +1,11 @@
+﻿<Window x:Class="DBI_Scripting.Forms.Scripting.ChkPostFixNote"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ChkPostFixNote" Height="236.614" Width="700.289" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <TextBox x:Name="txt_Expression" HorizontalAlignment="Left" Height="25" Margin="79,27,0,0" TextWrapping="Wrap" Text="Q1=2 &amp; (Q5=3 | Q5=2) &amp; Q6=1)" VerticalAlignment="Top" Width="549"/>
+        <Button x:Name="btn_check" Content="Check" HorizontalAlignment="Left" Margin="302,70,0,0" VerticalAlignment="Top" Width="75" Click="btn_check_Click"/>
+        <Button x:Name="btn_Exit" Content="Exit" HorizontalAlignment="Left" Margin="302,139,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.542,-0.905" Click="btn_Exit_Click"/>
+
+    </Grid>
+</Window>

@@ -1,0 +1,22 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="DBI_Scripting.Forms.Analytics.FrmAnalysisStructure"
+        Title="FrmAnalysisStructure" Height="300" Width="866.136" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Label Content="Structure Excel Path :" HorizontalAlignment="Left" Margin="4,107,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="121"/>
+        <TextBox x:Name="txtAnalysisExcelPath" HorizontalAlignment="Left" Height="23" Margin="130,109,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="575"/>
+        <Button x:Name="btnBrowseExcel" Content="Browse" HorizontalAlignment="Left" Margin="725,110,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnBrowseExcel_Click"/>
+        <Button x:Name="btnRunAnalysisStructure" Content="Run" HorizontalAlignment="Left" Margin="370,150,0,0" VerticalAlignment="Top" Width="111" Height="33" Click="btnRunAnalysisStructure_Click"/>
+        <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="389,202,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnExit_Click"/>
+        <Label Content="SPSS Path :" HorizontalAlignment="Left" Margin="57,23,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtSPSSPath" HorizontalAlignment="Left" Height="23" Margin="130,27,0,0" TextWrapping="Wrap" Text="Q5=1 | Q4=3" VerticalAlignment="Top" Width="575"/>
+        <Button x:Name="btnBrowseSPSS" Content="Browse" HorizontalAlignment="Left" Margin="725,25,0,0" VerticalAlignment="Top" Height="22" Width="75"/>
+        <Button x:Name="btnCreateStructureExcel" Content="Run" HorizontalAlignment="Left" Margin="370,62,0,0" VerticalAlignment="Top" Width="111" Height="33" Click="btnCreateStructureExcel_Click"/>
+
+        <Label VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112" Margin="51,150,0,0" HorizontalAlignment="Left" Content="WrokSheet :"/>
+        <xctk:CheckListBox x:Name="chkListBoxWorksheet" HorizontalAlignment="Left" Height="90" Margin="130,150,0,0" VerticalAlignment="Top" Width="187" ItemSelectionChanged="chkListBoxWorksheet_ItemSelectionChanged"/>
+        <Button x:Name="btnKillProcess" Content="Kill Proecess" HorizontalAlignment="Left" Margin="24,218,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnKillProcess_Click"/>
+
+    </Grid>
+</Window>

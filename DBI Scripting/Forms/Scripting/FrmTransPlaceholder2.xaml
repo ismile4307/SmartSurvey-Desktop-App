@@ -1,0 +1,13 @@
+﻿<Window x:Class="DBI_Scripting.Forms.Scripting.FrmTransPlaceholder2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FrmTransPlaceholder2" Height="186.827" Width="810.518" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,0,0,6.667">
+        <Label Content="Script Path :" HorizontalAlignment="Left" Margin="29,23,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="80"/>
+        <TextBox x:Name="txtScriptPath" HorizontalAlignment="Left" Height="23" Margin="113,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="575"/>
+        <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="709,26,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnBrowse_Click"/>
+        <Button x:Name="btnExecute" Content="Execute" HorizontalAlignment="Left" Margin="340,62,0,0" VerticalAlignment="Top" Width="111" Height="33" Click="btnExecute_Click"/>
+        <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="359,114,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnExit_Click"/>
+
+    </Grid>
+</Window>

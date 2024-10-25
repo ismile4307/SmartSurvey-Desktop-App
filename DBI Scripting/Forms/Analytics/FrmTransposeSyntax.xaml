@@ -1,0 +1,35 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="DBI_Scripting.Forms.Analytics.FrmTransposeSyntax"
+        Title="FrmTransposeSyntax" Height="470.237" Width="866.136" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,1,0.333,-0.667">
+        <GroupBox Header="Imagery Transpose &amp; Table Syntax" HorizontalAlignment="Left" Margin="27,10,0,0" VerticalAlignment="Top" Height="184" Width="809">
+            <Grid>
+                <Label Content="Image Var Path :" HorizontalAlignment="Left" Margin="12,11,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="96"/>
+                <TextBox x:Name="txtImageVarFile" HorizontalAlignment="Left" Height="23" Margin="114,13,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="575"/>
+                <Button x:Name="btnBrowseImage" Content="Browse" HorizontalAlignment="Left" Margin="712,13,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnBrowseImage_Click" />
+                <Button x:Name="btnRunTranspose" Content="Run" HorizontalAlignment="Left" Margin="354,84,0,0" VerticalAlignment="Top" Width="111" Height="33" Click="btnRunTranspose_Click"  />
+                <Label VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112" Margin="165,43,0,0" HorizontalAlignment="Left" Content="WrokSheet"/>
+                <xctk:CheckListBox x:Name="chkListBoxWorksheet_Copy" HorizontalAlignment="Left" Height="83" Margin="115,70,0,-11" VerticalAlignment="Top" Width="179"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Rank Transpose &amp; Table Syntax" HorizontalAlignment="Left" Margin="27,199,0,0" VerticalAlignment="Top" Height="186" Width="809">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="35*"/>
+                    <ColumnDefinition Width="762*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Rank Var Path :" HorizontalAlignment="Left" Margin="12,11,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="96" Grid.ColumnSpan="2"/>
+                <TextBox x:Name="txtRankExcelFile" HorizontalAlignment="Left" Height="23" Margin="79,13,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="575" Grid.Column="1"/>
+                <Button x:Name="btnBrowseRank" Content="Browse" HorizontalAlignment="Left" Margin="677,13,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnBrowseRank_Click" Grid.Column="1" />
+                <Button x:Name="btnRunRank" Content="Run" HorizontalAlignment="Left" Margin="318.667,116,0,0" VerticalAlignment="Top" Width="111" Height="33" Grid.Column="1" />
+                <Label VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112" Margin="130,43,0,0" HorizontalAlignment="Left" Content="WrokSheet" Grid.Column="1"/>
+                <xctk:CheckListBox x:Name="chkListBoxWorksheetRank" HorizontalAlignment="Left" Height="83" Margin="80,70,0,0" VerticalAlignment="Top" Width="179" Grid.Column="1"/>
+                <Button x:Name="btnRunSetStructure" Content="Set " HorizontalAlignment="Left" Margin="318.667,70,0,0" VerticalAlignment="Top" Width="111" Height="33" Grid.Column="1" />
+            </Grid>
+        </GroupBox>
+        <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="406,396,0,0" VerticalAlignment="Top" Height="22" Width="75" RenderTransformOrigin="0.285,-1.116" Click="btnExit_Click" />
+
+    </Grid>
+</Window>

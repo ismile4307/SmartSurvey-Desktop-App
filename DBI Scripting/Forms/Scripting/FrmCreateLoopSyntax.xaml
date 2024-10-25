@@ -1,0 +1,19 @@
+﻿<Window x:Class="DBI_Scripting.Forms.Scripting.FrmCreateLoopSyntax"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FrmCreateLoopSyntax" Height="574.342" Width="1175.253" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,0,-0.333,8">
+
+        <Button x:Name="btnBuild" Content="Build" HorizontalAlignment="Left" Margin="439,473,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="2.403,0.625" Height="39" Click="btnBuild_Click"/>
+        <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="830,473,0,0" VerticalAlignment="Top" Width="75" Height="39" RenderTransformOrigin="3.189,-1.483" Click="btnExit_Click"/>
+        <TextBox x:Name="txtLoopArray" HorizontalAlignment="Left" Height="34" Margin="56,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="1069"/>
+        <TextBox x:Name="txtScriptSyntax" HorizontalAlignment="Left" Height="328" Margin="236,119,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="432" AcceptsReturn="True"/>
+        <TextBox x:Name="txtLoopArray_Copy" HorizontalAlignment="Left" Height="34" Margin="143,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="155"/>
+        <TextBox x:Name="txtLoopArray_Copy1" HorizontalAlignment="Left" Height="34" Margin="342,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="155"/>
+        <Label Content="Range From" HorizontalAlignment="Left" Margin="56,74,0,0" VerticalAlignment="Top"/>
+        <Label Content="To" HorizontalAlignment="Left" Margin="307,76,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtPreparedSyntax" HorizontalAlignment="Left" Height="328" Margin="686,119,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="439" AcceptsReturn="True"/>
+        <TextBox x:Name="txtCodeVsBrand" HorizontalAlignment="Left" Height="328" Margin="28,119,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="203" AcceptsReturn="True"/>
+
+    </Grid>
+</Window>

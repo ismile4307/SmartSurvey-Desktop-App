@@ -1,0 +1,56 @@
+Project Name :
+Project Code :
+Script Version :
+
+
+
+
+
+
+*QUESTION Q1 *SR *MIN *MAX *VAR *IF []
+Q1. What is your name
+1:Ismile
+2:Nasim *OTHERS
+3:Rofiq *NUML
+
+*INCLUDE Q1 Q5
+*INCLUDE Q1 [99]
+*EXCLUDE Q1 Q5
+*INCLUDE Q1 [1;2;3;4;5;6;7;8;9]
+*EXCLUDE Q1 [98;99]
+
+
+*QUESTION Q1 *SR *MIN *MAX *VAR *IF []
+Q1. What is your name
+1:Ismile
+2:{Q1.2}
+3:Rofiq *NUML *NOCON
+
+*RANDOM
+*ROT
+*REPEAT
+*NUMBER
+*ALPHA
+
+*NUMBERLIST
+*ALPHALIST
+
+*NUMLISTTOTAL
+
+*AUTOCOMPLETE
+*DROPDOWN
+
+*MANDATORY
+*GRIDSR
+*GRIDMR
+*DUMMY1
+*DUMMY2
+
+*RANK
+*PICT
+*IMAGE
+*MEDIA
+*CAPTUREIMAGE
+*COLUMN
+*GRIDLIST
+

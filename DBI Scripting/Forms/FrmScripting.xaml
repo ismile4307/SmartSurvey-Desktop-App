@@ -1,0 +1,30 @@
+﻿<Window x:Name="Frm_Scripting" x:Class="DBI_Scripting.Forms.FrmScripting"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Scripting" Height="659.555" Width="1284.659" WindowState="Maximized" Loaded="Frm_Scripting_Loaded">
+    <Grid>
+        <GroupBox HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="617" Width="818">
+            <Grid>
+                <Label Content="Script Path :" HorizontalAlignment="Left" Margin="0,9,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="68"/>
+                <TextBox x:Name="TxtFileName" HorizontalAlignment="Left" Height="23" Margin="73,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="486"/>
+                <Button x:Name="BtnBrowse" Content="..." HorizontalAlignment="Left" Margin="579,10,0,0" VerticalAlignment="Top" Width="40" Height="23" Click="BtnBrowse_Click"/>
+                <DataGrid x:Name="GridQuestions" HorizontalAlignment="Left" Margin="0,42,0,0" VerticalAlignment="Top" Height="265" Width="800" SelectionChanged="GridQuestions_SelectionChanged" IsReadOnly="True"/>
+                <DataGrid x:Name="GridAttribute" HorizontalAlignment="Left" Margin="0,380,0,0" VerticalAlignment="Top" Height="226" Width="410" IsReadOnly="True"/>
+                <DataGrid x:Name="GridAttributeGrid" HorizontalAlignment="Left" Margin="415,380,0,0" VerticalAlignment="Top" Height="229" Width="385" IsReadOnly="True"/>
+                <TextBox x:Name="TxtQuestionText" HorizontalAlignment="Left" Height="54" Margin="1,321,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="799"/>
+                <Label Content="Language" HorizontalAlignment="Left" Margin="624,7,0,0" VerticalAlignment="Top"/>
+                <ComboBox x:Name="ComLanguage" HorizontalAlignment="Left" Margin="691,11,0,0" VerticalAlignment="Top" Width="105" SelectionChanged="ComLanguage_SelectionChanged"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox HorizontalAlignment="Left" Margin="833,10,0,0" VerticalAlignment="Top" Height="617" Width="440">
+            <Grid >
+                <DataGrid x:Name="GridJumpLogic" HorizontalAlignment="Left" Margin="17,18,0,0" VerticalAlignment="Top" Height="100" Width="400" IsReadOnly="True"/>
+                <DataGrid x:Name="GridApperenceLogic" HorizontalAlignment="Left" Margin="17,154,0,0" VerticalAlignment="Top" Height="100" Width="400" IsReadOnly="True"/>
+                <DataGrid x:Name="GridFilterAttribute" HorizontalAlignment="Left" Margin="17,300,0,0" VerticalAlignment="Top" Height="100" Width="400" IsReadOnly="True"/>
+                <DataGrid x:Name="GridMessageLogic" HorizontalAlignment="Left" Margin="17,437,0,0" VerticalAlignment="Top" Height="162" Width="400" IsReadOnly="True"/>
+
+            </Grid>
+        </GroupBox>
+
+    </Grid>
+</Window>

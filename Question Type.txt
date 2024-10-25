@@ -1,0 +1,74 @@
+1 Simple Rotation
+2 Simple Randomizatoin
+10 Group Rotation
+20 Group Randomizatoin
+01 Attribute Rotation but Group not roation
+02 Attribute Randomizatoin but Group not rotatoin
+11 Attribute Rotation but Group Rotation
+22 Attribute Randomizatoin but Group Randomizatoin
+
+
+Single Response
+	1. Single Response
+	2. Single Response with OE
+	3. Single Response with None
+	4. Single Response 2 column
+	5. Single Response Group
+	6. Single Response with Image
+
+Multiple Response
+	1. Multiple Response
+	2. Multiple Response with OE
+	3. Multiple Response with None
+	4. Multiple Response 2 column
+	5. Multiple Response Group
+	6. Multiple Response with Image
+
+Number Response
+	1. Number Response Single
+	2. Number Response Multiple
+	3. Number Response with Total
+	4. Number Response with mandatory Field
+	5. Number Response with DKCS
+	
+String Response
+	1. String Response Single
+	2. String Response Multiple
+	3. String Response with mandatory Field
+	4. String Response with DKCS
+
+Rank
+	1. Rank Response
+
+Grid Single Response
+	1. Grid Single Response
+	2. Grid Single Response with Other
+	3. Grid Single Response Filter
+	
+Grid Multiple Response
+	1. Grid Multiple Response
+	2. Grid Multiple Response with Other
+	3. Grid Multiple Response with None
+	4. Grid Multiple Response Filter
+	
+Dropdown
+	1. Dropdown Response
+	2. Dropdown Multiple Response
+	3. Dropdown Multiple Resp0nse Mandatroy
+	
+Dropdown auto suggession
+	1. Dropdown Response
+	2. Dropdown Multiple Response
+	3. Dropdown Multiple Resp0nse Mandatroy
+
+Image Control
+	1. Image shown question
+
+Media Control
+	1. Media Shown question
+
+Date Control
+	1. Date Response
+	
+Time Control
+	1. Time Response

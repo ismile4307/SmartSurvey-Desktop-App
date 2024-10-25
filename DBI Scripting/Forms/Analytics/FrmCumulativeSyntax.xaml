@@ -1,0 +1,17 @@
+﻿<Window x:Class="DBI_Scripting.Forms.Analytics.FrmCumulativeSyntax"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FrmCumulativeSyntax" Height="523.155" Width="720.26" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    <Grid>
+        <TextBox x:Name="txtVariableName" HorizontalAlignment="Left" Height="23" Margin="53,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label Content="Variable Name" HorizontalAlignment="Left" Margin="70,6,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtValueList" HorizontalAlignment="Left" Height="382" Margin="22,72,0,0" TextWrapping="Wrap"  AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" VerticalAlignment="Top" Width="175"/>
+        <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Margin="219,239,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox x:Name="txtSyntaxList" HorizontalAlignment="Left" Height="382" Margin="328,72,0,0" TextWrapping="Wrap"  AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" VerticalAlignment="Top" Width="356"/>
+        <Label Content="Created Syntax" HorizontalAlignment="Left" Margin="464,41,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="chkRegularCumulative" Content="Regular Cumulative" HorizontalAlignment="Left" Margin="202,117,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="chkReverseCumulative" Content="Reverse Cumulative" HorizontalAlignment="Left" Margin="201,137,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Left" Margin="219,345,0,0" VerticalAlignment="Top" Width="75" Click="btnClose_Click"/>
+
+    </Grid>
+</Window>

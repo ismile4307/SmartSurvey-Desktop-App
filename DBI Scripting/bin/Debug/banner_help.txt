@@ -1,0 +1,19 @@
+********************************************************************************************************************
+*  ********* ColVar ***********************                                                                        *
+*  ATotal*Product+(Center+UserType)*Product                                                                        *
+*  ATotal+S1Banner+S2Banner+DhakaBanner+DhakaUrbanRuralBanner+CTGBanner+CTGUrbanRuralBanner+SECBanner+PBQ1Banner   *
+*                                                                                                                  *
+*  ********* ColVarPct ********************                                                                        *
+*  ATotal Center UserType Product                                                                                  *
+*  ATotal S1Banner S2Banner DhakaBanner DhakaUrbanRuralBanner CTGBanner CTGUrbanRuralBanner SECBanner PBQ1Banner   *
+*                                                                                                                  *
+********************************************************************************************************************
+
+*Banner (ColVar)
+ATotal*Product+(Center+UserType)*Product
+
+*Banner (ColVarPct)
+ATotal Center UserType Product
+
+*Output File Name
+MyProjectName

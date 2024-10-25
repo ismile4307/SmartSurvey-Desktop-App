@@ -1,0 +1,16 @@
+﻿<Window x:Name="frmDownloadScript" x:Class="DBI_Scripting.Forms.Download.FrmDownloadScript"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Download Script" Height="230" Width="866.136" WindowStartupLocation="CenterScreen" Loaded="frmDownloadScript_Loaded">
+    <Grid>
+        <Label Content="Download Path :" HorizontalAlignment="Left" Margin="28,59,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="96"/>
+        <TextBox x:Name="txtSaveLocation" HorizontalAlignment="Left" Height="23" Margin="130,61,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="575"/>
+        <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="725,62,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnBrowse_Click" />
+        <Button x:Name="btnDownload" Content="Download" HorizontalAlignment="Left" Margin="370,102,0,0" VerticalAlignment="Top" Width="111" Height="33" Click="btnDownload_Click"  />
+        <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="389,154,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnExit_Click"  />
+        <Label Content="Project Name :" HorizontalAlignment="Left" Margin="37,21,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <ComboBox x:Name="comProjectName" HorizontalAlignment="Left" Margin="130,24,0,0" VerticalAlignment="Top" Width="166"/>
+        <CheckBox x:Name="chkBaseDirectory" Content="Base Directory" HorizontalAlignment="Left" Margin="322,28,0,0" VerticalAlignment="Top" Height="18" Width="159" Click="chkBaseDirectory_Click"/>
+
+    </Grid>
+</Window>

@@ -1,0 +1,163 @@
+﻿1>------ Rebuild All started: Project: DBI Scripting, Configuration: Debug Any CPU ------
+1>  Consider app.config remapping of assembly "Newtonsoft.Json, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" from Version "4.5.0.0" [] to Version "7.0.0.0" [D:\DBI Scripting\DBI Scripting\bin\Debug\Newtonsoft.Json.dll] to solve conflict and get rid of warning.
+1>C:\Program Files (x86)\MSBuild\12.0\bin\Microsoft.Common.CurrentVersion.targets(1635,5): warning MSB3276: Found conflicts between different versions of the same dependent assembly. Please set the "AutoGenerateBindingRedirects" property to true in the project file. For more information, see http://go.microsoft.com/fwlink/?LinkId=294190.
+1>C:\Program Files (x86)\MSBuild\12.0\bin\Microsoft.Common.CurrentVersion.targets(1635,5): warning MSB3270: There was a mismatch between the processor architecture of the project being built "MSIL" and the processor architecture of the reference "System.Data.SQLite, Version=1.0.90.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86", "x86". This mismatch may cause runtime failures. Please consider changing the targeted processor architecture of your project through the Configuration Manager so as to align the processor architectures between your project and references, or take a dependency on references with a processor architecture that matches the targeted processor architecture of your project.
+1>D:\DBI Scripting\DBI Scripting\Classes\CheckCondition.cs(74,30,74,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\CheckCondition.cs(106,30,106,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\CheckCondition.cs(125,20,125,34): warning CS0219: The variable 'whereCondition' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Classes\CheckCondition.cs(215,30,215,31): warning CS0168: The variable 'e' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\CheckLogicalExp.cs(94,30,94,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\CheckLogicalExp.cs(133,30,133,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\CheckLogicalExp.cs(165,21,165,22): warning CS0219: The variable 'x' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Classes\CheckLogicalExp.cs(260,30,260,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\ConnectionDB.cs(58,30,58,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\ConnectionDB.cs(94,34,94,36): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\DownloadClass.cs(45,30,45,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(206,30,206,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(245,30,245,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(411,30,411,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(433,30,433,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(456,30,456,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(475,30,475,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(499,30,499,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(522,30,522,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(545,30,545,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(597,30,597,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(615,30,615,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(644,30,644,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(692,30,692,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(731,30,731,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(771,30,771,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(796,30,796,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(822,30,822,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(854,30,854,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\FunctionalCondition.cs(851,17,851,23): warning CS0162: Unreachable code detected
+1>D:\DBI Scripting\DBI Scripting\Classes\GetData.cs(32,30,32,31): warning CS0168: The variable 'e' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\SQLite.cs(327,35,327,40): warning CS0168: The variable 'dadpt' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\SQLite.cs(333,24,333,35): warning CS0219: The variable 'priorRespId' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Classes\SQLite.cs(587,30,587,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\SQLiteAnsDB.cs(170,31,170,36): warning CS0168: The variable 'dadpt' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\SQLiteAnsDB.cs(176,20,176,31): warning CS0219: The variable 'priorRespId' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmAnalysisStructure.xaml.cs(297,30,297,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmAnalysisStructure.xaml.cs(331,30,331,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(461,26,461,35): warning CS0219: The variable 'firstTime' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(462,28,462,36): warning CS0219: The variable 'priorQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(463,28,463,38): warning CS0219: The variable 'currentQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(466,26,466,30): warning CS0219: The variable 'flag' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(770,26,770,35): warning CS0219: The variable 'firstTime' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(771,28,771,36): warning CS0219: The variable 'priorQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(772,28,772,38): warning CS0219: The variable 'currentQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(775,26,775,30): warning CS0219: The variable 'flag' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmOEBill.xaml.cs(176,33,176,47): warning CS0219: The variable 'intValueLength' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmOESyntaxSPSS.xaml.cs(180,33,180,47): warning CS0219: The variable 'intValueLength' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(219,34,219,43): warning CS0219: The variable 'firstTime' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(220,36,220,44): warning CS0219: The variable 'priorQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(221,36,221,46): warning CS0219: The variable 'currentQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(303,56,303,65): warning CS0219: The variable 'newPLabel' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(478,52,478,61): warning CS0219: The variable 'newPLabel' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(839,34,839,43): warning CS0219: The variable 'firstTime' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(840,36,840,44): warning CS0219: The variable 'priorQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(841,36,841,46): warning CS0219: The variable 'currentQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(1111,98,1111,100): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(1217,50,1217,52): warning CS0168: The variable 'X1' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(1217,54,1217,56): warning CS0168: The variable 'X2' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(1217,66,1217,72): warning CS0168: The variable 'pValue' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(438,26,438,35): warning CS0219: The variable 'firstTime' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(439,28,439,36): warning CS0219: The variable 'priorQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(440,28,440,38): warning CS0219: The variable 'currentQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(443,26,443,30): warning CS0219: The variable 'flag' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(507,26,507,35): warning CS0219: The variable 'firstTime' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(508,28,508,36): warning CS0219: The variable 'priorQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(509,28,509,38): warning CS0219: The variable 'currentQid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(512,26,512,30): warning CS0219: The variable 'flag' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmUpdateSyntaxPrep.xaml.cs(174,33,174,47): warning CS0219: The variable 'intValueLength' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmAddProject.xaml.cs(109,30,109,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmCreateOEExcel.xaml.cs(169,32,169,38): warning CS0168: The variable 's_temp' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadData.xaml.cs(161,30,161,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadData.xaml.cs(479,38,479,40): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadMedia.xaml.cs(176,38,176,40): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadMedia.xaml.cs(225,36,225,42): warning CS0168: The variable 's_temp' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadMedia.xaml.cs(312,54,312,56): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadMedia.xaml.cs(347,54,347,56): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadScript.xaml.cs(157,42,157,44): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmRemoveMedia.xaml.cs(100,30,100,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmRemoveMedia.xaml.cs(178,42,178,44): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmRemoveMedia.xaml.cs(376,30,376,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmRemoveMedia.xaml.cs(578,38,578,40): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmRemoveMedia.xaml.cs(628,36,628,42): warning CS0168: The variable 's_temp' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmRemoveMedia.xaml.cs(770,54,770,56): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmRLDPreparation.xaml.cs(684,42,684,44): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\ChkPostFixNote.xaml.cs(106,30,106,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\ChkPostFixNote.xaml.cs(144,30,144,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\ChkPostFixNote.xaml.cs(241,30,241,32): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\ChkPostFixNote.xaml.cs(273,20,273,30): warning CS0219: The variable 'myOperator' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\ChkPostFixNote.xaml.cs(277,20,277,34): warning CS0219: The variable 'whereCondition' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(2038,36,2038,59): warning CS0219: The variable 'currentGridListNameLan1' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(2666,36,2666,59): warning CS0219: The variable 'currentGridListNameLan2' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(3293,36,3293,59): warning CS0219: The variable 'currentGridListNameLan3' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(3921,36,3921,59): warning CS0219: The variable 'currentGridListNameLan4' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(4548,36,4548,59): warning CS0219: The variable 'currentGridListNameLan5' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(5175,36,5175,59): warning CS0219: The variable 'currentGridListNameLan6' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(5802,36,5802,59): warning CS0219: The variable 'currentGridListNameLan7' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(6429,36,6429,59): warning CS0219: The variable 'currentGridListNameLan8' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(7057,36,7057,59): warning CS0219: The variable 'currentGridListNameLan9' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(7796,29,7796,31): warning CS0168: The variable 'ex' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(662,13,662,19): warning CS0162: Unreachable code detected
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmTransPlaceholder.xaml.cs(65,21,65,22): warning CS0219: The variable 'p' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmTransPlaceholder.xaml.cs(115,33,115,39): warning CS0219: The variable 'column' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmTransPlaceholder.xaml.cs(178,33,178,39): warning CS0219: The variable 'column' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmTransPlaceholder2.xaml.cs(543,29,543,41): warning CS0219: The variable 'QTypeCounter' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmTransPlaceholder2.xaml.cs(726,24,726,27): warning CS0168: The variable 'qid' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmAttributes.xaml.cs(239,28,239,34): warning CS0168: The variable 's_temp' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmAttributes.xaml.cs(242,28,242,34): warning CS0168: The variable 's_data' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmAttributes.xaml.cs(243,25,243,31): warning CS0168: The variable 'myCode' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmAttributes.xaml.cs(244,25,244,31): warning CS0168: The variable 'colPos' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmMRSyntaxPrep.xaml.cs(307,32,307,38): warning CS0168: The variable 's_temp' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmMRSyntaxPrep.xaml.cs(310,32,310,38): warning CS0168: The variable 's_data' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmMRSyntaxPrep.xaml.cs(311,29,311,35): warning CS0168: The variable 'myCode' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmMRSyntaxPrep.xaml.cs(312,29,312,35): warning CS0168: The variable 'colPos' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmSRSyntaxPrep.xaml.cs(246,28,246,34): warning CS0168: The variable 's_temp' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmSRSyntaxPrep.xaml.cs(249,28,249,34): warning CS0168: The variable 's_data' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmSRSyntaxPrep.xaml.cs(250,25,250,31): warning CS0168: The variable 'myCode' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmSRSyntaxPrep.xaml.cs(251,25,251,31): warning CS0168: The variable 'colPos' is declared but never used
+1>D:\DBI Scripting\DBI Scripting\Classes\InterviewInfo.cs(11,23,11,33): warning CS0649: Field 'DBI_Scripting.Classes.InterviewInfo.sProjectId' is never assigned to, and will always have its default value null
+1>D:\DBI Scripting\DBI Scripting\Classes\InterviewInfo.cs(12,23,12,36): warning CS0649: Field 'DBI_Scripting.Classes.InterviewInfo.sRespondentId' is never assigned to, and will always have its default value null
+1>D:\DBI Scripting\DBI Scripting\Classes\InterviewInfo.cs(14,23,14,34): warning CS0649: Field 'DBI_Scripting.Classes.InterviewInfo.sLanguageId' is never assigned to, and will always have its default value null
+1>D:\DBI Scripting\DBI Scripting\Classes\InterviewInfo.cs(15,23,15,35): warning CS0649: Field 'DBI_Scripting.Classes.InterviewInfo.sMinResponse' is never assigned to, and will always have its default value null
+1>D:\DBI Scripting\DBI Scripting\Classes\InterviewInfo.cs(16,23,16,35): warning CS0649: Field 'DBI_Scripting.Classes.InterviewInfo.sMaxResponse' is never assigned to, and will always have its default value null
+1>D:\DBI Scripting\DBI Scripting\Classes\SQLite.cs(16,24,16,37): warning CS0169: The field 'DBI_Scripting.Classes.SQLite.AdbConnString' is never used
+1>D:\DBI Scripting\DBI Scripting\Classes\SQLiteAnsDB.cs(16,24,16,37): warning CS0169: The field 'DBI_Scripting.Classes.SQLiteAnsDB.AdbConnString' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmAnalysisTable.xaml.cs(42,24,42,31): warning CS0414: The field 'DBI_Scripting.Forms.Analytics.FrmAnalysisTable.myTitle' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmCTableLink.xaml.cs(29,33,29,44): warning CS0169: The field 'DBI_Scripting.Forms.Analytics.FrmCTableLink.xlWorkSheet' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmLabelToCode.xaml.cs(29,28,29,46): warning CS0169: The field 'DBI_Scripting.Forms.Analytics.FrmLabelToCode.spssDatasetShorted' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmLabelToCode.xaml.cs(32,44,32,75): warning CS0169: The field 'DBI_Scripting.Forms.Analytics.FrmLabelToCode.dicNameVsVariableSingleResponse' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmSigTest.xaml.cs(32,24,32,31): warning CS0169: The field 'DBI_Scripting.Forms.Analytics.FrmSigTest.my_Path' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Analytics\FrmTableLink.xaml.cs(27,33,27,44): warning CS0169: The field 'DBI_Scripting.Forms.Analytics.FrmTableLink.xlWorkSheet' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmAddProject.xaml.cs(34,22,34,31): warning CS0414: The field 'DBI_Scripting.Forms.Download.FrmAddProject.bLoadGrid' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmCreateOESyntax.xaml.cs(29,24,29,38): warning CS0169: The field 'DBI_Scripting.Forms.Download.FrmCreateOESyntax.sSelectedSheet' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadData.xaml.cs(46,44,46,57): warning CS0169: The field 'DBI_Scripting.Forms.FrmDownloadData.interviewType' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmDownloadMedia.xaml.cs(46,24,46,30): warning CS0169: The field 'DBI_Scripting.Forms.Download.FrmDownloadMedia.dbName' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Download\FrmRLDPreparation.xaml.cs(47,44,47,57): warning CS0169: The field 'DBI_Scripting.Forms.Download.FrmRLDPreparation.interviewType' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmBuildScript.xaml.cs(88,17,88,31): warning CS0414: The field 'DBI_Scripting.Forms.Scripting.FrmBuildScript.preparedScript' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(51,16,51,29): warning CS0649: Field 'DBI_Scripting.Forms.Scripting.FrmDummyData.sRespondentId' is never assigned to, and will always have its default value null
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(52,16,52,33): warning CS0414: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.sSelectedOrderTag' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(55,14,55,29): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.bStatusAutoNext' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(90,16,90,28): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.sInstruction' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(96,13,96,27): warning CS0414: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.numberOfColumn' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(98,38,98,53): warning CS0414: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.bHasLogicalJump' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(98,72,98,90): warning CS0414: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.bHasCheckCondition' is assigned but its value is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(98,92,98,98): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.bClose' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(101,25,101,40): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.listOfAttribute' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(102,22,102,37): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.listOfRankValue' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(104,16,104,23): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.btnNext' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(104,25,104,32): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.btnBack' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(105,21,105,36): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.spinProgressBar' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(108,22,108,35): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.bCaptureImage' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(108,37,108,46): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.bGetImage' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmDummyData.xaml.cs(108,48,108,64): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmDummyData.bCaptureImageCam' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmUploadMedia.xaml.cs(27,24,27,42): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmUploadMedia.priorScriptVersion' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\Scripting\FrmUploadMedia.xaml.cs(29,24,29,33): warning CS0169: The field 'DBI_Scripting.Forms.Scripting.FrmUploadMedia.projectId' is never used
+1>D:\DBI Scripting\DBI Scripting\Forms\WebPortal\FrmAttributes.xaml.cs(37,24,37,32): warning CS0169: The field 'DBI_Scripting.Forms.WebPortal.FrmAttributes.myRecord' is never used
+1>D:\DBI Scripting\DBI Scripting\MainWindow.xaml.cs(38,24,38,26): warning CS0169: The field 'DBI_Scripting.MainWindow.id' is never used
+1>  DBI Scripting -> D:\DBI Scripting\DBI Scripting\bin\Debug\DBI Scripting.exe
+========== Rebuild All: 1 succeeded, 0 failed, 0 skipped ==========

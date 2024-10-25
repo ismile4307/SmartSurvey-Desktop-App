@@ -1,0 +1,35 @@
+﻿<Window x:Name="frmCreateOEExcel" x:Class="DBI_Scripting.Forms.Download.FrmCreateOEExcel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        Title="Create OE Excel" Height="557.708" Width="866.136" WindowStartupLocation="CenterScreen" Loaded="frmCreateOEExcel_Loaded">
+    <Grid>
+        <Label Content="Excel Data Path :" HorizontalAlignment="Left" Margin="28,54,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="96"/>
+        <TextBox x:Name="txtExcelDataPath" HorizontalAlignment="Left" Height="23" Margin="129,56,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="575"/>
+        <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="725,57,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnBrowse_Click" />
+        <Button x:Name="btnRun" Content="Run" HorizontalAlignment="Left" Margin="370,87,0,0" VerticalAlignment="Top" Width="116" Height="33" Click="btnRun_Click" />
+        <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="725,94,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnExit_Click" />
+        <Label Content="Project Name :" HorizontalAlignment="Left" Margin="37,21,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <ComboBox x:Name="comProjectName" HorizontalAlignment="Left" Margin="130,24,0,0" VerticalAlignment="Top" Width="166"/>
+        <CheckBox x:Name="chkOnlyTakeOE" Content="Only Taken OE Sheet" HorizontalAlignment="Left" Margin="334,28,0,0" VerticalAlignment="Top"/>
+
+        <Label Content="Data file Path :" HorizontalAlignment="Left" Margin="38,171,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <TextBox x:Name="txtDataFileLocation" HorizontalAlignment="Left" Height="23" Margin="129,173,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="575"/>
+        <Button x:Name="btnBrowseExcelData" Content="Browse" HorizontalAlignment="Left" Margin="725,173,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="8.079,-5.321" Click="btnBrowseExcelData_Click" Height="23"/>
+        <Button x:Name="btnExecute" Content="Execute" HorizontalAlignment="Left" Margin="488,377,0,0" VerticalAlignment="Top" Width="108" Height="31" RenderTransformOrigin="0.822,-5.176" Click="btnExecute_Click"/>
+        <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Left" Margin="488,447,0,0" VerticalAlignment="Top" Width="102" RenderTransformOrigin="8.079,-5.321" Height="31" Click="btnClose_Click"/>
+        <CheckBox x:Name="chkSelectAll" Content="Select All" HorizontalAlignment="Left" Margin="333,491,0,0" VerticalAlignment="Top" Click="chkSelectAll_Click"/>
+        <Label Content="WrokSheet" HorizontalAlignment="Left" Margin="182,196,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <wpfTool:CheckListBox x:Name="chkListBoxWorksheet" HorizontalAlignment="Left" Height="286" Margin="132,227,0,0" VerticalAlignment="Top" Width="179" ItemSelectionChanged="chkListBoxWorksheet_ItemSelectionChanged" />
+        <GroupBox Header="" HorizontalAlignment="Left" Margin="393,277,0,0" VerticalAlignment="Top" Height="78" Width="292">
+            <Grid>
+                <Label x:Name="lblStatus" Content="Status : " HorizontalAlignment="Left" Margin="11,25,0,0" VerticalAlignment="Top" Height="25" Width="263"/>
+                <Label x:Name="lblProgress" Content="Progress : " HorizontalAlignment="Left" Margin="11,0,0,0" VerticalAlignment="Top" Height="25" Width="263"/>
+            </Grid>
+        </GroupBox>
+        <Label Content="File Name" HorizontalAlignment="Left" Margin="504,197,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <TextBox x:Name="txtOESyntaxName" HorizontalAlignment="Left" Height="23" Margin="392,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="292" Text="02.OE_SyntaxV1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <CheckBox x:Name="chkDontCreateVar" Content="Don't Create Variables" HorizontalAlignment="Left" Margin="470,262,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

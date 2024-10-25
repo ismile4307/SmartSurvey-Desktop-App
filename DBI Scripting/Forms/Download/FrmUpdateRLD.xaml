@@ -1,0 +1,33 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="DBI_Scripting.Forms.Download.FrmUpdateRLD"
+        Title="FrmUpdateRLD" Height="612.189" Width="814.038" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
+    <Grid>
+
+        <Label Content="Source file Path :" HorizontalAlignment="Left" Margin="25,14,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <TextBox x:Name="txtSourceFileLocation" HorizontalAlignment="Left" Height="23" Margin="122,17,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="551"/>
+        <Button x:Name="btnBrowseSourceFile" Content="Browse" HorizontalAlignment="Left" Margin="678,17,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="8.079,-5.321" Click="btnBrowseSourceFile_Click"/>
+        <Label Content="Source WrokSheet" HorizontalAlignment="Left" Margin="127,107,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <Label Content="Soruce Field Name" HorizontalAlignment="Left" Margin="133,222,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <xctk:CheckListBox x:Name="chkListBoxSourceWorksheet" HorizontalAlignment="Left" Height="80" Margin="77,134,0,0" VerticalAlignment="Top" Width="205" ItemSelectionChanged="chkListBoxSourceWorksheet_ItemSelectionChanged" />
+        <xctk:CheckListBox x:Name="chkListBoxSourceFieldName" HorizontalAlignment="Left" Height="303" Margin="77,249,0,0" VerticalAlignment="Top" Width="205" ItemSelectionChanged="chkListBoxSourceFieldName_ItemSelectionChanged" />
+        <Label Content="RLD file Path :" HorizontalAlignment="Left" Margin="38,55,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <TextBox x:Name="txtRLDFileLocation" HorizontalAlignment="Left" Height="23" Margin="122,58,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="551"/>
+        <Button x:Name="btnBrowseRLDFile" Content="Browse" HorizontalAlignment="Left" Margin="678,58,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="8.079,-5.321" Click="btnBrowseRLDFile_Click"/>
+        <Label Content="Target WrokSheet" HorizontalAlignment="Left" Margin="355,107,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <Label Content="Target Field Name" HorizontalAlignment="Left" Margin="361,222,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <xctk:CheckListBox x:Name="chkListBoxTargetWorksheet" HorizontalAlignment="Left" Height="80" Margin="305,134,0,0" VerticalAlignment="Top" Width="205" ItemSelectionChanged="chkListBoxTargetWorksheet_ItemSelectionChanged" />
+        <xctk:CheckListBox x:Name="chkListBoxTargetFieldName" HorizontalAlignment="Left" Height="303" Margin="305,249,0,0" VerticalAlignment="Top" Width="205" ItemSelectionChanged="chkListBoxTargetFieldName_ItemSelectionChanged" />
+        <Button x:Name="btnExecute" Content="Execute" HorizontalAlignment="Left" Margin="608,133,0,0" VerticalAlignment="Top" Width="108" Height="31" Click="btnExecute_Click"/>
+        <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Left" Margin="624,180,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="8.079,-5.321" Click="btnClose_Click"/>
+        <GroupBox Header="" HorizontalAlignment="Left" Margin="556,249,0,0" VerticalAlignment="Top" Height="78" Width="226">
+            <Grid>
+                <Label x:Name="lblStatus" Content="Status" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Height="25" Width="263"/>
+                <Label x:Name="lblProgress" Content="Progress : " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Height="25" Width="263"/>
+            </Grid>
+        </GroupBox>
+        <Button x:Name="btnKillProcess" Content="Kill Process" HorizontalAlignment="Left" Margin="608,422,0,0" VerticalAlignment="Top" Width="108" Height="31" Click="btnKillProcess_Click"/>
+
+    </Grid>
+</Window>

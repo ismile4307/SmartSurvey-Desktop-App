@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Extended.Wpf.Toolkit</id>
+    <version>4.2.0</version>
+    <title>Extended WPF Toolkit</title>
+    <authors>Xceed</authors>
+    <owners>Xceed</owners>
+    <licenseUrl>https://www.nuget.org/packages/Extended.Wpf.Toolkit/4.2.0/license</licenseUrl>
+    <projectUrl>https://github.com/xceedsoftware/wpftoolkit</projectUrl>
+    <iconUrl>https://api.nuget.org/v3-flatcontainer/extended.wpf.toolkit/4.2.0/icon</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Extended WPF Toolkit is the number one collection of WPF controls, components and utilities for creating next generation Windows applications. Provides 48 controls, all offered under the Xceed Software Inc Community License. v4.2.0 provides 18 bug fixes and improvements. Documentation, source, and discussions are hosted on Github at https://github.com/xceedsoftware/wpftoolkit. Check out the Plus Edition to support the project, get more controls and features, and work with a version a few releases ahead of the free releases.</description>
+    <summary>Extended WPF Toolkit is the number one collection of WPF controls for creating next-gen Windows apps. v4.2.0 provides 18 bug fixes and improvements.</summary>
+    <releaseNotes>v4.2.0 provides 18 bug fixes and improvements. This release includes 10 specific improvements for 2 popular controls: the PropertyGrid and AvalonDock. Released December 2, 2021.</releaseNotes>
+    <copyright>Copyright © Xceed Software Inc. 2010-2021</copyright>
+    <tags>Extended WPF Toolkit</tags>
+  </metadata>
+</package>

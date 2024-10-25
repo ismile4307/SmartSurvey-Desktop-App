@@ -1,0 +1,34 @@
+﻿<Window x:Name="frmCreateProject" x:Class="DBI_Scripting.Forms.Scripting.FrmCreateProject"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Create Project" Height="497.395" Width="785.34" WindowStartupLocation="CenterScreen" Loaded="frmCreateProject_Loaded">
+    <Grid Margin="0,0,0.667,20">
+        <GroupBox Header="" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="169" Width="756">
+            <Grid Margin="0,0,0,0.333">
+                <Label Content="Project Name :" HorizontalAlignment="Left" Margin="5,6,0,0" VerticalAlignment="Top"/>
+                <Label Content="Project Code :" HorizontalAlignment="Left" Margin="7,69,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtProjectName" HorizontalAlignment="Left" Height="23" Margin="96,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226"/>
+                <TextBox x:Name="txtProejctCode" HorizontalAlignment="Left" Height="23" Margin="96,72,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226"/>
+
+                <Label Content="Script Name :" HorizontalAlignment="Left" Margin="11,38,0,0" VerticalAlignment="Top"/>
+                <Label Content="Start Date : " HorizontalAlignment="Left" Margin="385,72,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.518,2.496"/>
+                <TextBox x:Name="txtScriptFileName" HorizontalAlignment="Left" Height="23" Margin="96,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226"/>
+                <DatePicker x:Name="dtpStartDate" HorizontalAlignment="Left" Margin="457,72,0,0" VerticalAlignment="Top" Width="226"/>
+                <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Left" Margin="608,115,0,0" VerticalAlignment="Top" Width="75" Click="btnClose_Click"/>
+                <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Margin="507,115,0,0" VerticalAlignment="Top" Width="75" Click="btnSave_Click"/>
+                <Button x:Name="btnRefresh" Content="Refresh" HorizontalAlignment="Left" Margin="406,115,0,0" VerticalAlignment="Top" Width="75"/>
+                <Label Content="Status : " HorizontalAlignment="Left" Margin="41,104,0,0" VerticalAlignment="Top"/>
+                <ComboBox x:Name="comProjectStatus" HorizontalAlignment="Left" Margin="96,108,0,0" VerticalAlignment="Top" Width="120"/>
+                <Label Content="Media Version :" HorizontalAlignment="Left" Margin="365,38,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtMediaVersion" HorizontalAlignment="Left" Height="23" Margin="457,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226"/>
+                <Label Content="Script Version :" HorizontalAlignment="Left" Margin="369,6,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="txtScriptVersion" HorizontalAlignment="Left" Height="23" Margin="457,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226"/>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="" HorizontalAlignment="Left" Margin="10,184,0,-14" VerticalAlignment="Top" Height="278" Width="756">
+            <DataGrid x:Name="dataGridProject" HorizontalAlignment="Left" VerticalAlignment="Top" Height="245" Width="746" Margin="0,0,-2,0" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" CanUserSortColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserAddRows="False" IsReadOnly="True" SelectionChanged="dataGridProject_SelectionChanged"/>
+        </GroupBox>
+
+    </Grid>
+</Window>
