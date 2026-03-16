@@ -63,7 +63,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 myStr = myStr.Replace("YYY", dicCodeVsBrandName[myloop[j]]);
                             }
 
-                            txtPreparedSyntax.AppendText(myStr);
+                            txtPreparedSyntax.AppendText(myStr + Environment.NewLine);
                         }
 
                         txtPreparedSyntax.AppendText("\n");

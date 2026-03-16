@@ -22,6 +22,7 @@ namespace DBI_Scripting.Classes
             groupName = grName;
             proportionValue = float.Parse(propValue);
             n = Convert.ToInt32(float.Parse(n1));
+            if (n > 2500) n = 2500;
             xlColnm = c;
             xlRow = r;
         }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -179,16 +180,20 @@ namespace DBI_Scripting.Forms.Analytics
         {
             if (setDataPrepareTable())
             {
-                //*********************************************
-
-                //*********************************************
-
                 //string file_Dir = GetExcelDir(txt_Excel_Location.Text);
 
                 List<String> lstTextFile = new List<string>();
 
                 if (sSelectedSheetPrepareExcel != "")
                 {
+
+                    //*********************************************
+
+                    this.DeleteDummyRowColumn(sSelectedSheetPrepareExcel);
+
+                    //*********************************************
+
+
                     //this.quitProcess();
 
                     Excel.Application xlApp1 = new Excel.Application();
@@ -628,6 +633,7 @@ namespace DBI_Scripting.Forms.Analytics
 
             return null;
         }
+
         private bool setDataPrepareTable()
         {
             if (txtExcelTableFilePath.Text != "")
@@ -890,39 +896,46 @@ namespace DBI_Scripting.Forms.Analytics
                                         List<string> baseRow = new List<string>();
                                         for (int k = 3; k <= range.Columns.Count; k++)
                                         {
-                                            baseRow.Add(worksheet1.Cells[j, k].Value.ToString());
-
-                                            if (worksheet1.Cells[j - 1, k].Value2 != null)
-                                                totalGrp.Add(worksheet1.Cells[j - 1, k].Value.ToString());
-                                            else
+                                            try
                                             {
-                                                if (worksheet1.Cells[j - 2, k].Value2 != null)
-                                                    totalGrp.Add(worksheet1.Cells[j - 2, k].Value.ToString());
+                                                baseRow.Add(worksheet1.Cells[j, k].Value.ToString());
+
+                                                if (worksheet1.Cells[j - 1, k].Value2 != null)
+                                                    totalGrp.Add(worksheet1.Cells[j - 1, k].Value.ToString());
                                                 else
                                                 {
-                                                    if (worksheet1.Cells[j - 3, k].Value2 != null)
-                                                        totalGrp.Add(worksheet1.Cells[j - 3, k].Value.ToString());
+                                                    if (worksheet1.Cells[j - 2, k].Value2 != null)
+                                                        totalGrp.Add(worksheet1.Cells[j - 2, k].Value.ToString());
                                                     else
                                                     {
-                                                        if (worksheet1.Cells[j - 4, k].Value2 != null)
-                                                            totalGrp.Add(worksheet1.Cells[j - 4, k].Value.ToString());
+                                                        if (worksheet1.Cells[j - 3, k].Value2 != null)
+                                                            totalGrp.Add(worksheet1.Cells[j - 3, k].Value.ToString());
                                                         else
                                                         {
-                                                            if (worksheet1.Cells[j - 5, k].Value2 != null)
-                                                                totalGrp.Add(worksheet1.Cells[j - 5, k].Value.ToString());
+                                                            if (worksheet1.Cells[j - 4, k].Value2 != null)
+                                                                totalGrp.Add(worksheet1.Cells[j - 4, k].Value.ToString());
                                                             else
                                                             {
-                                                                if (worksheet1.Cells[j - 6, k].Value2 != null)
-                                                                    totalGrp.Add(worksheet1.Cells[j - 6, k].Value.ToString());
+                                                                if (worksheet1.Cells[j - 5, k].Value2 != null)
+                                                                    totalGrp.Add(worksheet1.Cells[j - 5, k].Value.ToString());
                                                                 else
                                                                 {
-                                                                    if (worksheet1.Cells[j - 7, k].Value2 != null)
-                                                                        totalGrp.Add(worksheet1.Cells[j - 7, k].Value.ToString());
+                                                                    if (worksheet1.Cells[j - 6, k].Value2 != null)
+                                                                        totalGrp.Add(worksheet1.Cells[j - 6, k].Value.ToString());
+                                                                    else
+                                                                    {
+                                                                        if (worksheet1.Cells[j - 7, k].Value2 != null)
+                                                                            totalGrp.Add(worksheet1.Cells[j - 7, k].Value.ToString());
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                MessageBox.Show("Something wrong, Please check in cell [" + j + "," + k + "]");
                                             }
                                         }
 
@@ -1116,9 +1129,9 @@ namespace DBI_Scripting.Forms.Analytics
                                                                                 // this condition is for if N1+N2<3 then Array Index missing
                                                                                 if ((club[fst].n + club[scnd].n) > 3)
                                                                                 {
-                                                                                    int doff=club[fst].n + club[scnd].n - 3;
-                                                                                    if(doff>2500)
-                                                                                        doff=2500;
+                                                                                    int doff = club[fst].n + club[scnd].n - 3;
+                                                                                    if (doff > 2500)
+                                                                                        doff = 2500;
                                                                                     double tmp1 = t_tabValue[dicSigLabelvsIndex["95% Level of Confidence"], doff];
                                                                                     double tmp2 = t_tabValue[dicSigLabelvsIndex["90% Level of Confidence"], doff];
                                                                                     if (tValue > tmp1)
@@ -1446,6 +1459,135 @@ namespace DBI_Scripting.Forms.Analytics
 
             }
 
+        }
+
+        private void DeleteDummyRowColumn(String SheetName)
+        {
+
+            //*********************************************
+            this.DeleteDummyColumn(SheetName);
+            //*********************************************
+
+
+
+
+
+            Excel.Application xlApp1 = new Excel.Application();
+            Excel.Workbook xlWorkBook1 = xlApp1.Workbooks.Open(txtExcelTableFilePath.Text, 0, false, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+
+            //Excel.Workbook xlWorkBook1 = xlApp1.Workbooks.Open("",,
+
+
+            //Create and add the text file from excel into list
+            for (int i = 1; i <= xlWorkBook1.Worksheets.Count; i++)
+            {
+                if (xlWorkBook1.Worksheets[i].Name.ToString() == SheetName)
+                {
+
+                    Excel.Worksheet worksheet1 = (Excel.Worksheet)xlApp1.Worksheets[SheetName];
+
+                    worksheet1.Select(true);
+
+                    Excel.Range range;
+                    //Read the excel file
+                    range = worksheet1.UsedRange;
+
+                    progressBar1.Minimum = 1;
+
+
+                    for (int j = 2; j <= range.Rows.Count - 2; j++)
+                    {
+                        progressBar1.Maximum = range.Rows.Count;
+                        progressBar1.Value = j;
+                        if (worksheet1.Cells[j, 1].Value2 != null)
+                        {
+                            string temp1 = worksheet1.Cells[j, 1].Value.ToString();
+
+
+                            if (temp1 == "DUMMY ROW")
+                            {
+                                worksheet1.Rows[j].Delete(1);
+                                j--;
+                            }
+                            //MessageBox.Show(temp1 + "   " + j.ToString());
+                        }
+                    }
+
+                    // Inserting 10 rows into the worksheet starting from 3rd row
+                    //worksheet1.Rows.Insert(2,10);
+
+
+
+
+                    //xlWorkBook1.SaveAs(Application.StartupPath + "\\" + sheetName + ".txt", Excel.XlFileFormat.xlTextWindows, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    //lstTextFile.Add(Application.StartupPath + "\\" + sheetName + ".txt");
+                }
+            }
+
+            //xlWorkBook1.Save();
+            xlWorkBook1.Close(true);
+            releaseObject(xlWorkBook1);
+            releaseObject(xlApp1);
+            //this.quitProcess();
+
+            //MessageBox.Show("Dummy Row deleted completed");
+        }
+
+        private void DeleteDummyColumn(String SheetName)
+        {
+            Excel.Application xlApp1 = new Excel.Application();
+            Excel.Workbook xlWorkBook1 = xlApp1.Workbooks.Open(txtExcelTableFilePath.Text, 0, false, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+
+            //Excel.Workbook xlWorkBook1 = xlApp1.Workbooks.Open("",,
+
+
+            //Create and add the text file from excel into list
+            for (int i = 1; i <= xlWorkBook1.Worksheets.Count; i++)
+            {
+                if (xlWorkBook1.Worksheets[i].Name.ToString() == SheetName)
+                {
+
+                    Excel.Worksheet worksheet1 = (Excel.Worksheet)xlApp1.Worksheets[SheetName];
+
+                    worksheet1.Select(true);
+
+                    Excel.Range range;
+                    //Read the excel file
+                    range = worksheet1.UsedRange;
+
+                    progressBar1.Minimum = 1;
+
+                    for (int j = 2; j <= range.Rows.Count - 2; j++)
+                    {
+                        progressBar1.Maximum = range.Rows.Count;
+                        progressBar1.Value = j;
+                        if (worksheet1.Cells[j, 2].Value2 != null)
+                        {
+                            string temp1 = worksheet1.Cells[j, 2].Value.ToString();
+
+
+                            if (temp1 == "DummyTotal")
+                            {
+                                Excel.Range objRange = (Excel.Range)worksheet1.get_Range("B1", Missing.Value);
+                                objRange.EntireColumn.Delete(Missing.Value);
+                                goto myJump;
+                            }
+                            //MessageBox.Show(temp1 + "   " + j.ToString());
+                        }
+                    }
+
+                    // Inserting 10 rows into the worksheet starting from 3rd row
+                    //worksheet1.Rows.Insert(2,10);
+                    //xlWorkBook1.SaveAs(Application.StartupPath + "\\" + sheetName + ".txt", Excel.XlFileFormat.xlTextWindows, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    //lstTextFile.Add(Application.StartupPath + "\\" + sheetName + ".txt");
+                }
+            }
+
+        myJump:
+            //xlWorkBook1.Save();
+            xlWorkBook1.Close(true);
+            releaseObject(xlWorkBook1);
+            releaseObject(xlApp1);
         }
     }
 }

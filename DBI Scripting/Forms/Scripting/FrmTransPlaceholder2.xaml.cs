@@ -134,7 +134,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 //if (strline.Contains(":") && strline.Split(':').Length == 2)
                                 //{
                                 if (isAttribute(strline))
-                                    linesForExcel.Add(strline);
+                                    linesForExcel.Add(strline.Split('*')[0]);
 
                                 //}
 
@@ -166,7 +166,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 //if (strline.Contains(":") && strline.Split(':').Length == 2)
                                 //{
                                 if (isAttribute(strline))
-                                    linesForExcel.Add(strline);
+                                    linesForExcel.Add(strline.Split('*')[0]);
 
                                 //}
                                 strline = lines[++i];
@@ -618,7 +618,6 @@ namespace DBI_Scripting.Forms.Scripting
                         }
 
 
-
                         #region USELIST
                         if (strline.Split(' ')[0].ToUpper().Contains("*USELIST"))
                         {
@@ -627,14 +626,49 @@ namespace DBI_Scripting.Forms.Scripting
                             {
                                 if (word1[1].Split('"').Length == 3)
                                 {
-                                    linesForExcel.Add("*" + strline);
+                                    linesForExcel.Add(strline);
+                                    strline = lines[++i];
+                                    strline = lines[++i];
+                                    if (isAttribute(strline))
+                                    {
+                                        while (!strline.Trim().Substring(0, 1).Contains("*"))
+                                        {
+                                            //if (strline.Contains(":") && strline.Split(':').Length == 2)
+                                            if (strline.Contains(":"))
+                                            {
+                                                if (!strline.Contains("*"))
+                                                {
+                                                    linesForExcel.Add(strline);
+                                                }
+                                                else
+                                                {
+                                                    string[] myKey = strline.Split('*');
+
+                                                    linesForExcel.Add(myKey[0].Trim());
+
+
+                                                }
+
+                                            }
+
+                                            if (i < lines.Count - 1)
+                                            {
+                                                strline = lines[++i];
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        strline = lines[--i];
+                                        int x = 0;
+                                    }
                                 }
 
                             }
 
-                            strline = lines[++i];
                         }
                         #endregion
+                       
 
                         #region Attribute with :
                         if (isAttribute(strline))
@@ -679,148 +713,148 @@ namespace DBI_Scripting.Forms.Scripting
                         #endregion
 
                     }
-                    else if (strline.Split(' ')[0].ToUpper() == "*QUESTION" && strline.Contains("*DUMMY2"))
-                    {
-                        string[] word = strline.Split('*');
-                        int QTypeCounter = 0;
-                        List<string> listOfQuestionProperties = new List<string>();
-                        String currentQuestion = "";
+                    //else if (strline.Split(' ')[0].ToUpper() == "*QUESTION" && strline.Contains("*DUMMY2"))
+                    //{
+                    //    string[] word = strline.Split('*');
+                    //    int QTypeCounter = 0;
+                    //    List<string> listOfQuestionProperties = new List<string>();
+                    //    String currentQuestion = "";
 
-                        string FIFSAttribute1 = "";
-                        string FIFSAttribute2 = "";
-                        string FIFSAttribute3 = "";
-                        string FIFSAttribute4 = "";
+                    //    string FIFSAttribute1 = "";
+                    //    string FIFSAttribute2 = "";
+                    //    string FIFSAttribute3 = "";
+                    //    string FIFSAttribute4 = "";
 
-                        #region Question Properties
-                        for (int n = 1; n < word.Length; n++)
-                        {
-                            if (word[n].ToUpper().Trim().Contains("QUESTION"))
-                            {
-                                //QID
-                                //linesForExcel.Add("*" + word[n].Trim());
+                    //    #region Question Properties
+                    //    for (int n = 1; n < word.Length; n++)
+                    //    {
+                    //        if (word[n].ToUpper().Trim().Contains("QUESTION"))
+                    //        {
+                    //            //QID
+                    //            //linesForExcel.Add("*" + word[n].Trim());
 
-                                //currentQuestion = word[n];
-                            }
-                            else if (word[n].ToUpper().Trim().Contains("FIFS"))
-                            {
-                                FIFSAttribute1 = "1:FI Name";
-                                FIFSAttribute2 = "2:FI Code";
-                                FIFSAttribute3 = "3:FS Name";
-                                FIFSAttribute4 = "4:FS Code";
+                    //            //currentQuestion = word[n];
+                    //        }
+                    //        else if (word[n].ToUpper().Trim().Contains("FIFS"))
+                    //        {
+                    //            FIFSAttribute1 = "1:FI Name";
+                    //            FIFSAttribute2 = "2:FI Code";
+                    //            FIFSAttribute3 = "3:FS Name";
+                    //            FIFSAttribute4 = "4:FS Code";
 
-                                hasFIFS = true;
-                            }
-                            else if (word[n].ToUpper().Trim().Contains("DKCS"))
-                            {
-                                currentQuestion = currentQuestion + "*" + word[n].Trim();
-                                hasDKCS = true;
-                            }
+                    //            hasFIFS = true;
+                    //        }
+                    //        else if (word[n].ToUpper().Trim().Contains("DKCS"))
+                    //        {
+                    //            currentQuestion = currentQuestion + "*" + word[n].Trim();
+                    //            hasDKCS = true;
+                    //        }
 
-                            //************************************* End of Attribute Filter ****************************************
+                    //        //************************************* End of Attribute Filter ****************************************
 
-                        }
+                    //    }
 
-                        if (hasDKCS == true)
-                        {
-                            linesForExcel.Remove(linesForExcel[linesForExcel.Count - 1]);
-                            linesForExcel.Add("*" + currentQuestion);
-                            hasDKCS = false;
-                        }
-
-
-                        #endregion
+                    //    if (hasDKCS == true)
+                    //    {
+                    //        linesForExcel.Remove(linesForExcel[linesForExcel.Count - 1]);
+                    //        linesForExcel.Add("*" + currentQuestion);
+                    //        hasDKCS = false;
+                    //    }
 
 
-                        strline = lines[++i];
-                        bool getquestionText = false;
-                        while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
-                        {
-                            //linesForExcel.Add(strline);
-                            strline = lines[++i];
-                            getquestionText = true;
-                        }
-
-                        if (hasFIFS == true)
-                        {
-                            linesForExcel.Add(FIFSAttribute1);
-                            linesForExcel.Add(FIFSAttribute2);
-                            linesForExcel.Add(FIFSAttribute3);
-                            linesForExcel.Add(FIFSAttribute4);
+                    //    #endregion
 
 
-                            hasFIFS = false;
-                        }
+                    //    strline = lines[++i];
+                    //    bool getquestionText = false;
+                    //    while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
+                    //    {
+                    //        //linesForExcel.Add(strline);
+                    //        strline = lines[++i];
+                    //        getquestionText = true;
+                    //    }
 
-                        //this portion is for question attribute
-
-                        if (getquestionText == true && strline.Substring(0, 1).Contains("*"))
-                        {
-                            if (i < lines.Count - 1)
-                                i--;
-                        }
-
-
-
-                        #region USELIST
-                        if (strline.Split(' ')[0].ToUpper().Contains("*USELIST"))
-                        {
-                            //string[] word1 = strline.Split(' ');
-                            //if (word1.Length == 2)
-                            //{
-                            //    if (word1[1].Split('"').Length == 3)
-                            //    {
-                            //        linesForExcel.Add("*" + strline);
-                            //    }
-
-                            //}
-
-                            strline = lines[++i];
-                        }
-                        #endregion
-
-                        #region Attribute with :
-                        if (isAttribute(strline))
-                        {
-                            while (!strline.Trim().Substring(0, 1).Contains("*"))
-                            {
-
-                                //if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                if (strline.Contains(":"))
-                                {
-                                    if (!strline.Contains("*"))
-                                    {
-                                        //linesForExcel.Add(strline);
-                                    }
-                                    else
-                                    {
-                                        //string[] myKey = strline.Split('*');
-
-                                        //linesForExcel.Add(myKey[0].Trim());
+                    //    if (hasFIFS == true)
+                    //    {
+                    //        linesForExcel.Add(FIFSAttribute1);
+                    //        linesForExcel.Add(FIFSAttribute2);
+                    //        linesForExcel.Add(FIFSAttribute3);
+                    //        linesForExcel.Add(FIFSAttribute4);
 
 
-                                    }
+                    //        hasFIFS = false;
+                    //    }
 
-                                }
+                    //    //this portion is for question attribute
 
-                                if (i < lines.Count - 1)
-                                {
-                                    strline = lines[++i];
-                                }
-                            }
+                    //    if (getquestionText == true && strline.Substring(0, 1).Contains("*"))
+                    //    {
+                    //        if (i < lines.Count - 1)
+                    //            i--;
+                    //    }
 
-                            if (i < lines.Count - 1)
-                            {
-                                i--;
-                                linesForExcel.Add("");
-                            }
-                        }
-                        else
-                        {
-                            linesForExcel.Add("");
-                        }
-                        #endregion
 
-                    }
+
+                    //    #region USELIST
+                    //    if (strline.Split(' ')[0].ToUpper().Contains("*USELIST"))
+                    //    {
+                    //        //string[] word1 = strline.Split(' ');
+                    //        //if (word1.Length == 2)
+                    //        //{
+                    //        //    if (word1[1].Split('"').Length == 3)
+                    //        //    {
+                    //        //        linesForExcel.Add("*" + strline);
+                    //        //    }
+
+                    //        //}
+
+                    //        strline = lines[++i];
+                    //    }
+                    //    #endregion
+
+                    //    #region Attribute with :
+                    //    if (isAttribute(strline))
+                    //    {
+                    //        while (!strline.Trim().Substring(0, 1).Contains("*"))
+                    //        {
+
+                    //            //if (strline.Contains(":") && strline.Split(':').Length == 2)
+                    //            if (strline.Contains(":"))
+                    //            {
+                    //                if (!strline.Contains("*"))
+                    //                {
+                    //                    //linesForExcel.Add(strline);
+                    //                }
+                    //                else
+                    //                {
+                    //                    //string[] myKey = strline.Split('*');
+
+                    //                    //linesForExcel.Add(myKey[0].Trim());
+
+
+                    //                }
+
+                    //            }
+
+                    //            if (i < lines.Count - 1)
+                    //            {
+                    //                strline = lines[++i];
+                    //            }
+                    //        }
+
+                    //        if (i < lines.Count - 1)
+                    //        {
+                    //            i--;
+                    //            linesForExcel.Add("");
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        linesForExcel.Add("");
+                    //    }
+                    //    #endregion
+
+                    //}
                     #endregion
 
                 }

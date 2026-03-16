@@ -25,7 +25,7 @@ namespace DBI_Scripting.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://smartsurveybd.com/deskapi")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://smartsurveybd.com")]
         public string ServerAddress {
             get {
                 return ((string)(this["ServerAddress"]));

@@ -60,7 +60,7 @@ namespace DBI_Scripting.Classes
                 {
                     if (listOfResponseTypeQId.Contains(dr["QType"].ToString()) || dr["QId"].ToString() == "FIFSInfo")
                     {
-
+                        
                         DataTable Attribute_Table = getAttributeNumber(dr["ProjectId"].ToString(), dr["QId"].ToString(), dr["AttributeId"].ToString());
 
                         listOfMSQuestion.Add(dr["QId"].ToString());
@@ -79,11 +79,22 @@ namespace DBI_Scripting.Classes
                         }
                         else
                         {
+                            List<String> listOfOE = new List<String>();
+
                             foreach (DataRow dr2 in Attribute_Table.Rows)
                             {
                                 columnName.Add(dr["QId"].ToString() + "_" + dr2["AttributeOrder"].ToString());
+                                if (dr2["TakeOpenended"].ToString() != "")
+                                    listOfOE.Add(dr["QId"].ToString() + "_" + dr2["AttributeOrder"].ToString() + "_OE");
+                            }
+
+                            if (listOfOE.Count > 0)
+                            {
+                                for (int x = 0; x < listOfOE.Count; x++)
+                                    columnName.Add(listOfOE[x]);
                             }
                         }
+
 
                     }
                     else if (listOfMRGridQId.Contains(dr["QType"].ToString()))
@@ -116,7 +127,7 @@ namespace DBI_Scripting.Classes
 
                         foreach (DataRow dr2 in Attribute_Table.Rows)
                         {
-                            if (dr2["LinkId1"].ToString() == "1" || dr2["LinkId1"].ToString() == "3" || dr2["LinkId1"].ToString() == "4" || dr2["LinkId1"].ToString() == "14" || dr2["LinkId1"].ToString() == "15" || dr2["LinkId1"].ToString() == "22")
+                            if (dr2["LinkId1"].ToString() == "1" || dr2["LinkId1"].ToString() == "3" || dr2["LinkId1"].ToString() == "4" || dr2["LinkId1"].ToString() == "14" || dr2["LinkId1"].ToString() == "15" || dr2["LinkId1"].ToString() == "22" || dr2["LinkId1"].ToString() == "24")
                             {
                                 //DataTable Attribute_Table = getAttributeNumber(dr["ProjectId"].ToString(), dr["QId"].ToString(), dr["AttributeId"].ToString());
 
@@ -124,7 +135,7 @@ namespace DBI_Scripting.Classes
 
                                 //foreach (DataRow dr2 in Attribute_Table.Rows)
                                 //{
-                                    columnName.Add(dr["QId"].ToString() + "_" + dr2["AttributeOrder"].ToString());
+                                columnName.Add(dr["QId"].ToString() + "_" + dr2["AttributeOrder"].ToString());
                                 //}
                             }
                             else if (dr2["LinkId1"].ToString() == "2")
@@ -164,6 +175,15 @@ namespace DBI_Scripting.Classes
                     else
                     {
                         columnName.Add(dr["QId"].ToString());
+
+                        DataTable Attribute_Table = getAttributeNumber(dr["ProjectId"].ToString(), dr["QId"].ToString(), dr["AttributeId"].ToString());
+                        
+                        foreach (DataRow dr2 in Attribute_Table.Rows)
+                        {
+                            if (dr2["TakeOpenended"].ToString() != "")
+                                columnName.Add(dr["QId"].ToString() + "_" + dr2["AttributeOrder"].ToString() + "_OE");
+                        }
+
                     }
 
                 }
@@ -175,6 +195,7 @@ namespace DBI_Scripting.Classes
             columnName.Add("BackCheckedBy");
             columnName.Add("Status");
             columnName.Add("field_ex2");
+            columnName.Add("intv_info9");
             columnName.Add("TabId");
 
             return columnName;
@@ -233,7 +254,7 @@ namespace DBI_Scripting.Classes
             {
                 foreach (DataRow dr in ds.Tables["Table1"].Rows)
                 {
-                    if (listOfResponseTypeQId.Contains(dr["QType"].ToString()) || dr["QId"].ToString()=="FIFSInfo")
+                    if (listOfResponseTypeQId.Contains(dr["QType"].ToString()) || dr["QId"].ToString() == "FIFSInfo")
                     {
 
                         DataTable Attribute_Table = getAttributeNumber(dr["ProjectId"].ToString(), dr["QId"].ToString(), dr["AttributeId"].ToString());
@@ -254,12 +275,23 @@ namespace DBI_Scripting.Classes
                         }
                         else
                         {
+                            List<String> listOfOE = new List<String>();
+
                             foreach (DataRow dr2 in Attribute_Table.Rows)
                             {
                                 columnName.Add(dr["QId"].ToString() + "_" + dr2["AttributeOrder"].ToString());
+                                if (dr2["TakeOpenended"].ToString() != "")
+                                    listOfOE.Add(dr["QId"].ToString() + "_" + dr2["AttributeOrder"].ToString() + "_OE");
                             }
+
+                            if (listOfOE.Count > 0)
+                            {
+                                for (int x = 0; x < listOfOE.Count; x++)
+                                    columnName.Add(listOfOE[x]);
+                            }
+
                         }
-                        
+
                     }
                     else if (listOfMRGridQId.Contains(dr["QType"].ToString()))
                     {
@@ -290,7 +322,7 @@ namespace DBI_Scripting.Classes
 
                         foreach (DataRow dr2 in Attribute_Table.Rows)
                         {
-                            if (dr2["LinkId1"].ToString() == "1" || dr2["LinkId1"].ToString() == "3" || dr2["LinkId1"].ToString() == "4" || dr2["LinkId1"].ToString() == "14" || dr2["LinkId1"].ToString() == "15" || dr2["LinkId1"].ToString() == "22")
+                            if (dr2["LinkId1"].ToString() == "1" || dr2["LinkId1"].ToString() == "3" || dr2["LinkId1"].ToString() == "4" || dr2["LinkId1"].ToString() == "14" || dr2["LinkId1"].ToString() == "15" || dr2["LinkId1"].ToString() == "22" || dr2["LinkId1"].ToString() == "24")
                             {
                                 //DataTable Attribute_Table = getAttributeNumber(dr["ProjectId"].ToString(), dr["QId"].ToString(), dr["AttributeId"].ToString());
 
@@ -327,6 +359,13 @@ namespace DBI_Scripting.Classes
                     else
                     {
                         columnName.Add(dr["QId"].ToString());
+                        DataTable Attribute_Table = getAttributeNumber(dr["ProjectId"].ToString(), dr["QId"].ToString(), dr["AttributeId"].ToString());
+
+                        foreach (DataRow dr2 in Attribute_Table.Rows)
+                        {
+                            if (dr2["TakeOpenended"].ToString() != "")
+                                columnName.Add(dr["QId"].ToString() + "_" + dr2["AttributeOrder"].ToString() + "_OE");
+                        }
                     }
 
                 }
@@ -341,6 +380,7 @@ namespace DBI_Scripting.Classes
             columnName.Add("SyncDateTime");
             columnName.Add("Status");
             columnName.Add("field_ex2");
+            columnName.Add("intv_info9");
             columnName.Add("TabId");
 
             return columnName;
@@ -440,6 +480,7 @@ namespace DBI_Scripting.Classes
                                  SyncDataTime = (string)T_InterviewInfo["created_at"],
                                  status = (string)T_InterviewInfo["status"],
                                  field_ex2 = (string)T_InterviewInfo["field_ex2"],
+                                 intv_info9 = (string)T_InterviewInfo["intv_info9"],
                                  TabId = (string)T_InterviewInfo["tab_id"],
                                  QId = (string)T_RespAnswer["q_id"],
                                  Response = (string)T_RespAnswer["response"],
@@ -454,6 +495,7 @@ namespace DBI_Scripting.Classes
                 //if (result.Count<.Rows.Count > 0)
                 //{
 
+                string interview_id = "";
 
                 //myProgressBar.Minimum = 0;
                 //myProgressBar.Maximum = TInterviewInfo.Rows.Count * TRespAnswer.Rows.Count;
@@ -477,7 +519,7 @@ namespace DBI_Scripting.Classes
 
                             //This is only for taking openended data 
 
-                            ////////////////////Dictionary<String, String> dicOpenendedQIDvsResponse = getOpenendedForReport(priorAutoId, dtTRespOpenended);
+                            Dictionary<String, String> dicOpenendedQIDvsResponse = getOpenendedForReport(priorAutoId, dtTRespOpenended);
 
                             ////////////////////if (dicOpenendedQIDvsResponse.Count > 0)
                             ////////////////////{
@@ -500,6 +542,8 @@ namespace DBI_Scripting.Classes
                             {
                                 if (dicFieldNameResponse.ContainsKey(columnName[i]))
                                     columnData.Add(dicFieldNameResponse[columnName[i]]);
+                                else if (dicOpenendedQIDvsResponse.ContainsKey(columnName[i]))
+                                    columnData.Add(dicOpenendedQIDvsResponse[columnName[i]]);
                                 else
                                     columnData.Add("");
                             }
@@ -513,7 +557,7 @@ namespace DBI_Scripting.Classes
 
                         //priorRespId = dr.RespondentId.ToString();
                         priorAutoId = dr.AutoId.ToString();
-
+                        interview_id = priorAutoId;
                         dicFieldNameResponse.Add("Id", dr.AutoId.ToString());
                         dicFieldNameResponse.Add("RespondentId", dr.RespondentId.ToString());
                         dicFieldNameResponse.Add("name_resp", dr.name_resp.ToString());
@@ -533,6 +577,7 @@ namespace DBI_Scripting.Classes
 
                         dicFieldNameResponse.Add("Intv_Type", dr.intv_type.ToString());
                         dicFieldNameResponse.Add("Status", dr.status.ToString());
+                        dicFieldNameResponse.Add("intv_info9", dr.intv_info9.ToString());
                         dicFieldNameResponse.Add("TabId", dr.TabId.ToString());
 
                         dicFieldNameResponse.Add(dr.QId.ToString(), dr.Response.ToString());
@@ -589,7 +634,7 @@ namespace DBI_Scripting.Classes
 
                 //This is only for taking openended data 
 
-                ////////////////////////Dictionary<String, String> dicOpenendedQIDvsResponse2 = getOpenendedForReport(priorAutoId, dtTRespOpenended);
+                Dictionary<String, String> dicOpenendedQIDvsResponse2 = getOpenendedForReport(priorAutoId, dtTRespOpenended);
 
                 ////////////////////////if (dicOpenendedQIDvsResponse2.Count > 0)
                 ////////////////////////{
@@ -609,6 +654,8 @@ namespace DBI_Scripting.Classes
                 {
                     if (dicFieldNameResponse.ContainsKey(columnName[i]))
                         columnData.Add(dicFieldNameResponse[columnName[i]]);
+                    else if (dicOpenendedQIDvsResponse2.ContainsKey(columnName[i]))
+                        columnData.Add(dicOpenendedQIDvsResponse2[columnName[i]]);
                     else
                         columnData.Add("");
                 }
@@ -630,9 +677,10 @@ namespace DBI_Scripting.Classes
             Dictionary<String, String> dicOpenendedQIDvsResponse = new Dictionary<String, String>();
 
             //SQLiteDataAdapter dadpt = new SQLiteDataAdapter(@"SELECT * FROM T_RespOpenended WHERE  RespondentId=" + RespondentId + " AND OEResponseType='2';", Aconnection);
+            // && T_RespOpenended.Field<string>("response_type") == "2"
 
             var result1 = from T_RespOpenended in dtTRespOpenended.AsEnumerable()
-                          where T_RespOpenended.Field<string>("interview_info_id") == AutoId && T_RespOpenended.Field<string>("response_type") == "2"
+                          where T_RespOpenended.Field<string>("interview_info_id") == AutoId
                           select new
                           {
                               RespondentId = (string)T_RespOpenended["respondent_id"],
@@ -645,16 +693,21 @@ namespace DBI_Scripting.Classes
 
             foreach (var dr in result1)
             {
-                if (!dicOpenendedQIDvsResponse.ContainsKey(dr.QId.ToString()))
+
+                if (!dicOpenendedQIDvsResponse.ContainsKey(dr.QId.ToString() + "_" + dr.AttributeValue + "_OE"))
                 {
-                    dicOpenendedQIDvsResponse.Add(dr.QId.ToString(), dr.OpenendedResp.ToString());
+                    dicOpenendedQIDvsResponse.Add(dr.QId.ToString()+"_"+dr.AttributeValue+"_OE", dr.OpenendedResp.ToString());
                 }
                 else
                 {
-                    string s_temp = dicOpenendedQIDvsResponse[dr.QId.ToString()] + dr.OpenendedResp.ToString();
-                    dicOpenendedQIDvsResponse.Remove(dr.QId.ToString());
-                    dicOpenendedQIDvsResponse.Add(dr.QId.ToString(), s_temp);
+                    //Actually this is an error
+                    string s_temp = dicOpenendedQIDvsResponse[dr.QId.ToString() + "_" + dr.AttributeValue + "_OE"] + dr.OpenendedResp.ToString();
+                    dicOpenendedQIDvsResponse.Remove(dr.QId.ToString() + "_" + dr.AttributeValue + "_OE");
+                    dicOpenendedQIDvsResponse.Add(dr.QId.ToString() + "_" + dr.AttributeValue + "_OE", s_temp);
                 }
+
+
+
             }
 
             return dicOpenendedQIDvsResponse;

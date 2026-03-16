@@ -215,15 +215,6 @@ namespace DBI_Scripting.Forms.Scripting
                         {
                             String respondenId = insertInterviewInfo();
 
-
-
-
-
-
-
-
-
-
                         }
 
                     }

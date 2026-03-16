@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +20,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace DBI_Scripting.Forms.Scripting
 {
@@ -87,6 +89,7 @@ namespace DBI_Scripting.Forms.Scripting
         List<String> listOfLanguage;
 
         List<String> listOfKeyWords;
+        List<string> listOfQuestionIdForReject;
 
         Boolean preparedScript = false;
         String scriptFilePath = "";
@@ -141,6 +144,9 @@ namespace DBI_Scripting.Forms.Scripting
 
         private void btnExecute_Click(object sender, RoutedEventArgs e)
         {
+
+            txtBuildResult.Text = "";
+            DoEvents();
             #region Define local variables
             checkLogicalExp = new CheckLogicalExp();
 
@@ -191,8 +197,7 @@ namespace DBI_Scripting.Forms.Scripting
             List<string> listOfQuestionIdForDupliCheck = new List<string>();
             List<string> listOfGridListForDupliCheck = new List<string>();
 
-            List<string> listOfQuestionIdForDupliCheckLan1 = new List<string>();
-            List<string> listOfGridListForDupliCheckLan1 = new List<string>();
+
 
             List<string> listOfQuestionIdForDupliCheckLan2 = new List<string>();
             List<string> listOfGridListForDupliCheckLan2 = new List<string>();
@@ -219,7 +224,21 @@ namespace DBI_Scripting.Forms.Scripting
             List<string> listOfGridListForDupliCheckLan9 = new List<string>();
 
 
-
+            listOfQuestionIdForReject = new List<string>();
+            listOfQuestionIdForReject.Add("UNION");
+            listOfQuestionIdForReject.Add("ABS");
+            listOfQuestionIdForReject.Add("JOIN");
+            listOfQuestionIdForReject.Add("SELECT");
+            listOfQuestionIdForReject.Add("INTO");
+            listOfQuestionIdForReject.Add("WHERE");
+            listOfQuestionIdForReject.Add("IF");
+            listOfQuestionIdForReject.Add("EXISTS");
+            listOfQuestionIdForReject.Add("ORDER");
+            listOfQuestionIdForReject.Add("BY");
+            listOfQuestionIdForReject.Add("UPDATE");
+            listOfQuestionIdForReject.Add("DELETE");
+            listOfQuestionIdForReject.Add("MAX");
+            listOfQuestionIdForReject.Add("MIN");
 
             bool hasDKCS = false;
             bool hasFIFS = false;
@@ -583,69 +602,6 @@ namespace DBI_Scripting.Forms.Scripting
                         i = this.prepareList(lines, i, txtWriter, dicLine);
                         strline = lines[i];
 
-                        #region main code
-
-                        //int index = 1;
-
-                        //List<String> listOfAttributeValueForDupliCheck = new List<string>();
-                        //List<String> listOfAttributeLabelForDupliCheck = new List<string>();
-
-                        //string listName = strline.Split(' ')[1].Split('"')[1];
-                        //List<AttributeMain> listOfAttributeMain = new List<AttributeMain>();
-                        //strline = lines[++i];
-                        //if (strline.Contains(":"))
-                        //{
-                        //    while (!strline.Trim().Substring(0, 1).Contains("*"))
-                        //    {
-                        //        if (strline.Contains(":") && strline.Split(':').Length == 2)
-                        //        {
-                        //            AttributeMain attributeMain = new AttributeMain();
-                        //            String[] word = strline.Split(':');
-
-                        //            if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                        //            {
-                        //                if (!listOfAttributeValueForDupliCheck.Contains(word[0].Trim()))
-                        //                {
-                        //                    attributeMain.AttributeValue = word[0].Trim();
-                        //                    attributeMain.AttributeOrder = word[0].Trim(); //index.ToString();
-                        //                    index++;
-
-                        //                    //Add value in list
-                        //                    listOfAttributeValueForDupliCheck.Add(word[0].Trim());
-
-                        //                }
-                        //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                        //            }
-                        //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                        //            if (!word[1].Contains("*"))
-                        //            {
-                        //                if (!listOfAttributeLabelForDupliCheck.Contains(word[1].Trim().ToUpper()))
-                        //                {
-                        //                    attributeMain.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                        //                    //Add value in list
-                        //                    listOfAttributeLabelForDupliCheck.Add(word[1].Trim().ToUpper());
-                        //                }
-                        //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                        //            }
-
-
-                        //            listOfAttributeMain.Add(attributeMain);
-
-                        //        }
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Not proper attribute syntax : " + strline);
-
-                        //        strline = lines[++i];
-                        //    }
-
-                        //    if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                        //        i--;
-                        //}
-                        //else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Not proper attribute syntax : " + strline);
-
-                        //dicQidVsAttributeList.Add(listName, listOfAttributeMain);
-                        #endregion
                     }
                     #endregion
 
@@ -654,70 +610,6 @@ namespace DBI_Scripting.Forms.Scripting
                     {
                         i = this.prepareGridList(lines, i, listOfGridListForDupliCheck, txtWriter, dicLine);
                         strline = lines[i];
-
-                        #region main code
-                        //int index = 1;
-
-                        //List<String> listOfAttributeValueForDupliCheck = new List<string>();
-                        //List<String> listOfAttributeLabelForDupliCheck = new List<string>();
-
-                        //string gridListName = strline.Split(' ')[1].Split('"')[1];
-                        //List<GridInfo> listOfGridInfo = new List<GridInfo>();
-                        //strline = lines[++i];
-                        //if (strline.Contains(":"))
-                        //{
-                        //    while (!strline.Trim().Substring(0, 1).Contains("*"))
-                        //    {
-                        //        if (strline.Contains(":") && strline.Split(':').Length == 2)
-                        //        {
-                        //            GridInfo gridInfo = new GridInfo();
-                        //            String[] word = strline.Split(':');
-
-                        //            if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                        //            {
-                        //                if (!listOfAttributeValueForDupliCheck.Contains(word[0].Trim()))
-                        //                {
-                        //                    gridInfo.AttributeValue = word[0].Trim();
-                        //                    gridInfo.AttributeOrder = word[0].Trim(); //index.ToString();
-                        //                    index++;
-
-                        //                    //Add value in list
-                        //                    listOfAttributeValueForDupliCheck.Add(word[0].Trim());
-
-                        //                }
-                        //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                        //            }
-                        //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                        //            if (!word[1].Contains("*"))
-                        //            {
-                        //                if (!listOfAttributeLabelForDupliCheck.Contains(word[1].Trim().ToUpper()))
-                        //                {
-                        //                    gridInfo.AttributeEnglish = word[1].Trim();
-                        //                    //Add value in list
-                        //                    listOfAttributeLabelForDupliCheck.Add(word[1].Trim().ToUpper());
-                        //                }
-                        //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                        //            }
-
-
-                        //            listOfGridInfo.Add(gridInfo);
-
-                        //        }
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Not proper attribute syntax : " + strline);
-
-                        //        strline = lines[++i];
-                        //    }
-                        //    if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                        //        i--;
-                        //}
-                        //else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Not proper attribute syntax : " + strline);
-
-                        //dicGridListNameVsList.Add(gridListName, listOfGridInfo);
-
-                        //listOfGridListForDupliCheck.Add(gridListName);
-                        #endregion
                     }
                     #endregion
 
@@ -741,254 +633,7 @@ namespace DBI_Scripting.Forms.Scripting
                             listOfLogicalSyntax.Add(listOfLogicalSyntaxTemp[x]);
                         }
 
-                        #region main code
-                        //if (strline.Trim().Split(' ')[0].ToUpper() == "*IF" && !strline.ToUpper().Contains("REGULAREXPOF"))
-                        //{
 
-                        //    LogicalSyntax myLogicalSyntax;// = new LogicalSyntax();
-
-                        //    string[] pqr = strline.Trim().Split('*');
-                        //    if (pqr.Length == 3)
-                        //    {
-
-                        //        string[] mno = pqr[1].Split(' ');
-                        //        //string ifCondition = pqr[1].Split(new Char[] { '[', ']' })[1];
-
-                        //        string ifCondition = pqr[1].Substring(pqr[1].IndexOf('[') + 1);//pqr[1].Split(new Char[] { '[', ']' })[1];
-                        //        ifCondition = ifCondition.Substring(0, ifCondition.LastIndexOf(']'));
-
-
-
-                        //        //*IF [Q5=1] *GOTO Q2
-                        //        if (pqr[2].Trim().Contains("GOTO"))
-                        //        {
-                        //            myLogicalSyntax = new LogicalSyntax();
-                        //            string[] xyz = pqr[2].Split(' ');
-                        //            if (xyz.Length != 2)
-                        //            {
-                        //                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + pqr[2]);
-                        //            }
-                        //            else
-                        //            {
-                        //                //if (listOfQuestionIdForDupliCheck.Contains(xyz[1]))
-                        //                //{
-                        //                if (Regex.Match(xyz[1].Trim(), "^[a-zA-Z]").Success)
-                        //                {
-                        //                    myLogicalSyntax.ThenValue = xyz[1].Trim();
-                        //                    myLogicalSyntax.QId = currentQuestion.QId;
-                        //                    myLogicalSyntax.LogicTypeId = "3";
-                        //                    myLogicalSyntax.IfCondition = ifCondition;
-
-                        //                    //Add in list
-                        //                    listOfLogicalSyntax.Add(myLogicalSyntax);
-                        //                }
-                        //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Question Id " + xyz[1].Trim() + " Question Id must be followed by a Alpha Char");
-
-                        //                //}
-                        //                //else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Question Id " + xyz[1]);
-
-                        //            }
-                        //        }
-                        //        //*IF [Q5=1] *MSG "Mobile Number should be correct"
-                        //        else if (pqr[2].Trim().Contains("MSG"))
-                        //        {
-                        //            myLogicalSyntax = new LogicalSyntax();
-                        //            string[] xyz = pqr[2].Split('"');
-                        //            if (xyz.Length != 3)
-                        //            {
-                        //                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + pqr[2]);
-                        //            }
-                        //            else
-                        //            {
-                        //                //if (listOfQuestionIdForDupliCheck.Contains(xyz[1]))
-                        //                //{
-                        //                //if (Regex.Match(xyz[1].Trim(), "\"[^\"]*\"").Success)
-                        //                //{
-                        //                myLogicalSyntax.ThenValue = xyz[1];
-                        //                myLogicalSyntax.QId = currentQuestion.QId;
-                        //                myLogicalSyntax.LogicTypeId = "2";
-                        //                myLogicalSyntax.IfCondition = ifCondition;
-
-                        //                //Add in list
-                        //                listOfLogicalSyntax.Add(myLogicalSyntax);
-                        //                //}
-                        //                //else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Question Id " + xyz[1].Trim() + " Question Id must be followed by a Alpha Char");
-
-                        //                //}
-                        //                //else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Question Id " + xyz[1]);
-
-                        //            }
-                        //        }
-                        //        //*IF [Q5=1] *INCLUDE Q3Dummy [01;03;04;05]
-                        //        else if (pqr[2].Trim().Contains("INCLUDE") || pqr[2].Trim().Contains("EXCLUDE"))
-                        //        {
-                        //            AutoResponse myAutoResponse = new AutoResponse();
-
-                        //            myAutoResponse.IfCondition = ifCondition;
-
-                        //            String IncludeExclude = "";
-                        //            if (pqr[2].Trim().Split(' ')[0].Trim().ToUpper() == "INCLUDE")
-                        //                IncludeExclude = "Include";
-                        //            else
-                        //                IncludeExclude = "Exclude";
-
-
-                        //            string[] abc = pqr[2].Trim().Split(' ');
-                        //            if (abc.Length != 3 && abc.Length != 5)
-                        //            {
-                        //                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + strline);
-                        //            }
-                        //            else if (abc.Length == 3)
-                        //            {
-                        //                if (!abc[2].Trim().Contains("["))
-                        //                {
-                        //                    //*INCLUDE Q3Dummy Q1
-                        //                    if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                        //                    {
-                        //                        if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
-                        //                            myAutoResponse.QId = abc[1].Trim();
-                        //                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim());
-                        //                    }
-                        //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim() + ", Must be started with Alpha");
-
-                        //                    myAutoResponse.LogicId = "1";
-
-                        //                    if (Regex.Match(abc[2].Trim(), "^[a-zA-Z]").Success)
-                        //                    {
-                        //                        if (listOfQuestionIdForDupliCheck.Contains(abc[2].Trim()))
-                        //                            myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
-                        //                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[2].Trim());
-                        //                    }
-                        //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[2].Trim() + ", Must be started with Alpha");
-                        //                }
-                        //                else
-                        //                {
-                        //                    // get the QID
-                        //                    //*INCLUDE Q3Dummy [01;03;04;05]
-                        //                    if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                        //                    {
-                        //                        if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
-                        //                            myAutoResponse.QId = abc[1].Trim();
-                        //                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim());
-                        //                    }
-                        //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[1].Trim() + ", Should be [Number;Number;Number]");
-
-                        //                    myAutoResponse.LogicId = "1";
-
-                        //                    // get the condition
-                        //                    //*INCLUDE Q3Dummy [01;03;04;05]
-                        //                    if (Regex.Match(abc[2].Trim(), @"^\[\d+(;\d+)*\]$").Success)
-                        //                    {
-                        //                        myAutoResponse.ThenValue = IncludeExclude + abc[2].Trim();
-                        //                    }
-
-                        //                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"^\[\d+(\sTO\s\d+)*\]$").Success)
-                        //                    {
-                        //                        myAutoResponse.ThenValue = IncludeExclude + abc[2].Trim();
-                        //                    }
-                        //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[2].Trim() + ", Should be [Number to Number]");
-
-                        //                }
-                        //            }
-                        //            else if (abc.Length == 5)
-                        //            {
-                        //                // get the QID
-                        //                //*INCLUDE Q3Dummy [01 to 05]
-                        //                if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                        //                {
-                        //                    if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
-                        //                        myAutoResponse.QId = abc[1].Trim();
-                        //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim());
-                        //                }
-                        //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[1].Trim() + ", Should be [Number;Number;Number]");
-
-                        //                myAutoResponse.LogicId = "1";
-
-                        //                if (abc[2].Trim().Contains("["))
-                        //                {   //*INCLUDE Q3Dummy [01 to 05]
-                        //                    string myExp = abc[2] + " " + abc[3] + " " + abc[4];
-                        //                    if (Regex.Match(myExp.Trim().ToUpper(), @"^\[\d+(\sTO\s\d+)*\]$").Success)
-                        //                    {
-                        //                        myAutoResponse.ThenValue = IncludeExclude + myExp.Trim();
-                        //                    }
-                        //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + myExp + ", Should be [Number to Number]");
-
-                        //                }
-                        //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + strline + ", Should be [Number to Number]");
-
-                        //            }
-                        //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + pqr[1].Trim() + ", *GOTO/*INCLUDE/*EXCLUDE");
-
-
-                        //            listOfAutoResponse.Add(myAutoResponse);
-
-                        //        }
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + pqr[1].Trim() + ", *GOTO/*INCLUDE/*EXCLUDE");
-
-                        //    }
-                        //    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid IF Statement " + strline + ", Format is *IF [Condition] SuccessExpression");
-
-
-                        //}
-                        //else if (strline.Trim().Split(' ')[0].ToUpper() == "*IF" && strline.ToUpper().Contains("REGULAREXPOF"))
-                        //{
-                        //    //*IF [RegexOf[Q17Mojo.1]!=RegularExpOf[^[1-9]\d*$]] *MSG "Invalid buying price, Must be decimal Number"
-
-                        //    LogicalSyntax myLogicalSyntax;// = new LogicalSyntax();
-
-                        //    string[] pqrTemp = strline.Trim().Split('*');
-                        //    string[] pqr = new string[3];
-                        //    if (pqrTemp.Length == 3)
-                        //    {
-                        //        pqr = pqrTemp;
-                        //    }
-                        //    else if (pqrTemp.Length == 4)
-                        //    {
-                        //        pqr[0] = pqrTemp[0];
-                        //        pqr[1] = pqrTemp[1] + "*" + pqrTemp[2];
-                        //        pqr[2] = pqrTemp[3];
-
-                        //    }
-                        //    if (pqr.Length == 3)
-                        //    {
-                        //        string[] mno = pqr[1].Split(' ');
-                        //        //string ifCondition = pqr[1].Split(new Char[] { '[', ']' })[1];
-
-                        //        string ifCondition = pqr[1].Substring(pqr[1].IndexOf('[') + 1);//pqr[1].Split(new Char[] { '[', ']' })[1];
-                        //        ifCondition = ifCondition.Substring(0, ifCondition.LastIndexOf(']'));
-
-                        //        if (pqr[2].Trim().Contains("MSG"))
-                        //        {
-                        //            myLogicalSyntax = new LogicalSyntax();
-                        //            string[] xyz = pqr[2].Split('"');
-                        //            if (xyz.Length != 3)
-                        //            {
-                        //                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + pqr[2]);
-                        //            }
-                        //            else
-                        //            {
-                        //                //if (listOfQuestionIdForDupliCheck.Contains(xyz[1]))
-                        //                //{
-                        //                //if (Regex.Match(xyz[1].Trim(), "\"[^\"]*\"").Success)
-                        //                //{
-                        //                myLogicalSyntax.ThenValue = xyz[1];
-                        //                myLogicalSyntax.QId = currentQuestion.QId;
-                        //                myLogicalSyntax.LogicTypeId = "2";
-                        //                myLogicalSyntax.IfCondition = ifCondition;
-
-                        //                //Add in list
-                        //                listOfLogicalSyntax.Add(myLogicalSyntax);
-                        //                //}
-                        //                //else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Question Id " + xyz[1].Trim() + " Question Id must be followed by a Alpha Char");
-
-                        //                //}
-                        //                //else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Question Id " + xyz[1]);
-
-                        //            }
-                        //        }
-                        //    }
-                        //}
-                        #endregion
                     }
                     #endregion
 
@@ -1004,104 +649,6 @@ namespace DBI_Scripting.Forms.Scripting
                         {
                             listOfAutoResponse.Add(listOfAutoResponseTemp[x]);
                         }
-
-                        #region main code
-                        //AutoResponse myAutoResponse = new AutoResponse();
-
-                        //String IncludeExclude = "";
-                        //if (strline.Trim().Split(' ')[0].Trim().ToUpper() == "*INCLUDE")
-                        //    IncludeExclude = "Include";
-                        //else
-                        //    IncludeExclude = "Exclude";
-
-
-                        //string[] abc = strline.Trim().Split(' ');
-                        //if (abc.Length != 3 && abc.Length != 5)
-                        //{
-                        //    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + strline);
-                        //}
-                        //else if (abc.Length == 3)
-                        //{
-                        //    if (!abc[2].Trim().Contains("["))
-                        //    {
-                        //        //*INCLUDE Q3Dummy Q1
-                        //        if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                        //        {
-                        //            if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
-                        //                myAutoResponse.QId = abc[1].Trim();
-                        //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim());
-                        //        }
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim() + ", Must be started with Alpha");
-
-                        //        myAutoResponse.LogicId = "1";
-
-                        //        if (Regex.Match(abc[2].Trim(), "^[a-zA-Z]").Success)
-                        //        {
-                        //            if (listOfQuestionIdForDupliCheck.Contains(abc[2].Trim()))
-                        //                myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
-                        //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[2].Trim());
-                        //        }
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[2].Trim() + ", Must be started with Alpha");
-                        //    }
-                        //    else
-                        //    {
-                        //        // get the QID
-                        //        //*INCLUDE Q3Dummy [01;03;04;05]
-                        //        if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                        //        {
-                        //            if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
-                        //                myAutoResponse.QId = abc[1].Trim();
-                        //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim());
-                        //        }
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[1].Trim() + ", Should be [Number;Number;Number]");
-
-                        //        myAutoResponse.LogicId = "1";
-
-                        //        // get the condition
-                        //        //*INCLUDE Q3Dummy [01;03;04;05]
-                        //        if (Regex.Match(abc[2].Trim(), @"^\[\d+(;\d+)*\]$").Success)
-                        //        {
-                        //            myAutoResponse.ThenValue = IncludeExclude + abc[2].Trim();
-                        //        }
-
-                        //        else if (Regex.Match(abc[2].Trim().ToUpper(), @"^\[\d+(\sTO\s\d+)*\]$").Success)
-                        //        {
-                        //            myAutoResponse.ThenValue = IncludeExclude + abc[2].Trim();
-                        //        }
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[2].Trim() + ", Should be [Number to Number]");
-
-                        //    }
-                        //}
-                        //else if (abc.Length == 5)
-                        //{
-                        //    //*INCLUDE Q3Dummy Q1
-                        //    if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                        //    {
-                        //        if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
-                        //            myAutoResponse.QId = abc[1].Trim();
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim());
-                        //    }
-                        //    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + abc[1].Trim() + ", Must be started with Alpha");
-
-                        //    myAutoResponse.LogicId = "1";
-
-                        //    if (abc[2].Trim().Contains("["))
-                        //    {   //*INCLUDE Q3Dummy [01 to 05]
-                        //        string myExp = abc[2] + " " + abc[3] + " " + abc[4];
-                        //        if (Regex.Match(myExp.Trim().ToUpper(), @"^\[\d+(\sTO\s\d+)*\]$").Success)
-                        //        {
-                        //            myAutoResponse.ThenValue = IncludeExclude + myExp.Trim();
-                        //        }
-                        //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + myExp + ", Should be [Number to Number]");
-
-                        //    }
-                        //    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + strline + ", Should be [Number to Number]");
-
-                        //}
-                        //else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + strline.Trim() + ", *GOTO/*INCLUDE/*EXCLUDE");
-
-                        //listOfAutoResponse.Add(myAutoResponse);
-                        #endregion
                     }
                     #endregion
 
@@ -1209,702 +756,8 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     listOfAttributeFilter.Add(listOfAttributeFilterTemp[x]);
                                 }
-
-
-                                #region main code
-                                //hasDKCS = false;
-
-                                //currentQuestion = new Question();
-                                //Question myQuestion = new Question();
-                                //AttributeFilter myAttributeFilter = new AttributeFilter();
-                                //string[] word = strline.Split('*');
-                                //int QTypeCounter = 0;
-                                //List<string> listOfQuestionProperties = new List<string>();
-                                //String currentGridListName = "";
-
-
-
-                                //#region Question Properties
-                                //for (int n = 1; n < word.Length; n++)
-                                //{
-                                //    if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
-                                //        txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
-
-                                //    if (word[n].ToUpper().Trim().Contains("QUESTION"))
-                                //    {
-                                //        //QID
-                                //        string[] xyz = word[n].Trim().Split(' ');
-                                //        if (xyz.Length == 2)
-                                //        {
-                                //            if (Regex.IsMatch(xyz[1].Trim(), "^[a-zA-Z]"))
-                                //            {
-                                //                if (!listOfQuestionIdForDupliCheck.Contains(xyz[1].Trim()))
-                                //                {
-                                //                    myQuestion.QId = xyz[1].Trim();
-                                //                    listOfQuestionIdForDupliCheck.Add(xyz[1].Trim());
-
-                                //                    //if (myQuestion.QId == "SQ21")
-                                //                    //    MessageBox.Show("");
-                                //                }
-                                //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Duplicate QId " + xyz[1].Trim() + ", QId must be unique");
-                                //            }
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId " + xyz[1].Trim() + ", Must be started with Alpha");
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid QId syntax" + xyz[0].Trim() + ", Only Qid exist after *QUESTION");
-
-                                //    }
-                                //    //Question Type
-                                //    else if (word[n].ToUpper().Trim().Contains("SR") && !word[n].ToUpper().Trim().Contains("GRIDSR"))
-                                //    { myQuestion.QType = "1"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("MR") && !word[n].ToUpper().Trim().Contains("GRIDMR"))
-                                //    { myQuestion.QType = "2"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("OPEN") && !word[n].ToUpper().Trim().Contains("ALPHALIST"))
-                                //    { myQuestion.QType = "3"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("NUMBER"))
-                                //    { myQuestion.QType = "4"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("RANK"))
-                                //    { myQuestion.QType = "5"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("IMAGE"))
-                                //    {
-                                //        myQuestion.QType = "6"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-
-                                //        string[] xy = word[n].Trim().Split(' ');
-                                //        if (xy.Length == 2)
-                                //        {
-                                //            string[] xyz = xy[1].Split('"');
-                                //            if (xyz.Length != 3)
-                                //                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xyz[2]);
-                                //            else
-                                //                myQuestion.FilePath = xyz[1];
-
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
-
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("GRIDSR"))
-                                //    {
-                                //        myQuestion.QType = "7"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("GRIDMR"))
-                                //    {
-                                //        myQuestion.QType = "8"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("MEDIA"))
-                                //    { myQuestion.QType = "9"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("RECORDING"))
-                                //    { myQuestion.QType = "10"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("ALPHALIST"))
-                                //    { myQuestion.QType = "12"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("NUMLIST"))
-                                //    { myQuestion.QType = "13"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("DATE"))
-                                //    { myQuestion.QType = "14"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("TIME"))
-                                //    { myQuestion.QType = "15"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("CAPTUREIMAGE"))
-                                //    { myQuestion.QType = "16"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("NUMLISTTOTAL"))
-                                //    { myQuestion.QType = "17"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("AUTOCOMPLETE") && !word[n].ToUpper().Trim().Contains("AUTOCOMPLETEANS"))
-                                //    { myQuestion.QType = "22"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("AUTOCOMPLETEANS"))
-                                //    { myQuestion.QType = "23"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("DROPDOWN") && !word[n].ToUpper().Trim().Contains("DROPDOWNLIST"))
-                                //    { myQuestion.QType = "24"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("DROPDOWNLIST"))
-                                //    { myQuestion.QType = "24"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("FORM"))
-                                //    {
-                                //        myQuestion.QType = "48";
-                                //        QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("INFO"))
-                                //    { myQuestion.QType = "49"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("END") && !word[n].ToUpper().Trim().Contains("ENDREC"))
-                                //    { myQuestion.QType = "50"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); hasEnd = true; }
-                                //    else if (word[n].ToUpper().Trim().Contains("TERMINATE"))
-                                //    { myQuestion.QType = "51"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); hasTerminate = true; }
-                                //    else if (word[n].ToUpper().Trim().Contains("FIFS"))
-                                //    {
-                                //        myQuestion.QType = "60"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-
-                                //        attributeMainFIName = new AttributeMain();
-                                //        attributeMainFIName.QId = myQuestion.QId;
-                                //        attributeMainFIName.AttributeEnglish = "FI Name";
-                                //        attributeMainFIName.AttributeValue = "1";
-                                //        attributeMainFIName.AttributeOrder = "1";
-                                //        attributeMainFIName.LinkId1 = "3";
-                                //        attributeMainFIName.ForceAndMsgOpt = "11";
-
-                                //        attributeMainFICode = new AttributeMain();
-                                //        attributeMainFICode.QId = myQuestion.QId;
-                                //        attributeMainFICode.AttributeEnglish = "FI Code";
-                                //        attributeMainFICode.AttributeValue = "2";
-                                //        attributeMainFICode.AttributeOrder = "2";
-                                //        attributeMainFICode.LinkId1 = "3";
-                                //        attributeMainFICode.ForceAndMsgOpt = "11";
-
-                                //        attributeMainFSName = new AttributeMain();
-                                //        attributeMainFSName.QId = myQuestion.QId;
-                                //        attributeMainFSName.AttributeEnglish = "FS Name";
-                                //        attributeMainFSName.AttributeValue = "3";
-                                //        attributeMainFSName.AttributeOrder = "3";
-                                //        attributeMainFSName.LinkId1 = "3";
-                                //        attributeMainFSName.ForceAndMsgOpt = "11";
-
-                                //        attributeMainFSCode = new AttributeMain();
-                                //        attributeMainFSCode.QId = myQuestion.QId;
-                                //        attributeMainFSCode.AttributeEnglish = "FS Code";
-                                //        attributeMainFSCode.AttributeValue = "4";
-                                //        attributeMainFSCode.AttributeOrder = "4";
-                                //        attributeMainFSCode.LinkId1 = "3";
-                                //        attributeMainFSCode.ForceAndMsgOpt = "11";
-
-                                //        hasFIFS = true;
-                                //    }
-
-
-                                //    //else if (word[n].ToUpper().Trim().Contains(""))
-                                //    //    myQuestion.QType = "7";
-                                //    //else if (word[n].ToUpper().Trim().Contains(""))
-                                //    //    myQuestion.QType = "7";
-                                //    else if (word[n].ToUpper().Trim().Contains("RANDOM"))
-                                //    { myQuestion.HasRandomAttrib = "2"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("ROT"))
-                                //    { myQuestion.HasRandomAttrib = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-
-                                //    else if (word[n].ToUpper().Trim().Contains("MIN"))
-                                //    {
-                                //        string[] xyz = word[n].Trim().Split(' ');
-                                //        if (xyz.Length == 2)
-                                //        {
-                                //            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                //            if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success)
-                                //                myQuestion.NoOfResponseMin = xyz[1].Trim();
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
-
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("MAX"))
-                                //    {
-                                //        string[] xyz = word[n].Trim().Split(' ');
-                                //        if (xyz.Length == 2)
-                                //        {
-                                //            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                //            if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success)
-                                //                myQuestion.NoOfResponseMax = xyz[1].Trim();
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MAX is invalid ");
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("COLUMN"))
-                                //    {
-                                //        string[] xyz = word[n].Trim().Split(' ');
-                                //        if (xyz.Length == 2)
-                                //        {
-                                //            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                //            if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success)
-                                //                myQuestion.NumberOfColumn = xyz[1].Trim();
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *COLUMN is invalid ");
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("DUMMY1"))
-                                //    { myQuestion.HasAutoResponse = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("DUMMY2"))
-                                //    { myQuestion.HasAutoResponse = "2"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("REPORT"))
-                                //    { myQuestion.ShowInReport = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("NOBACKBTN"))
-                                //    { myQuestion.DisplayBackButton = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                                //    else if (word[n].ToUpper().Trim().Contains("NONEXTBTN"))
-                                //    { myQuestion.DisplayNextButton = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-
-
-                                //    //************************************* Attribute Filter ***********************************************
-                                //    else if (word[n].ToUpper().Trim().Contains("INCLUDE"))
-                                //    {
-                                //        string[] xyz = word[n].Trim().Split(' ');
-                                //        if (xyz.Length == 2)
-                                //        {
-                                //            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                //            string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
-                                //            if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                                //            {
-                                //                if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
-                                //                {
-                                //                    myAttributeFilter.ProjectId = projectInfoScript.ProjectCode;
-                                //                    myAttributeFilter.QId = myQuestion.QId;
-                                //                    myAttributeFilter.InheritedQId = abc[1].Trim();
-                                //                    myAttributeFilter.FilterType = "1";
-                                //                }
-                                //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
-                                //            }
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *EXCLUDE is invalid ");
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("EXCLUDE"))
-                                //    {
-                                //        string[] xyz = word[n].Trim().Split(' ');
-                                //        if (xyz.Length == 2)
-                                //        {
-                                //            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                //            string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
-                                //            if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                                //            {
-                                //                if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
-                                //                {
-                                //                    myAttributeFilter.ProjectId = projectInfoScript.ProjectCode;
-                                //                    myAttributeFilter.QId = myQuestion.QId;
-                                //                    myAttributeFilter.InheritedQId = abc[1].Trim();
-                                //                    myAttributeFilter.FilterType = "2";
-                                //                }
-                                //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
-                                //            }
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *EXCLUDE is invalid ");
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                                //    {
-                                //        string[] xyz = word[n].Trim().Split(' ');
-                                //        if (xyz.Length == 2)
-                                //        {
-                                //            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                //            string[] abc = xyz[1].Trim().Split(new Char[] { '\"' });
-                                //            if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                                //            {
-                                //                if (listOfGridListForDupliCheck.Contains(abc[1].Trim()))
-                                //                {
-                                //                    currentGridListName = abc[1].Trim();
-                                //                }
-                                //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid GridListName : " + abc[1].Trim());
-                                //            }
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " GridList Name must be followed by Alpha Charecter " + abc[1].Trim());
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *USEGRIDLIST is invalid ");
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("DKCS"))
-                                //    {
-                                //        string[] xyz = word[n].Trim().Split(new Char[] { '\"' });
-                                //        if (xyz.Length == 5)
-                                //        {
-                                //            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                //            //string[] abc = xyz[1].Trim().Split(new Char[] { '\"' });
-                                //            if (xyz[1].Trim() != "")
-                                //            {
-                                //                if (Regex.Match(xyz[3].Trim(), @"^\d+$").Success)
-                                //                {
-                                //                    hasDKCS = true;
-
-                                //                    attributeMain1 = new AttributeMain();
-                                //                    attributeMain1.QId = currentQuestion.QId;
-                                //                    attributeMain1.AttributeEnglish = "";
-                                //                    attributeMain1.AttributeValue = "1";
-                                //                    attributeMain1.AttributeOrder = "1";
-
-                                //                    attributeMain2 = new AttributeMain();
-                                //                    attributeMain2.QId = currentQuestion.QId;
-                                //                    attributeMain2.AttributeEnglish = xyz[1].Trim();
-                                //                    attributeMain2.AttributeValue = xyz[3].Trim();
-                                //                    attributeMain2.AttributeOrder = "2";
-                                //                    attributeMain2.IsExclusive = "1";
-
-
-
-                                //                    //Add the attribute list 
-                                //                    //dicQidVsAttributeList.Add(myQuestion.QId, listOfAttributeMain1);
-                                //                }
-                                //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute code must be Number " + xyz[3].Trim());
-                                //            }
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute Label missing " + xyz[1].Trim());
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *DKCS is invalid ");
-                                //    }
-                                //    else if (word[n].ToUpper().Trim().Contains("IF"))
-                                //    {
-                                //        LogicalSyntax myLogicalSyntax = new LogicalSyntax();
-
-                                //        //string ifCondition = word[n].Split(new Char[] { '[', ']' })[1];
-
-                                //        string ifCondition = word[n].Substring(word[n].IndexOf('[') + 1);
-                                //        ifCondition = ifCondition.Substring(0, ifCondition.LastIndexOf(']'));
-
-
-                                //        myLogicalSyntax.ThenValue = myQuestion.QId;
-                                //        myLogicalSyntax.QId = myQuestion.QId;
-                                //        myLogicalSyntax.LogicTypeId = "4";
-                                //        myLogicalSyntax.IfCondition = ifCondition;
-
-                                //        //Add in list
-                                //        listOfLogicalSyntax.Add(myLogicalSyntax);
-                                //    }
-                                //    //************************************* End of Attribute Filter ****************************************
-
-                                //}
-                                //#endregion
-
-                                ////Check Question properties is duplicate or not
-
-                                //var query = listOfQuestionProperties.GroupBy(x => x)
-                                //      .Where(g => g.Count() > 1)
-                                //      .Select(y => y.Key)
-                                //      .ToList();
-
-                                //if (query.Count > 0)
-                                //    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Duplicate Token ");
-
-                                //if (myQuestion.QType == null)
-                                //    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Question Type must be exist ");
-
-                                //string questionText = "";
-                                //strline = lines[++i];
-                                //bool getquestionText = false;
-                                //while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
-                                //{
-                                //    questionText = questionText + strline + "<br>";
-                                //    strline = lines[++i];
-                                //    getquestionText = true;
-                                //}
-
-                                //if (questionText == "")
-                                //    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid Question Text : should not exist");
-                                //myQuestion.QuestionEnglish = questionText;
-
-                                ////add question object to list
-                                //listOfQuestion.Add(myQuestion);
-                                //currentQuestion = myQuestion;
-
-                                ////this portion is for question attribute
-
-                                //if (getquestionText == true && strline.Substring(0, 1).Contains("*"))
-                                //{
-                                //    if (i < lines.Count - 1)
-                                //        i--;
-                                //}
-
-                                //List<AttributeMain> listOfAttributeMain = new List<AttributeMain>();
-                                //int index = 1;
-
-                                //List<String> listOfAttributeValueForDupliCheck = new List<string>();
-                                //List<String> listOfAttributeLabelForDupliCheck = new List<string>();
-
-                                //if (hasDKCS == true)
-                                //{
-                                //    listOfAttributeMain.Add(attributeMain1);
-                                //    listOfAttributeMain.Add(attributeMain2);
-                                //    hasDKCS = false;
-                                //}
-
-                                //if (hasFIFS == true)
-                                //{
-                                //    listOfAttributeMain.Add(attributeMainFIName);
-                                //    listOfAttributeMain.Add(attributeMainFICode);
-                                //    listOfAttributeMain.Add(attributeMainFSName);
-                                //    listOfAttributeMain.Add(attributeMainFSCode);
-
-                                //    hasFIFS = false;
-                                //}
-
-                                //#region USELIST
-                                //if (strline.Split(' ')[0].ToUpper().Contains("*USELIST"))
-                                //{
-                                //    string[] word1 = strline.Split(' ');
-                                //    if (word1.Length == 2)
-                                //    {
-                                //        if (word1[1].Split('"').Length == 3)
-                                //        {
-                                //            if (dicQidVsAttributeList.ContainsKey(word1[1].Split('"')[1].Trim()))
-                                //            {
-                                //                if (dicQidVsAttributeList.ContainsKey(word1[1].Split('"')[1].Trim()))
-                                //                {
-                                //                    List<AttributeMain> listOfAttributeTemp = dicQidVsAttributeList[word1[1].Split('"')[1].Trim()];
-
-                                //                    if (myQuestion.QType == "7")
-                                //                    {
-                                //                        if (currentGridListName != "")
-                                //                        {
-                                //                            for (int x = 0; x < listOfAttributeTemp.Count; x++)
-                                //                            {
-                                //                                listOfAttributeMain.Add(listOfAttributeTemp[x]);
-                                //                                listOfAttributeMain[x].LinkId1 = "1";
-                                //                                listOfAttributeMain[x].LinkId2 = currentGridListName;
-                                //                                index++;
-                                //                            }
-                                //                        }
-                                //                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
-
-                                //                    }
-                                //                    else if (myQuestion.QType == "8")
-                                //                    {
-                                //                        if (currentGridListName != "")
-                                //                        {
-                                //                            for (int x = 0; x < listOfAttributeTemp.Count; x++)
-                                //                            {
-                                //                                listOfAttributeMain.Add(listOfAttributeTemp[x]);
-                                //                                listOfAttributeMain[x].LinkId1 = "2";
-                                //                                listOfAttributeMain[x].LinkId2 = currentGridListName;
-
-                                //                                index++;
-                                //                            }
-                                //                        }
-                                //                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
-                                //                    }
-                                //                    else
-                                //                    {
-                                //                        for (int x = 0; x < listOfAttributeTemp.Count; x++)
-                                //                        {
-                                //                            listOfAttributeMain.Add(listOfAttributeTemp[x]);
-                                //                            index++;
-                                //                        }
-                                //                    }
-
-
-                                //                    //listOfAttributeMain = dicQidVsAttributeList[word1[1].Split('"')[1].Trim()];
-                                //                    //index = listOfAttributeMain.Count + 1;
-                                //                }
-                                //                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Duplicate Attribute list name/Qid" + word1[1].Split('"')[1].Trim());
-
-                                //                for (int x = 0; x < listOfAttributeMain.Count; x++)
-                                //                {
-                                //                    listOfAttributeValueForDupliCheck.Add(listOfAttributeMain[x].AttributeValue);
-                                //                    listOfAttributeLabelForDupliCheck.Add(listOfAttributeMain[x].AttributeEnglish);
-                                //                }
-
-                                //            }
-                                //            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid use list name" + word1[1].Split('"')[1].Trim());
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
-                                //    }
-                                //    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
-
-                                //    strline = lines[++i];
-                                //}
-                                //#endregion
-
-                                //#region Attribute with :
-                                //if (isAttribute(strline))
-                                //{
-                                //    while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                //    {
-
-                                //        //if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                //        if (strline.Contains(":"))
-                                //        {
-                                //            AttributeMain attributeMain = new AttributeMain();
-                                //            String[] myWord = strline.Split(':');
-
-                                //            if (Regex.Match(myWord[0].Trim(), @"^\d+$").Success)
-                                //            {
-                                //                if (!listOfAttributeValueForDupliCheck.Contains(myWord[0].Trim()))
-                                //                {
-                                //                    attributeMain.AttributeValue = myWord[0].Trim();
-                                //                    attributeMain.AttributeOrder = myWord[0].Trim(); //index.ToString();
-                                //                    index++;
-
-                                //                    //Add value in list
-                                //                    listOfAttributeValueForDupliCheck.Add(myWord[0].Trim());
-
-                                //                }//else {Error Message}
-
-                                //            }//else {Error Message}
-                                //            string mylabel = strline.Substring(strline.IndexOf(":", 0) + 1);
-                                //            if (!mylabel.Contains("*"))
-                                //            {
-                                //                //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[1].Trim().ToUpper()))
-                                //                //{
-
-                                //                attributeMain.AttributeEnglish = mylabel.Trim();
-
-                                //                if (myQuestion.QType == "7")
-                                //                {
-                                //                    if (currentGridListName != "")
-                                //                    {
-
-                                //                        attributeMain.LinkId1 = "1";
-                                //                        attributeMain.LinkId2 = currentGridListName;
-
-                                //                    }
-                                //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
-                                //                }
-                                //                else if (myQuestion.QType == "8")
-                                //                {
-                                //                    if (currentGridListName != "")
-                                //                    {
-
-                                //                        attributeMain.LinkId1 = "2";
-                                //                        attributeMain.LinkId2 = currentGridListName;
-                                //                    }
-                                //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
-                                //                }
-                                //                //Add value in list
-                                //                listOfAttributeLabelForDupliCheck.Add(mylabel.Trim().ToUpper());
-                                //                //}//else {Error Message}
-                                //            }
-                                //            else
-                                //            {
-                                //                // *********** If grid attribute has property ********************
-                                //                if (myQuestion.QType == "7")
-                                //                {
-                                //                    if (currentGridListName != "")
-                                //                    {
-                                //                        attributeMain.LinkId1 = "1";
-                                //                        attributeMain.LinkId2 = currentGridListName;
-                                //                    }
-                                //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
-                                //                }
-                                //                else if (myQuestion.QType == "8")
-                                //                {
-                                //                    if (currentGridListName != "")
-                                //                    {
-                                //                        attributeMain.LinkId1 = "2";
-                                //                        attributeMain.LinkId2 = currentGridListName;
-                                //                    }
-                                //                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
-                                //                }
-                                //                //*****************************************************
-
-
-                                //                //If attribute have properties
-                                //                #region Attribute Properties
-                                //                string[] myKey = mylabel.Split('*');
-
-                                //                //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
-                                //                //{
-
-                                //                attributeMain.AttributeEnglish = myKey[0].Trim();
-                                //                //}
-
-
-                                //                for (int n = 1; n < myKey.Length; n++)
-                                //                {
-                                //                    if (myKey[n].ToUpper().Trim().Contains("MIN") || myKey[n].ToUpper().Trim().Contains("MAX") || myKey[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                                //                    {
-                                //                        if (!listOfKeyWords.Contains(myKey[n].ToUpper().Trim().Split(' ')[0]))
-                                //                            txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid token " + myKey[n].ToUpper().Trim());
-
-                                //                        if (myKey[n].ToUpper().Trim().Contains("MIN"))
-                                //                        {
-                                //                            string[] xyz = myKey[n].Split(' ');
-                                //                            if (xyz.Length >= 2)
-                                //                            {
-                                //                                if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success)
-                                //                                    attributeMain.MinValue = xyz[1].Trim();
-                                //                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
-                                //                            }
-                                //                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
-                                //                        }
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("MAX"))
-                                //                        {
-                                //                            string[] xyz = myKey[n].Split(' ');
-                                //                            if (xyz.Length >= 2)
-                                //                            {
-                                //                                if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success)
-                                //                                    attributeMain.MaxValue = xyz[1].Trim();
-                                //                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
-                                //                            }
-                                //                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *Max is invalid ");
-                                //                        }
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                                //                        {
-                                //                            string[] xyz = myKey[n].Trim().Split(' ');
-                                //                            if (xyz.Length == 2)
-                                //                            {
-                                //                                listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                //                                string[] abc = xyz[1].Trim().Split(new Char[] { '\"' });
-                                //                                if (Regex.Match(abc[1].Trim(), "^[a-zA-Z]").Success)
-                                //                                {
-                                //                                    if (listOfGridListForDupliCheck.Contains(abc[1].Trim()))
-                                //                                    {
-                                //                                        currentGridListName = abc[1].Trim();
-                                //                                        attributeMain.LinkId2 = currentGridListName;
-                                //                                    }
-                                //                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid GridListName : " + abc[1].Trim());
-                                //                                }
-                                //                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " GridList Name must be followed by Alpha Charecter " + abc[1].Trim());
-                                //                            }
-                                //                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *USEGRIDLIST is invalid ");
-                                //                        }
-                                //                    }
-                                //                    else
-                                //                    {
-                                //                        if (!listOfKeyWords.Contains(myKey[n].ToUpper().Trim()))
-                                //                            txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid token " + myKey[n].ToUpper().Trim());
-
-                                //                        if (myKey[n].ToUpper().Trim().Contains("OPEN"))
-                                //                            attributeMain.TakeOpenended = "1";
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("NMUL"))
-                                //                            attributeMain.IsExclusive = "1";
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("MANDATORY"))
-                                //                            attributeMain.ForceAndMsgOpt = "11";
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
-                                //                        {
-                                //                            if (myAttributeFilter.ExceptionalValue == null)
-                                //                                myAttributeFilter.ExceptionalValue = "";
-
-                                //                            myAttributeFilter.ExceptionalValue = myAttributeFilter.ExceptionalValue + attributeMain.AttributeValue + ",";
-                                //                        }
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("SR"))
-                                //                            attributeMain.LinkId1 = "1";
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("MR"))
-                                //                            attributeMain.LinkId1 = "2";
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("ALPHA"))
-                                //                            attributeMain.LinkId1 = "3";
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("NUMBER"))
-                                //                            attributeMain.LinkId1 = "4";
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("DATE"))
-                                //                            attributeMain.LinkId1 = "14";
-                                //                        else if (myKey[n].ToUpper().Trim().Contains("TIME"))
-                                //                            attributeMain.LinkId1 = "15";
-                                //                    }
-                                //                }
-                                //                #endregion
-
-                                //            }
-
-                                //            //Add the attribute in 
-                                //            listOfAttributeMain.Add(attributeMain);
-
-                                //        }
-                                //        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid syntax ");
-
-                                //        if (i < lines.Count - 1)
-                                //        {
-                                //            strline = lines[++i];
-                                //        }
-                                //    }
-
-                                //    if (i < lines.Count - 1)
-                                //        i--;
-                                //}
-                                ////else
-                                ////{
-                                ////    if (i < lines.Count - 1)
-                                ////        i--;
-                                ////}
-
-                                //#endregion
-
-                                //if (myQuestion.QId != null)
-                                //    dicQidVsAttributeList.Add(myQuestion.QId, listOfAttributeMain);
-                                //else
-                                //    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Question Id missing");
-
-                                //if (myAttributeFilter.QId != null)
-                                //    listOfAttributeFilter.Add(myAttributeFilter);
-                                #endregion
                             }
-                        } //Pronab end
+                        } //Pronab end End Repeat
                         else
                         {
                             currentQuestion = new Question();
@@ -1977,756 +830,23 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan1 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan1 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfAttributeMainLan1 = new List<AttributeMain>();
-                            strline = linesLanguage1[++i];
-
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan1 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan1.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan1.AttributeValue = word[0].Trim();
-                                                attributeMainLan1.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan1.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan1.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan1.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan1.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfAttributeMainLan1.Add(attributeMainLan1);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage1[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan1.Add(listName, listOfAttributeMainLan1);
+                            i = this.prepareListForLanguage(linesLanguage1, i, txtWriter, dicLine, ln1, 1);
+                            strline = linesLanguage1[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan1 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan1 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan1 = new List<GridInfo>();
-                            strline = linesLanguage1[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan1 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan1.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan1.AttributeValue = word[0].Trim();
-                                                gridInfoLan1.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan1.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan1.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan1.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan1.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan1.Add(gridInfoLan1);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage1[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan1.Add(gridListName, listOfGridInfoLan1);
-
-                            listOfGridListForDupliCheckLan1.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage1, i, txtWriter, dicLine, ln1, 1);
+                            strline = linesLanguage1[i];
                         }
                         #endregion
 
                         #region Prepare QUESTION
                         if (strline.Split(' ')[0].ToUpper() == "*QUESTION")
                         {
-                            //Pronab added for repeat
-                            List<AttributeMain> listOfAttributeTempLan1 = new List<AttributeMain>();
-                            bool hasRepeat = false;
-                            string[] word = strline.Split('*');
-
-
-
-                            //Pronab
-                            for (int n = 1; n < word.Length; n++)
-                            {
-                                if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
-                                    txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
-
-                                string myText = "*" + word[n];
-
-
-                                if (myText.ToUpper().Trim().Contains("*REPEAT"))
-                                {
-                                    string[] xyz = word[n].Trim().Split(' ');
-                                    if (xyz.Length == 2)
-                                    {
-                                        string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
-                                        if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
-                                        {
-                                            listOfAttributeTempLan1 = dicQidVsAttributeListLan1[abc[1].Trim()];
-                                        }
-                                    }
-                                    hasRepeat = true;
-                                }
-                                else
-                                {
-                                    hasRepeat = false;
-                                }
-
-                            }
-
-
-                            if (hasRepeat)
-                            {
-                                int iStart = i;
-                                for (int k = 0; k < listOfAttributeTempLan1.Count; k++)
-                                {
-                                    if (listOfAttributeTempLan1[k].AttributeValue.Contains("99")) //Pronab Need to work on this for local language
-                                        break;
-
-
-                                    AttributeMain attributeMainR = new AttributeMain();
-                                    attributeMainR.AttributeEnglish = listOfAttributeTempLan1[k].AttributeEnglish;
-                                    attributeMainR.AttributeValue = listOfAttributeTempLan1[k].AttributeValue;
-
-                                    currentQuestion = new Question();
-
-                                    List<LogicalSyntax> listOfLogicalSyntaxTemp = new List<LogicalSyntax>();
-                                    List<Question> listOfQuestionTemp = new List<Question>();
-                                    Question currentQuestionTemp = new Question();
-
-                                    Dictionary<String, List<AttributeMain>> dicQidVsAttributeListTempLan1 = new Dictionary<String, List<AttributeMain>>();
-                                    List<AttributeFilter> listOfAttributeFilterTempLan1 = new List<AttributeFilter>();
-
-                                    i = iStart;
-
-                                    i = this.prepareQuestionLan1(linesLanguage1, i, listOfQuestionIdForDupliCheckLan1, listOfGridListForDupliCheckLan1, listOfLogicalSyntaxTemp, listOfQuestionTemp, currentQuestionTemp, dicQidVsAttributeListTempLan1, listOfAttributeFilterTempLan1, txtWriter, dicLine, attributeMainR, ln1);
-                                    strline = linesLanguage1[i];
-
-                                    for (int x = 0; x < listOfLogicalSyntaxTemp.Count; x++)
-                                    {
-                                        listOfLogicalSyntax.Add(listOfLogicalSyntaxTemp[x]);
-                                    }
-
-                                    for (int x = 0; x < listOfQuestionTemp.Count; x++)
-                                    {
-                                        listOfQuestionLan1.Add(listOfQuestionTemp[x]);
-                                    }
-                                    currentQuestion = listOfQuestionTemp[0];
-                                    //currentQuestion = currentQuestionTemp;
-
-                                    foreach (KeyValuePair<String, List<AttributeMain>> pair in dicQidVsAttributeListTempLan1)
-                                    {
-                                        dicQidVsAttributeListLan1.Add(pair.Key, pair.Value);
-                                    }
-
-
-                                    for (int x = 0; x < listOfAttributeFilterTempLan1.Count; x++)
-                                    {
-                                        listOfAttributeFilter.Add(listOfAttributeFilterTempLan1[x]);
-                                    }
-
-                                }
-
-                            }//Pronab
-                            else
-                            {
-                                AttributeMain attributeMain1 = new AttributeMain();
-                                AttributeMain attributeMain2 = new AttributeMain();
-
-                                AttributeMain attributeMainFIName = new AttributeMain();
-                                AttributeMain attributeMainFICode = new AttributeMain();
-                                AttributeMain attributeMainFSName = new AttributeMain();
-                                AttributeMain attributeMainFSCode = new AttributeMain();
-
-                                hasDKCS = false;
-
-                                currentQuestionLan1 = new Question();
-                                Question myQuestionLan1 = new Question();
-                                AttributeFilter myAttributeFilter = new AttributeFilter();
-
-                                int QTypeCounter = 0;
-                                List<string> listOfQuestionProperties = new List<string>();
-                                String currentGridListNameLan1 = "";
-
-
-                                #region Question Properties
-                                for (int n = 1; n < word.Length; n++)
-                                {
-                                    if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
-                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
-
-                                    string myText = "*" + word[n];
-
-
-                                    if (myText.ToUpper().Trim().Contains("*QUESTION"))
-                                    {
-
-                                        //QID
-                                        string[] xyz = word[n].Trim().Split(' ');
-                                        if (xyz.Length == 2)
-                                        {
-                                            if (Regex.IsMatch(xyz[1].Trim(), "^[a-zA-Z0-9]+$"))
-                                            {
-                                                if (!listOfQuestionIdForDupliCheckLan1.Contains(xyz[1].Trim()))
-                                                {
-                                                    myQuestionLan1.QId = xyz[1].Trim();
-                                                    listOfQuestionIdForDupliCheckLan1.Add(xyz[1].Trim());
-
-                                                    //if (myQuestion.QId == "SQ21")
-                                                    //    MessageBox.Show("");
-                                                }
-                                                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + xyz[1].Trim() + ", QId must be unique");
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid QId " + xyz[1].Trim() + ", Must be started with Alpha");
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid QId syntax" + xyz[0].Trim() + ", Only Qid exist after *QUESTION");
-
-                                    }
-                                    //Question Type
-                                    else if (myText.ToUpper().Trim().Contains("*SR") && !myText.ToUpper().Trim().Contains("*GRIDSR"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*MR") && !myText.ToUpper().Trim().Contains("*GRIDMR"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*OPEN") && !myText.ToUpper().Trim().Contains("*ALPHALIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NUMBER"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*RANK"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*IMAGE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*GRIDSR"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*GRIDMR"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*MEDIA"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*RECORDING"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*ALPHALIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NUMLIST") && !myText.ToUpper().Trim().Contains("NUMLISTTOTAL"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DATE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*TIME"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*CAPTUREIMAGE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NUMLISTTOTAL"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*AUTOCOMPLETE") && !myText.ToUpper().Trim().Contains("AUTOCOMPLETEANS"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*AUTOCOMPLETEANS"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DROPDOWN") && !myText.ToUpper().Trim().Contains("DROPDOWNLIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DROPDOWNLIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*FORM"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*INFO"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*END") && !myText.ToUpper().Trim().Contains("*ENDREC"))
-                                    { hasEnd = true; }
-                                    else if (myText.ToUpper().Trim().Contains("*TERMINATE"))
-                                    { hasTerminate = true; }
-                                    else if (myText.ToUpper().Trim().Contains("*FIFS"))
-                                    {
-                                        myQuestionLan1.QType = "60"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-
-                                        attributeMainFIName = new AttributeMain();
-                                        attributeMainFIName.QId = myQuestionLan1.QId;
-                                        attributeMainFIName.AttributeEnglish = "FI Name";
-                                        attributeMainFIName.AttributeValue = "1";
-                                        attributeMainFIName.AttributeOrder = "1";
-                                        attributeMainFIName.LinkId1 = "3";
-                                        attributeMainFIName.ForceAndMsgOpt = "11";
-
-                                        attributeMainFICode = new AttributeMain();
-                                        attributeMainFICode.QId = myQuestionLan1.QId;
-                                        attributeMainFICode.AttributeEnglish = "FI Code";
-                                        attributeMainFICode.AttributeValue = "2";
-                                        attributeMainFICode.AttributeOrder = "2";
-                                        attributeMainFICode.LinkId1 = "3";
-                                        attributeMainFICode.ForceAndMsgOpt = "11";
-
-                                        attributeMainFSName = new AttributeMain();
-                                        attributeMainFSName.QId = myQuestionLan1.QId;
-                                        attributeMainFSName.AttributeEnglish = "FS Name";
-                                        //attributeMainFSName.AttributeEnglish = "FI Mobile Number";
-                                        attributeMainFSName.AttributeValue = "3";
-                                        attributeMainFSName.AttributeOrder = "3";
-                                        attributeMainFSName.LinkId1 = "3";
-                                        attributeMainFSName.ForceAndMsgOpt = "11";
-
-                                        attributeMainFSCode = new AttributeMain();
-                                        attributeMainFSCode.QId = myQuestionLan1.QId;
-                                        attributeMainFSCode.AttributeEnglish = "FS Code";
-                                        //attributeMainFSCode.AttributeEnglish = "FI Designation";
-                                        attributeMainFSCode.AttributeValue = "4";
-                                        attributeMainFSCode.AttributeOrder = "4";
-                                        attributeMainFSCode.LinkId1 = "3";
-                                        attributeMainFSCode.ForceAndMsgOpt = "11";
-
-                                        hasFIFS = true;
-                                    }
-
-
-                                    //else if (word[n].ToUpper().Trim().Contains(""))
-                                    //    myQuestion.QType = "7";
-                                    //else if (word[n].ToUpper().Trim().Contains(""))
-                                    //    myQuestion.QType = "7";
-                                    else if (myText.ToUpper().Trim().Contains("*RANDOM"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*ROT"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-
-                                    else if (myText.ToUpper().Trim().Contains("*MIN"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*MAX") && !myText.ToUpper().Trim().Contains("*MAXDIFF"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*COLUMN"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*BLOCK"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DUMMY1"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*REPORT"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NONEXTBTN"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    //************************************* Attribute Filter ***********************************************
-                                    else if (myText.ToUpper().Trim().Contains("*INCLUDE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*EXCLUDE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*USEGRIDLIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DKCS"))
-                                    {
-                                        string[] xyz = word[n].Trim().Split(new Char[] { '\"' });
-                                        if (xyz.Length == 5)
-                                        {
-                                            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                            //string[] abc = xyz[1].Trim().Split(new Char[] { '\"' });
-                                            if (xyz[1].Trim() != "")
-                                            {
-                                                if (Regex.Match(xyz[3].Trim(), @"^\d+$").Success)
-                                                {
-                                                    hasDKCS = true;
-
-                                                    attributeMain1 = new AttributeMain();
-                                                    attributeMain1.QId = currentQuestion.QId;
-                                                    attributeMain1.AttributeEnglish = "";
-                                                    attributeMain1.AttributeValue = "1";
-                                                    attributeMain1.AttributeOrder = "1";
-
-                                                    attributeMain2 = new AttributeMain();
-                                                    attributeMain2.QId = currentQuestion.QId;
-                                                    attributeMain2.AttributeEnglish = xyz[1].Trim();
-                                                    attributeMain2.AttributeValue = xyz[3].Trim();
-                                                    attributeMain2.AttributeOrder = "2";
-                                                    attributeMain2.IsExclusive = "1";
-
-
-
-                                                    //Add the attribute list 
-                                                    //dicQidVsAttributeList.Add(myQuestion.QId, listOfAttributeMain1);
-                                                }
-                                                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute code must be Number " + xyz[3].Trim());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute Label missing " + xyz[1].Trim());
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *DKCS is invalid ");
-                                    }
-                                    else if (myText.ToUpper().Trim().Contains("IF"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    //************************************* End of Attribute Filter ****************************************
-
-                                }
-                                #endregion
-
-                                string questionText = "";
-                                strline = linesLanguage1[++i];
-                                bool getquestionText = false;
-                                while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
-                                {
-                                    questionText = questionText + strline + "<br>";
-                                    strline = linesLanguage1[++i];
-                                    getquestionText = true;
-                                }
-
-                                if (questionText == "")
-                                    txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid Question Text : should not exist");
-                                else
-                                    myQuestionLan1.QuestionEnglish = questionText.Substring(0, questionText.Length - 4);
-
-                                //add question object to list
-                                listOfQuestionLan1.Add(myQuestionLan1);
-                                currentQuestionLan1 = myQuestionLan1;
-
-                                //this portion is for question attribute
-
-                                if (getquestionText == true && strline.Substring(0, 1).Contains("*"))
-                                {
-                                    if (i < lines.Count - 1)
-                                        i--;
-                                }
-
-                                List<AttributeMain> listOfAttributeMainLan1 = new List<AttributeMain>();
-                                int index = 1;
-
-                                List<String> listOfAttributeValueForDupliCheckLan1 = new List<string>();
-                                List<String> listOfAttributeLabelForDupliCheckLan1 = new List<string>();
-
-                                if (hasDKCS == true)
-                                {
-                                    listOfAttributeMainLan1.Add(attributeMain1);
-                                    listOfAttributeMainLan1.Add(attributeMain2);
-                                    hasDKCS = false;
-                                }
-
-                                if (hasFIFS == true)
-                                {
-                                    listOfAttributeMainLan1.Add(attributeMainFIName);
-                                    listOfAttributeMainLan1.Add(attributeMainFICode);
-                                    listOfAttributeMainLan1.Add(attributeMainFSName);
-                                    listOfAttributeMainLan1.Add(attributeMainFSCode);
-
-                                    hasFIFS = false;
-                                }
-
-                                #region USELIST
-                                if (strline.Split(' ')[0].ToUpper().Contains("*USELIST"))
-                                {
-                                    //Pronab made changes in this block
-                                    string[] word1 = strline.Split(' ');
-                                    if (word1.Length == 2)
-                                    {
-                                        if (word1[1].Split('"').Length == 3)
-                                        {
-                                            if (dicQidVsAttributeListLan1.ContainsKey(word1[1].Split('"')[1].Trim()))
-                                            {
-                                                if (dicQidVsAttributeListLan1.ContainsKey(word1[1].Split('"')[1].Trim()))
-                                                {
-                                                    List<AttributeMain> listOfAttributeTemp = dicQidVsAttributeListLan1[word1[1].Split('"')[1].Trim()];
-
-                                                    for (int x = 0; x < listOfAttributeTemp.Count; x++)
-                                                    {
-                                                        if (!listOfAttributeTemp[x].AttributeEnglish.Contains("*"))
-                                                        {
-                                                            listOfAttributeMainLan1.Add(listOfAttributeTemp[x]);
-                                                            index++;
-                                                        }
-                                                        else
-                                                        {
-                                                            //If attribute have properties
-                                                            #region Attribute Properties
-                                                            string[] myKey = listOfAttributeTemp[x].AttributeEnglish.Split('*');
-
-                                                            AttributeMain attributeMainLan1 = new AttributeMain();
-                                                            //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
-                                                            //{
-
-                                                            attributeMainLan1.AttributeEnglish = myKey[0].Trim();
-                                                            //}
-
-
-                                                            for (int n = 1; n < myKey.Length; n++)
-                                                            {
-                                                                if (myKey[n].ToUpper().Trim().Contains("MIN") || myKey[n].ToUpper().Trim().Contains("MAX") || myKey[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                else
-                                                                {
-                                                                    if (myKey[n].ToUpper().Trim().Contains("OPEN"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("NMUL"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("MANDATORY"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("SR"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("MR"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("ALPHA"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("NUMBER"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("DATE"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("TIME"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                }
-                                                            }
-                                                            //Add the attribute in 
-                                                            listOfAttributeMainLan1.Add(attributeMainLan1);
-                                                            #endregion
-                                                        }
-
-                                                    }
-
-                                                    //listOfAttributeMain = dicQidVsAttributeList[word1[1].Split('"')[1].Trim()];
-                                                    //index = listOfAttributeMain.Count + 1;
-                                                }
-                                                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate Attribute list name/Qid" + word1[1].Split('"')[1].Trim());
-
-                                                for (int x = 0; x < listOfAttributeMainLan1.Count; x++)
-                                                {
-                                                    listOfAttributeValueForDupliCheckLan1.Add(listOfAttributeMainLan1[x].AttributeValue);
-                                                    listOfAttributeLabelForDupliCheckLan1.Add(listOfAttributeMainLan1[x].AttributeEnglish);
-                                                }
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid use list name" + word1[1].Split('"')[1].Trim());
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
-
-                                    strline = linesLanguage1[++i];
-                                    strline = linesLanguage1[++i];
-                                    //Pronab end 
-                                }
-                                #endregion
-
-                                #region Attribute with :
-                                if (isAttribute(strline))
-                                {
-                                    while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                    {
-
-                                        //if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                        if (strline.Contains(":"))
-                                        {
-                                            AttributeMain attributeMainLan1 = new AttributeMain();
-                                            String[] myWord = strline.Split(':');
-
-                                            if (Regex.Match(myWord[0].Trim(), @"^\d+$").Success)
-                                            {
-                                                if (!listOfAttributeValueForDupliCheckLan1.Contains(myWord[0].Trim()))
-                                                {
-                                                    attributeMainLan1.AttributeValue = myWord[0].Trim();
-                                                    attributeMainLan1.AttributeOrder = myWord[0].Trim(); //index.ToString();
-                                                    index++;
-
-                                                    //Add value in list
-                                                    listOfAttributeValueForDupliCheckLan1.Add(myWord[0].Trim());
-
-                                                }//else {Error Message}
-
-                                            }//else {Error Message}
-                                            string mylabel = strline.Substring(strline.IndexOf(":", 0) + 1);
-                                            if (!mylabel.Contains("*"))
-                                            {
-                                                //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[1].Trim().ToUpper()))
-                                                //{
-
-                                                attributeMainLan1.AttributeEnglish = mylabel.Trim();
-
-                                                //if (myQuestionLan1.QType == "7")
-                                                //{
-                                                //    if (currentGridListNameLan1 != "")
-                                                //    {
-
-                                                //        attributeMainLan1.LinkId1 = "1";
-                                                //        attributeMainLan1.LinkId2 = currentGridListNameLan1;
-
-                                                //    }
-                                                //    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 +1] + " Grid list unavailable");
-                                                //}
-                                                //else if (myQuestionLan1.QType == "8")
-                                                //{
-                                                //    if (currentGridListNameLan1 != "")
-                                                //    {
-
-                                                //        attributeMainLan1.LinkId1 = "2";
-                                                //        attributeMainLan1.LinkId2 = currentGridListNameLan1;
-                                                //    }
-                                                //    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 +1] + " Grid list unavailable");
-                                                //}
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan1.Add(mylabel.Trim().ToUpper());
-                                                //}//else {Error Message}
-                                            }
-                                            else
-                                            {
-                                                // *********** If grid attribute has property ********************
-                                                //if (myQuestionLan1.QType == "7")
-                                                //{
-                                                //    if (currentGridListNameLan1 != "")
-                                                //    {
-                                                //        attributeMainLan1.LinkId1 = "1";
-                                                //        attributeMainLan1.LinkId2 = currentGridListNameLan1;
-                                                //    }
-                                                //    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 +1] + " Grid list unavailable");
-                                                //}
-                                                //else if (myQuestionLan1.QType == "8")
-                                                //{
-                                                //    if (currentGridListNameLan1 != "")
-                                                //    {
-                                                //        attributeMainLan1.LinkId1 = "2";
-                                                //        attributeMainLan1.LinkId2 = currentGridListNameLan1;
-                                                //    }
-                                                //    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 +1] + " Grid list unavailable");
-                                                //}
-                                                //*****************************************************
-
-
-                                                //If attribute have properties
-                                                #region Attribute Properties
-                                                string[] myKey = mylabel.Split('*');
-
-                                                //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
-                                                //{
-
-                                                attributeMainLan1.AttributeEnglish = myKey[0].Trim();
-                                                //}
-
-
-                                                for (int n = 1; n < myKey.Length; n++)
-                                                {
-                                                    if (myKey[n].ToUpper().Trim().Contains("MIN") || myKey[n].ToUpper().Trim().Contains("MAX") || myKey[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                    else
-                                                    {
-                                                        if (myKey[n].ToUpper().Trim().Contains("OPEN"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("NMUL"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("MANDATORY"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("SR"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("MR"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("ALPHA"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("NUMBER"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("DATE"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("TIME"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                    }
-                                                }
-                                                #endregion
-
-                                            }
-
-                                            //Add the attribute in 
-                                            listOfAttributeMainLan1.Add(attributeMainLan1);
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax, Attribute code missing");
-
-                                        if (i < lines.Count - 1)
-                                        {
-                                            strline = linesLanguage1[++i];
-                                        }
-                                    }
-
-                                    if (i < lines.Count - 1)
-                                        i--;
-                                }
-                                else
-                                {
-                                    if (i < lines.Count - 1)
-                                        i--;
-                                }
-
-                                #endregion
-
-                                if (myQuestionLan1.QId != null)
-                                    dicQidVsAttributeListLan1.Add(myQuestionLan1.QId, listOfAttributeMainLan1);
-                                else
-                                    txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Question Id missing");
-
-                                if (myAttributeFilter.QId != null)
-                                    listOfAttributeFilter.Add(myAttributeFilter);
-                            }
+                            i = this.prepareQuestionForLanguage(linesLanguage1, i, txtWriter, dicLine, ln1, 1);
                         }
                         #endregion
 
@@ -2753,756 +873,23 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan2 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan2 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfAttributeMainLan2 = new List<AttributeMain>();
-                            strline = linesLanguage2[++i];
-
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan2 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan2.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan2.AttributeValue = word[0].Trim();
-                                                attributeMainLan2.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan2.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan2.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan2.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan2.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfAttributeMainLan2.Add(attributeMainLan2);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage2[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan2.Add(listName, listOfAttributeMainLan2);
+                            i = this.prepareListForLanguage(linesLanguage2, i, txtWriter, dicLine, ln2, 2);
+                            strline = linesLanguage2[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan2 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan2 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan2 = new List<GridInfo>();
-                            strline = linesLanguage2[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan2 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan2.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan2.AttributeValue = word[0].Trim();
-                                                gridInfoLan2.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan2.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan2.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan2.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan2.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan2.Add(gridInfoLan2);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage2[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan2.Add(gridListName, listOfGridInfoLan2);
-
-                            listOfGridListForDupliCheckLan2.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage2, i, txtWriter, dicLine, ln2, 2);
+                            strline = linesLanguage2[i];
                         }
                         #endregion
 
                         #region Prepare QUESTION
                         if (strline.Split(' ')[0].ToUpper() == "*QUESTION")
                         {
-                            //Pronab added for repeat
-                            List<AttributeMain> listOfAttributeTempLan2 = new List<AttributeMain>();
-                            bool hasRepeat = false;
-                            string[] word = strline.Split('*');
-
-
-
-                            //Pronab
-                            for (int n = 1; n < word.Length; n++)
-                            {
-                                if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
-                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
-
-                                string myText = "*" + word[n];
-
-
-                                if (myText.ToUpper().Trim().Contains("*REPEAT"))
-                                {
-                                    string[] xyz = word[n].Trim().Split(' ');
-                                    if (xyz.Length == 2)
-                                    {
-                                        string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
-                                        if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
-                                        {
-                                            listOfAttributeTempLan2 = dicQidVsAttributeListLan2[abc[1].Trim()];
-                                        }
-                                    }
-                                    hasRepeat = true;
-                                }
-                                else
-                                {
-                                    hasRepeat = false;
-                                }
-
-                            }
-
-
-                            if (hasRepeat)
-                            {
-                                int iStart = i;
-                                for (int k = 0; k < listOfAttributeTempLan2.Count; k++)
-                                {
-                                    if (listOfAttributeTempLan2[k].AttributeValue.Contains("99")) //Pronab Need to work on this for local language
-                                        break;
-
-
-                                    AttributeMain attributeMainR = new AttributeMain();
-                                    attributeMainR.AttributeEnglish = listOfAttributeTempLan2[k].AttributeEnglish;
-                                    attributeMainR.AttributeValue = listOfAttributeTempLan2[k].AttributeValue;
-
-                                    currentQuestion = new Question();
-
-                                    List<LogicalSyntax> listOfLogicalSyntaxTemp = new List<LogicalSyntax>();
-                                    List<Question> listOfQuestionTemp = new List<Question>();
-                                    Question currentQuestionTemp = new Question();
-
-                                    Dictionary<String, List<AttributeMain>> dicQidVsAttributeListTempLan2 = new Dictionary<String, List<AttributeMain>>();
-                                    List<AttributeFilter> listOfAttributeFilterTempLan2 = new List<AttributeFilter>();
-
-                                    i = iStart;
-
-                                    i = this.prepareQuestionLan2(linesLanguage2, i, listOfQuestionIdForDupliCheckLan2, listOfGridListForDupliCheckLan2, listOfLogicalSyntaxTemp, listOfQuestionTemp, currentQuestionTemp, dicQidVsAttributeListTempLan2, listOfAttributeFilterTempLan2, txtWriter, dicLine, attributeMainR, ln2);
-                                    strline = linesLanguage2[i];
-
-                                    for (int x = 0; x < listOfLogicalSyntaxTemp.Count; x++)
-                                    {
-                                        listOfLogicalSyntax.Add(listOfLogicalSyntaxTemp[x]);
-                                    }
-
-                                    for (int x = 0; x < listOfQuestionTemp.Count; x++)
-                                    {
-                                        listOfQuestionLan2.Add(listOfQuestionTemp[x]);
-                                    }
-                                    currentQuestion = listOfQuestionTemp[0];
-                                    //currentQuestion = currentQuestionTemp;
-
-                                    foreach (KeyValuePair<String, List<AttributeMain>> pair in dicQidVsAttributeListTempLan2)
-                                    {
-                                        dicQidVsAttributeListLan2.Add(pair.Key, pair.Value);
-                                    }
-
-
-                                    for (int x = 0; x < listOfAttributeFilterTempLan2.Count; x++)
-                                    {
-                                        listOfAttributeFilter.Add(listOfAttributeFilterTempLan2[x]);
-                                    }
-
-                                }
-
-                            }//Pronab
-                            else
-                            {
-                                AttributeMain attributeMain1 = new AttributeMain();
-                                AttributeMain attributeMain2 = new AttributeMain();
-
-                                AttributeMain attributeMainFIName = new AttributeMain();
-                                AttributeMain attributeMainFICode = new AttributeMain();
-                                AttributeMain attributeMainFSName = new AttributeMain();
-                                AttributeMain attributeMainFSCode = new AttributeMain();
-
-                                hasDKCS = false;
-
-                                currentQuestionLan2 = new Question();
-                                Question myQuestionLan2 = new Question();
-                                AttributeFilter myAttributeFilter = new AttributeFilter();
-
-                                int QTypeCounter = 0;
-                                List<string> listOfQuestionProperties = new List<string>();
-                                String currentGridListNameLan2 = "";
-
-
-                                #region Question Properties
-                                for (int n = 1; n < word.Length; n++)
-                                {
-                                    if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
-                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
-
-                                    string myText = "*" + word[n];
-
-
-                                    if (myText.ToUpper().Trim().Contains("*QUESTION"))
-                                    {
-
-                                        //QID
-                                        string[] xyz = word[n].Trim().Split(' ');
-                                        if (xyz.Length == 2)
-                                        {
-                                            if (Regex.IsMatch(xyz[1].Trim(), "^[a-zA-Z0-9]+$"))
-                                            {
-                                                if (!listOfQuestionIdForDupliCheckLan2.Contains(xyz[1].Trim()))
-                                                {
-                                                    myQuestionLan2.QId = xyz[1].Trim();
-                                                    listOfQuestionIdForDupliCheckLan2.Add(xyz[1].Trim());
-
-                                                    //if (myQuestion.QId == "SQ21")
-                                                    //    MessageBox.Show("");
-                                                }
-                                                else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Duplicate QId " + xyz[1].Trim() + ", QId must be unique");
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid QId " + xyz[1].Trim() + ", Must be started with Alpha");
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid QId syntax" + xyz[0].Trim() + ", Only Qid exist after *QUESTION");
-
-                                    }
-                                    //Question Type
-                                    else if (myText.ToUpper().Trim().Contains("*SR") && !myText.ToUpper().Trim().Contains("*GRIDSR"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*MR") && !myText.ToUpper().Trim().Contains("*GRIDMR"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*OPEN") && !myText.ToUpper().Trim().Contains("*ALPHALIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NUMBER"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*RANK"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*IMAGE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*GRIDSR"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*GRIDMR"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*MEDIA"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*RECORDING"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*ALPHALIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NUMLIST") && !myText.ToUpper().Trim().Contains("NUMLISTTOTAL"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DATE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*TIME"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*CAPTUREIMAGE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NUMLISTTOTAL"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*AUTOCOMPLETE") && !myText.ToUpper().Trim().Contains("AUTOCOMPLETEANS"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*AUTOCOMPLETEANS"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DROPDOWN") && !myText.ToUpper().Trim().Contains("DROPDOWNLIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DROPDOWNLIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*FORM"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*INFO"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*END") && !myText.ToUpper().Trim().Contains("*ENDREC"))
-                                    { hasEnd = true; }
-                                    else if (myText.ToUpper().Trim().Contains("*TERMINATE"))
-                                    { hasTerminate = true; }
-                                    else if (myText.ToUpper().Trim().Contains("*FIFS"))
-                                    {
-                                        myQuestionLan2.QType = "60"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-
-                                        attributeMainFIName = new AttributeMain();
-                                        attributeMainFIName.QId = myQuestionLan2.QId;
-                                        attributeMainFIName.AttributeEnglish = "FI Name";
-                                        attributeMainFIName.AttributeValue = "1";
-                                        attributeMainFIName.AttributeOrder = "1";
-                                        attributeMainFIName.LinkId1 = "3";
-                                        attributeMainFIName.ForceAndMsgOpt = "11";
-
-                                        attributeMainFICode = new AttributeMain();
-                                        attributeMainFICode.QId = myQuestionLan2.QId;
-                                        attributeMainFICode.AttributeEnglish = "FI Code";
-                                        attributeMainFICode.AttributeValue = "2";
-                                        attributeMainFICode.AttributeOrder = "2";
-                                        attributeMainFICode.LinkId1 = "3";
-                                        attributeMainFICode.ForceAndMsgOpt = "11";
-
-                                        attributeMainFSName = new AttributeMain();
-                                        attributeMainFSName.QId = myQuestionLan2.QId;
-                                        attributeMainFSName.AttributeEnglish = "FS Name";
-                                        //attributeMainFSName.AttributeEnglish = "FI Mobile Number";
-                                        attributeMainFSName.AttributeValue = "3";
-                                        attributeMainFSName.AttributeOrder = "3";
-                                        attributeMainFSName.LinkId1 = "3";
-                                        attributeMainFSName.ForceAndMsgOpt = "11";
-
-                                        attributeMainFSCode = new AttributeMain();
-                                        attributeMainFSCode.QId = myQuestionLan2.QId;
-                                        attributeMainFSCode.AttributeEnglish = "FS Code";
-                                        //attributeMainFSCode.AttributeEnglish = "FI Designation";
-                                        attributeMainFSCode.AttributeValue = "4";
-                                        attributeMainFSCode.AttributeOrder = "4";
-                                        attributeMainFSCode.LinkId1 = "3";
-                                        attributeMainFSCode.ForceAndMsgOpt = "11";
-
-                                        hasFIFS = true;
-                                    }
-
-
-                                    //else if (word[n].ToUpper().Trim().Contains(""))
-                                    //    myQuestion.QType = "7";
-                                    //else if (word[n].ToUpper().Trim().Contains(""))
-                                    //    myQuestion.QType = "7";
-                                    else if (myText.ToUpper().Trim().Contains("*RANDOM"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*ROT"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-
-                                    else if (myText.ToUpper().Trim().Contains("*MIN"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*MAX") && !myText.ToUpper().Trim().Contains("*MAXDIFF"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*COLUMN"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*BLOCK"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DUMMY1"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*REPORT"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*NONEXTBTN"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    //************************************* Attribute Filter ***********************************************
-                                    else if (myText.ToUpper().Trim().Contains("*INCLUDE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*EXCLUDE"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*USEGRIDLIST"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    else if (myText.ToUpper().Trim().Contains("*DKCS"))
-                                    {
-                                        string[] xyz = word[n].Trim().Split(new Char[] { '\"' });
-                                        if (xyz.Length == 5)
-                                        {
-                                            listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                                            //string[] abc = xyz[1].Trim().Split(new Char[] { '\"' });
-                                            if (xyz[1].Trim() != "")
-                                            {
-                                                if (Regex.Match(xyz[3].Trim(), @"^\d+$").Success)
-                                                {
-                                                    hasDKCS = true;
-
-                                                    attributeMain1 = new AttributeMain();
-                                                    attributeMain1.QId = currentQuestion.QId;
-                                                    attributeMain1.AttributeEnglish = "";
-                                                    attributeMain1.AttributeValue = "1";
-                                                    attributeMain1.AttributeOrder = "1";
-
-                                                    attributeMain2 = new AttributeMain();
-                                                    attributeMain2.QId = currentQuestion.QId;
-                                                    attributeMain2.AttributeEnglish = xyz[1].Trim();
-                                                    attributeMain2.AttributeValue = xyz[3].Trim();
-                                                    attributeMain2.AttributeOrder = "2";
-                                                    attributeMain2.IsExclusive = "1";
-
-
-
-                                                    //Add the attribute list 
-                                                    //dicQidVsAttributeList.Add(myQuestion.QId, listOfAttributeMain1);
-                                                }
-                                                else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute code must be Number " + xyz[3].Trim());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute Label missing " + xyz[1].Trim());
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Syntax for *DKCS is invalid ");
-                                    }
-                                    else if (myText.ToUpper().Trim().Contains("IF"))
-                                    { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                    //************************************* End of Attribute Filter ****************************************
-
-                                }
-                                #endregion
-
-                                string questionText = "";
-                                strline = linesLanguage2[++i];
-                                bool getquestionText = false;
-                                while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
-                                {
-                                    questionText = questionText + strline + "<br>";
-                                    strline = linesLanguage2[++i];
-                                    getquestionText = true;
-                                }
-
-                                if (questionText == "")
-                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invalid Question Text : should not exist");
-                                else
-                                    myQuestionLan2.QuestionEnglish = questionText.Substring(0, questionText.Length - 4);
-
-                                //add question object to list
-                                listOfQuestionLan2.Add(myQuestionLan2);
-                                currentQuestionLan2 = myQuestionLan2;
-
-                                //this portion is for question attribute
-
-                                if (getquestionText == true && strline.Substring(0, 1).Contains("*"))
-                                {
-                                    if (i < lines.Count - 1)
-                                        i--;
-                                }
-
-                                List<AttributeMain> listOfAttributeMainLan2 = new List<AttributeMain>();
-                                int index = 1;
-
-                                List<String> listOfAttributeValueForDupliCheckLan2 = new List<string>();
-                                List<String> listOfAttributeLabelForDupliCheckLan2 = new List<string>();
-
-                                if (hasDKCS == true)
-                                {
-                                    listOfAttributeMainLan2.Add(attributeMain1);
-                                    listOfAttributeMainLan2.Add(attributeMain2);
-                                    hasDKCS = false;
-                                }
-
-                                if (hasFIFS == true)
-                                {
-                                    listOfAttributeMainLan2.Add(attributeMainFIName);
-                                    listOfAttributeMainLan2.Add(attributeMainFICode);
-                                    listOfAttributeMainLan2.Add(attributeMainFSName);
-                                    listOfAttributeMainLan2.Add(attributeMainFSCode);
-
-                                    hasFIFS = false;
-                                }
-
-                                #region USELIST
-                                if (strline.Split(' ')[0].ToUpper().Contains("*USELIST"))
-                                {
-                                    //Pronab made changes in this block
-                                    string[] word1 = strline.Split(' ');
-                                    if (word1.Length == 2)
-                                    {
-                                        if (word1[1].Split('"').Length == 3)
-                                        {
-                                            if (dicQidVsAttributeListLan2.ContainsKey(word1[1].Split('"')[1].Trim()))
-                                            {
-                                                if (dicQidVsAttributeListLan2.ContainsKey(word1[1].Split('"')[1].Trim()))
-                                                {
-                                                    List<AttributeMain> listOfAttributeTemp = dicQidVsAttributeListLan2[word1[1].Split('"')[1].Trim()];
-
-                                                    for (int x = 0; x < listOfAttributeTemp.Count; x++)
-                                                    {
-                                                        if (!listOfAttributeTemp[x].AttributeEnglish.Contains("*"))
-                                                        {
-                                                            listOfAttributeMainLan2.Add(listOfAttributeTemp[x]);
-                                                            index++;
-                                                        }
-                                                        else
-                                                        {
-                                                            //If attribute have properties
-                                                            #region Attribute Properties
-                                                            string[] myKey = listOfAttributeTemp[x].AttributeEnglish.Split('*');
-
-                                                            AttributeMain attributeMainLan2 = new AttributeMain();
-                                                            //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
-                                                            //{
-
-                                                            attributeMainLan2.AttributeEnglish = myKey[0].Trim();
-                                                            //}
-
-
-                                                            for (int n = 1; n < myKey.Length; n++)
-                                                            {
-                                                                if (myKey[n].ToUpper().Trim().Contains("MIN") || myKey[n].ToUpper().Trim().Contains("MAX") || myKey[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                else
-                                                                {
-                                                                    if (myKey[n].ToUpper().Trim().Contains("OPEN"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("NMUL"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("MANDATORY"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("SR"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("MR"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("ALPHA"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("NUMBER"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("DATE"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                    else if (myKey[n].ToUpper().Trim().Contains("TIME"))
-                                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                                }
-                                                            }
-                                                            //Add the attribute in 
-                                                            listOfAttributeMainLan2.Add(attributeMainLan2);
-                                                            #endregion
-                                                        }
-
-                                                    }
-
-                                                    //listOfAttributeMain = dicQidVsAttributeList[word1[1].Split('"')[1].Trim()];
-                                                    //index = listOfAttributeMain.Count + 1;
-                                                }
-                                                else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Duplicate Attribute list name/Qid" + word1[1].Split('"')[1].Trim());
-
-                                                for (int x = 0; x < listOfAttributeMainLan2.Count; x++)
-                                                {
-                                                    listOfAttributeValueForDupliCheckLan2.Add(listOfAttributeMainLan2[x].AttributeValue);
-                                                    listOfAttributeLabelForDupliCheckLan2.Add(listOfAttributeMainLan2[x].AttributeEnglish);
-                                                }
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid use list name" + word1[1].Split('"')[1].Trim());
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
-
-                                    strline = linesLanguage2[++i];
-                                    strline = linesLanguage2[++i];
-                                    //Pronab end 
-                                }
-                                #endregion
-
-                                #region Attribute with :
-                                if (isAttribute(strline))
-                                {
-                                    while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                    {
-
-                                        //if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                        if (strline.Contains(":"))
-                                        {
-                                            AttributeMain attributeMainLan2 = new AttributeMain();
-                                            String[] myWord = strline.Split(':');
-
-                                            if (Regex.Match(myWord[0].Trim(), @"^\d+$").Success)
-                                            {
-                                                if (!listOfAttributeValueForDupliCheckLan2.Contains(myWord[0].Trim()))
-                                                {
-                                                    attributeMainLan2.AttributeValue = myWord[0].Trim();
-                                                    attributeMainLan2.AttributeOrder = myWord[0].Trim(); //index.ToString();
-                                                    index++;
-
-                                                    //Add value in list
-                                                    listOfAttributeValueForDupliCheckLan2.Add(myWord[0].Trim());
-
-                                                }//else {Error Message}
-
-                                            }//else {Error Message}
-                                            string mylabel = strline.Substring(strline.IndexOf(":", 0) + 1);
-                                            if (!mylabel.Contains("*"))
-                                            {
-                                                //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[1].Trim().ToUpper()))
-                                                //{
-
-                                                attributeMainLan2.AttributeEnglish = mylabel.Trim();
-
-                                                //if (myQuestionLan1.QType == "7")
-                                                //{
-                                                //    if (currentGridListNameLan1 != "")
-                                                //    {
-
-                                                //        attributeMainLan1.LinkId1 = "1";
-                                                //        attributeMainLan1.LinkId2 = currentGridListNameLan1;
-
-                                                //    }
-                                                //    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 +1] + " Grid list unavailable");
-                                                //}
-                                                //else if (myQuestionLan1.QType == "8")
-                                                //{
-                                                //    if (currentGridListNameLan1 != "")
-                                                //    {
-
-                                                //        attributeMainLan1.LinkId1 = "2";
-                                                //        attributeMainLan1.LinkId2 = currentGridListNameLan1;
-                                                //    }
-                                                //    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 +1] + " Grid list unavailable");
-                                                //}
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan2.Add(mylabel.Trim().ToUpper());
-                                                //}//else {Error Message}
-                                            }
-                                            else
-                                            {
-                                                // *********** If grid attribute has property ********************
-                                                //if (myQuestionLan1.QType == "7")
-                                                //{
-                                                //    if (currentGridListNameLan1 != "")
-                                                //    {
-                                                //        attributeMainLan1.LinkId1 = "1";
-                                                //        attributeMainLan1.LinkId2 = currentGridListNameLan1;
-                                                //    }
-                                                //    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 +1] + " Grid list unavailable");
-                                                //}
-                                                //else if (myQuestionLan1.QType == "8")
-                                                //{
-                                                //    if (currentGridListNameLan1 != "")
-                                                //    {
-                                                //        attributeMainLan1.LinkId1 = "2";
-                                                //        attributeMainLan1.LinkId2 = currentGridListNameLan1;
-                                                //    }
-                                                //    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 +1] + " Grid list unavailable");
-                                                //}
-                                                //*****************************************************
-
-
-                                                //If attribute have properties
-                                                #region Attribute Properties
-                                                string[] myKey = mylabel.Split('*');
-
-                                                //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
-                                                //{
-
-                                                attributeMainLan2.AttributeEnglish = myKey[0].Trim();
-                                                //}
-
-
-                                                for (int n = 1; n < myKey.Length; n++)
-                                                {
-                                                    if (myKey[n].ToUpper().Trim().Contains("MIN") || myKey[n].ToUpper().Trim().Contains("MAX") || myKey[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                    else
-                                                    {
-                                                        if (myKey[n].ToUpper().Trim().Contains("OPEN"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("NMUL"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("MANDATORY"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("SR"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("MR"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("ALPHA"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("NUMBER"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("DATE"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                        else if (myKey[n].ToUpper().Trim().Contains("TIME"))
-                                                            txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                                                    }
-                                                }
-                                                #endregion
-
-                                            }
-
-                                            //Add the attribute in 
-                                            listOfAttributeMainLan2.Add(attributeMainLan2);
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invalid syntax, Attribute code missing");
-
-                                        if (i < lines.Count - 1)
-                                        {
-                                            strline = linesLanguage2[++i];
-                                        }
-                                    }
-
-                                    if (i < lines.Count - 1)
-                                        i--;
-                                }
-                                else
-                                {
-                                    if (i < lines.Count - 1)
-                                        i--;
-                                }
-
-                                #endregion
-
-                                if (myQuestionLan2.QId != null)
-                                    dicQidVsAttributeListLan2.Add(myQuestionLan2.QId, listOfAttributeMainLan2);
-                                else
-                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Question Id missing");
-
-                                if (myAttributeFilter.QId != null)
-                                    listOfAttributeFilter.Add(myAttributeFilter);
-                            }
+                            i = this.prepareQuestionForLanguage(linesLanguage2, i, txtWriter, dicLine, ln2, 2);
                         }
                         #endregion
 
@@ -3511,682 +898,7 @@ namespace DBI_Scripting.Forms.Scripting
                     j++;
                 }
 
-                #region old code
-                //j = 0;
-                //for (int i = 0; i < linesLanguage2.Count; i++)
-                //{
-                //    strline = linesLanguage2[i];
 
-                //    if (strline.Substring(0, 1) == "*")
-                //    {
-                //        #region Prepare LIST
-                //        if (strline.Split(' ')[0].ToUpper() == "*LIST")
-                //        {
-                //            int index = 1;
-
-                //            List<String> listOfAttributeValueForDupliCheckLan2 = new List<string>();
-                //            List<String> listOfAttributeLabelForDupliCheckLan2 = new List<string>();
-
-                //            string listName = strline.Split(' ')[1].Split('"')[1];
-                //            List<AttributeMain> listOfattributeMainLan2 = new List<AttributeMain>();
-                //            strline = linesLanguage2[++i];
-                //            if (isAttribute(strline))
-                //            {
-                //                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                //                {
-                //                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                //                    {
-                //                        AttributeMain attributeMainLan2 = new AttributeMain();
-                //                        String[] word = strline.Split(':');
-
-                //                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                //                        {
-                //                            if (!listOfAttributeValueForDupliCheckLan2.Contains(word[0].Trim()))
-                //                            {
-                //                                attributeMainLan2.AttributeValue = word[0].Trim();
-                //                                attributeMainLan2.AttributeOrder = word[0].Trim(); //index.ToString();
-                //                                index++;
-
-                //                                //Add value in list
-                //                                listOfAttributeValueForDupliCheckLan2.Add(word[0].Trim());
-
-                //                            }
-                //                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                //                        }
-                //                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                //                        if (!word[1].Contains("*"))
-                //                        {
-                //                            if (!listOfAttributeLabelForDupliCheckLan2.Contains(word[1].Trim().ToUpper()))
-                //                            {
-                //                                attributeMainLan2.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                //                                //Add value in list
-                //                                listOfAttributeLabelForDupliCheckLan2.Add(word[1].Trim().ToUpper());
-                //                            }
-                //                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                //                        }
-
-
-                //                        listOfattributeMainLan2.Add(attributeMainLan2);
-
-                //                    }
-                //                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Not proper attribute syntax : " + strline);
-
-                //                    strline = linesLanguage2[++i];
-                //                }
-
-                //                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                //                    i--;
-                //            }
-                //            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Not proper attribute syntax : " + strline);
-
-                //            dicQidVsAttributeListLan2.Add(listName, listOfattributeMainLan2);
-                //        }
-                //        #endregion
-
-                //        #region Prepare GRIDLIST
-                //        if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
-                //        {
-                //            int index = 1;
-
-                //            List<String> listOfAttributeValueForDupliCheckLan2 = new List<string>();
-                //            List<String> listOfAttributeLabelForDupliCheckLan2 = new List<string>();
-
-                //            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                //            List<GridInfo> listOfGridInfoLan2 = new List<GridInfo>();
-                //            strline = linesLanguage2[++i];
-                //            if (isAttribute(strline))
-                //            {
-                //                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                //                {
-                //                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                //                    {
-                //                        GridInfo gridInfoLan2 = new GridInfo();
-                //                        String[] word = strline.Split(':');
-
-                //                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                //                        {
-                //                            if (!listOfAttributeValueForDupliCheckLan2.Contains(word[0].Trim()))
-                //                            {
-                //                                gridInfoLan2.AttributeValue = word[0].Trim();
-                //                                gridInfoLan2.AttributeOrder = word[0].Trim(); //index.ToString();
-                //                                index++;
-
-                //                                //Add value in list
-                //                                listOfAttributeValueForDupliCheckLan2.Add(word[0].Trim());
-
-                //                            }
-                //                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                //                        }
-                //                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                //                        if (!word[1].Contains("*"))
-                //                        {
-                //                            if (!listOfAttributeLabelForDupliCheckLan2.Contains(word[1].Trim().ToUpper()))
-                //                            {
-                //                                gridInfoLan2.AttributeEnglish = word[1].Trim();
-                //                                //Add value in list
-                //                                listOfAttributeLabelForDupliCheckLan2.Add(word[1].Trim().ToUpper());
-                //                            }
-                //                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                //                        }
-
-
-                //                        listOfGridInfoLan2.Add(gridInfoLan2);
-
-                //                    }
-                //                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Not proper attribute syntax : " + strline);
-
-                //                    strline = linesLanguage2[++i];
-                //                }
-                //                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                //                    i--;
-                //            }
-                //            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Not proper attribute syntax : " + strline);
-
-                //            dicGridListNameVsListLan2.Add(gridListName, listOfGridInfoLan2);
-
-                //            listOfGridListForDupliCheckLan2.Add(gridListName);
-                //        }
-                //        #endregion
-
-                //        #region Prepare QUESTION
-                //        if (strline.Split(' ')[0].ToUpper() == "*QUESTION")
-                //        {
-                //            AttributeMain attributeMain1 = new AttributeMain();
-                //            AttributeMain attributeMain2 = new AttributeMain();
-
-                //            AttributeMain attributeMainFIName = new AttributeMain();
-                //            AttributeMain attributeMainFICode = new AttributeMain();
-                //            AttributeMain attributeMainFSName = new AttributeMain();
-                //            AttributeMain attributeMainFSCode = new AttributeMain();
-
-                //            hasDKCS = false;
-
-                //            currentQuestionLan2 = new Question();
-                //            Question myQuestionLan2 = new Question();
-                //            AttributeFilter myAttributeFilter = new AttributeFilter();
-                //            string[] word = strline.Split('*');
-                //            int QTypeCounter = 0;
-                //            List<string> listOfQuestionProperties = new List<string>();
-                //            String currentGridListNameLan2 = "";
-
-
-
-                //            #region Question Properties
-                //            for (int n = 1; n < word.Length; n++)
-                //            {
-                //                if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
-                //                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
-
-                //                string myText = "*" + word[n];
-
-                //                if (myText.ToUpper().Trim().Contains("*QUESTION"))
-                //                {
-                //                    //QID
-                //                    string[] xyz = word[n].Trim().Split(' ');
-                //                    if (xyz.Length == 2)
-                //                    {
-                //                        if (Regex.IsMatch(xyz[1].Trim(), "^[a-zA-Z0-9]+$"))
-                //                        {
-                //                            if (!listOfQuestionIdForDupliCheckLan2.Contains(xyz[1].Trim()))
-                //                            {
-                //                                myQuestionLan2.QId = xyz[1].Trim();
-                //                                listOfQuestionIdForDupliCheckLan2.Add(xyz[1].Trim());
-
-                //                                //if (myQuestion.QId == "SQ21")
-                //                                //    MessageBox.Show("");
-                //                            }
-                //                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Duplicate QId " + xyz[1].Trim() + ", QId must be unique");
-                //                        }
-                //                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid QId " + xyz[1].Trim() + ", Must be started with Alpha");
-                //                    }
-                //                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid QId syntax" + xyz[0].Trim() + ", Only Qid exist after *QUESTION");
-
-                //                }
-                //                //Question Type
-                //                else if (myText.ToUpper().Trim().Contains("*SR") && !myText.ToUpper().Trim().Contains("*GRIDSR"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*MR") && !myText.ToUpper().Trim().Contains("*GRIDMR"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*OPEN") && !myText.ToUpper().Trim().Contains("*ALPHALIST"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*NUMBER"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*RANK"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*IMAGE"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*GRIDSR"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*GRIDMR"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*MEDIA"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*RECORDING"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*ALPHALIST"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*NUMLIST") && !myText.ToUpper().Trim().Contains("NUMLISTTOTAL"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*DATE"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*TIME"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*CAPTUREIMAGE"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*NUMLISTTOTAL"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*AUTOCOMPLETE") && !myText.ToUpper().Trim().Contains("AUTOCOMPLETEANS"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*AUTOCOMPLETEANS"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*DROPDOWN") && !myText.ToUpper().Trim().Contains("DROPDOWNLIST"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*DROPDOWNLIST"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*FORM"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*INFO"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*END") && !myText.ToUpper().Trim().Contains("*ENDREC"))
-                //                { hasEnd = true; }
-                //                else if (myText.ToUpper().Trim().Contains("*TERMINATE"))
-                //                { hasTerminate = true; }
-                //                else if (myText.ToUpper().Trim().Contains("*FIFS"))
-                //                {
-                //                    myQuestionLan2.QType = "60"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-
-                //                    attributeMainFIName = new AttributeMain();
-                //                    attributeMainFIName.QId = myQuestionLan2.QId;
-                //                    attributeMainFIName.AttributeEnglish = "FI Name";
-                //                    attributeMainFIName.AttributeValue = "1";
-                //                    attributeMainFIName.AttributeOrder = "1";
-                //                    attributeMainFIName.LinkId1 = "3";
-                //                    attributeMainFIName.ForceAndMsgOpt = "11";
-
-                //                    attributeMainFICode = new AttributeMain();
-                //                    attributeMainFICode.QId = myQuestionLan2.QId;
-                //                    attributeMainFICode.AttributeEnglish = "FI Code";
-                //                    attributeMainFICode.AttributeValue = "2";
-                //                    attributeMainFICode.AttributeOrder = "2";
-                //                    attributeMainFICode.LinkId1 = "3";
-                //                    attributeMainFICode.ForceAndMsgOpt = "11";
-
-                //                    attributeMainFSName = new AttributeMain();
-                //                    attributeMainFSName.QId = myQuestionLan2.QId;
-                //                    attributeMainFSName.AttributeEnglish = "FS Name";
-                //                    //attributeMainFSName.AttributeEnglish = "FI Mobile Number";
-                //                    attributeMainFSName.AttributeValue = "3";
-                //                    attributeMainFSName.AttributeOrder = "3";
-                //                    attributeMainFSName.LinkId1 = "3";
-                //                    attributeMainFSName.ForceAndMsgOpt = "11";
-
-                //                    attributeMainFSCode = new AttributeMain();
-                //                    attributeMainFSCode.QId = myQuestionLan2.QId;
-                //                    attributeMainFSCode.AttributeEnglish = "FS Code";
-                //                    //attributeMainFSCode.AttributeEnglish = "FI Designation";
-                //                    attributeMainFSCode.AttributeValue = "4";
-                //                    attributeMainFSCode.AttributeOrder = "4";
-                //                    attributeMainFSCode.LinkId1 = "3";
-                //                    attributeMainFSCode.ForceAndMsgOpt = "11";
-
-                //                    hasFIFS = true;
-                //                }
-
-
-                //                //else if (word[n].ToUpper().Trim().Contains(""))
-                //                //    myQuestion.QType = "7";
-                //                //else if (word[n].ToUpper().Trim().Contains(""))
-                //                //    myQuestion.QType = "7";
-                //                else if (myText.ToUpper().Trim().Contains("*RANDOM"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*ROT"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-
-                //                else if (myText.ToUpper().Trim().Contains("*MIN"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*MAX") && !myText.ToUpper().Trim().Contains("*MAXDIFF"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*COLUMN"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*BLOCK"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*DUMMY1"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*REPORT"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*NONEXTBTN"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                //************************************* Attribute Filter ***********************************************
-                //                else if (myText.ToUpper().Trim().Contains("*INCLUDE"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*EXCLUDE"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*USEGRIDLIST"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                else if (myText.ToUpper().Trim().Contains("*DKCS"))
-                //                {
-                //                    string[] xyz = word[n].Trim().Split(new Char[] { '\"' });
-                //                    if (xyz.Length == 5)
-                //                    {
-                //                        listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
-
-                //                        //string[] abc = xyz[1].Trim().Split(new Char[] { '\"' });
-                //                        if (xyz[1].Trim() != "")
-                //                        {
-                //                            if (Regex.Match(xyz[3].Trim(), @"^\d+$").Success)
-                //                            {
-                //                                hasDKCS = true;
-
-                //                                attributeMain1 = new AttributeMain();
-                //                                attributeMain1.QId = currentQuestion.QId;
-                //                                attributeMain1.AttributeEnglish = "";
-                //                                attributeMain1.AttributeValue = "1";
-                //                                attributeMain1.AttributeOrder = "1";
-
-                //                                attributeMain2 = new AttributeMain();
-                //                                attributeMain2.QId = currentQuestion.QId;
-                //                                attributeMain2.AttributeEnglish = xyz[1].Trim();
-                //                                attributeMain2.AttributeValue = xyz[3].Trim();
-                //                                attributeMain2.AttributeOrder = "2";
-                //                                attributeMain2.IsExclusive = "1";
-
-
-
-                //                                //Add the attribute list 
-                //                                //dicQidVsAttributeList.Add(myQuestion.QId, listOfAttributeMain1);
-                //                            }
-                //                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute code must be Number " + xyz[3].Trim());
-                //                        }
-                //                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Attribute Label missing " + xyz[1].Trim());
-                //                    }
-                //                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Syntax for *DKCS is invalid ");
-                //                }
-                //                else if (myText.ToUpper().Trim().Contains("IF"))
-                //                { txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                //                //************************************* End of Attribute Filter ****************************************
-
-                //            }
-                //            #endregion
-
-                //            string questionText = "";
-                //            strline = linesLanguage2[++i];
-                //            bool getquestionText = false;
-                //            while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
-                //            {
-                //                questionText = questionText + strline + "<br>";
-                //                strline = linesLanguage2[++i];
-                //                getquestionText = true;
-                //            }
-
-                //            if (questionText == "")
-                //                txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invalid Question Text : should not exist");
-                //            else
-                //                myQuestionLan2.QuestionEnglish = questionText.Substring(0, questionText.Length - 4);
-
-                //            //add question object to list
-                //            listOfQuestionLan2.Add(myQuestionLan2);
-                //            currentQuestionLan2 = myQuestionLan2;
-
-                //            //this portion is for question attribute
-
-                //            if (getquestionText == true && strline.Substring(0, 1).Contains("*"))
-                //            {
-                //                if (i < lines.Count - 1)
-                //                    i--;
-                //            }
-
-                //            List<AttributeMain> listOfattributeMainLan2 = new List<AttributeMain>();
-                //            int index = 1;
-
-                //            List<String> listOfAttributeValueForDupliCheckLan2 = new List<string>();
-                //            List<String> listOfAttributeLabelForDupliCheckLan2 = new List<string>();
-
-                //            if (hasDKCS == true)
-                //            {
-                //                listOfattributeMainLan2.Add(attributeMain1);
-                //                listOfattributeMainLan2.Add(attributeMain2);
-                //                hasDKCS = false;
-                //            }
-
-                //            if (hasFIFS == true)
-                //            {
-                //                listOfattributeMainLan2.Add(attributeMainFIName);
-                //                listOfattributeMainLan2.Add(attributeMainFICode);
-                //                listOfattributeMainLan2.Add(attributeMainFSName);
-                //                listOfattributeMainLan2.Add(attributeMainFSCode);
-
-                //                hasFIFS = false;
-                //            }
-
-                //            #region USELIST
-                //            if (strline.Split(' ')[0].ToUpper().Contains("*USELIST"))
-                //            {
-                //                //Pronab made changes in this block
-                //                string[] word1 = strline.Split(' ');
-                //                if (word1.Length == 2)
-                //                {
-                //                    if (word1[1].Split('"').Length == 3)
-                //                    {
-                //                        if (dicQidVsAttributeListLan2.ContainsKey(word1[1].Split('"')[1].Trim()))
-                //                        {
-                //                            if (dicQidVsAttributeListLan2.ContainsKey(word1[1].Split('"')[1].Trim()))
-                //                            {
-                //                                List<AttributeMain> listOfAttributeTemp = dicQidVsAttributeListLan2[word1[1].Split('"')[1].Trim()];
-
-                //                                for (int x = 0; x < listOfAttributeTemp.Count; x++)
-                //                                {
-                //                                    if (!listOfAttributeTemp[x].AttributeEnglish.Contains("*"))
-                //                                    {
-                //                                        listOfattributeMainLan2.Add(listOfAttributeTemp[x]);
-                //                                        index++;
-                //                                    }
-                //                                    else
-                //                                    {
-                //                                        //If attribute have properties
-                //                                        #region Attribute Properties
-                //                                        string[] myKey = listOfAttributeTemp[x].AttributeEnglish.Split('*');
-
-                //                                        AttributeMain attributeMainLan2 = new AttributeMain();
-                //                                        //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
-                //                                        //{
-
-                //                                        attributeMainLan2.AttributeEnglish = myKey[0].Trim();
-                //                                        //}
-
-
-                //                                        for (int n = 1; n < myKey.Length; n++)
-                //                                        {
-                //                                            if (myKey[n].ToUpper().Trim().Contains("MIN") || myKey[n].ToUpper().Trim().Contains("MAX") || myKey[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                //                                                txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                            else
-                //                                            {
-                //                                                if (myKey[n].ToUpper().Trim().Contains("OPEN"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("NMUL"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("MANDATORY"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("SR"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("MR"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("ALPHA"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("NUMBER"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("DATE"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                                else if (myKey[n].ToUpper().Trim().Contains("TIME"))
-                //                                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                            }
-                //                                        }
-                //                                        //Add the attribute in 
-                //                                        listOfattributeMainLan2.Add(attributeMainLan2);
-                //                                        #endregion
-                //                                    }
-
-                //                                }
-
-                //                                //listOfAttributeMain = dicQidVsAttributeList[word1[1].Split('"')[1].Trim()];
-                //                                //index = listOfAttributeMain.Count + 1;
-                //                            }
-                //                            else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Duplicate Attribute list name/Qid" + word1[1].Split('"')[1].Trim());
-
-                //                            for (int x = 0; x < listOfattributeMainLan2.Count; x++)
-                //                            {
-                //                                listOfAttributeValueForDupliCheckLan2.Add(listOfattributeMainLan2[x].AttributeValue);
-                //                                listOfAttributeLabelForDupliCheckLan2.Add(listOfattributeMainLan2[x].AttributeEnglish);
-                //                            }
-
-                //                        }
-                //                        else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid use list name" + word1[1].Split('"')[1].Trim());
-                //                    }
-                //                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
-                //                }
-                //                else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
-
-                //                strline = linesLanguage2[++i];
-                //                strline = linesLanguage2[++i];
-                //                //Pronab end 
-
-                //            }
-                //            #endregion
-
-                //            #region Attribute with :
-                //            if (isAttribute(strline))
-                //            {
-                //                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                //                {
-
-                //                    //if (strline.Contains(":") && strline.Split(':').Length == 2)
-                //                    if (strline.Contains(":"))
-                //                    {
-                //                        AttributeMain attributeMainLan2 = new AttributeMain();
-                //                        String[] myWord = strline.Split(':');
-
-                //                        if (Regex.Match(myWord[0].Trim(), @"^\d+$").Success)
-                //                        {
-                //                            if (!listOfAttributeValueForDupliCheckLan2.Contains(myWord[0].Trim()))
-                //                            {
-                //                                attributeMainLan2.AttributeValue = myWord[0].Trim();
-                //                                attributeMainLan2.AttributeOrder = myWord[0].Trim(); //index.ToString();
-                //                                index++;
-
-                //                                //Add value in list
-                //                                listOfAttributeValueForDupliCheckLan2.Add(myWord[0].Trim());
-
-                //                            }//else {Error Message}
-
-                //                        }//else {Error Message}
-                //                        string mylabel = strline.Substring(strline.IndexOf(":", 0) + 1);
-                //                        if (!mylabel.Contains("*"))
-                //                        {
-                //                            //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[1].Trim().ToUpper()))
-                //                            //{
-
-                //                            attributeMainLan2.AttributeEnglish = mylabel.Trim();
-
-                //                            //if (myQuestionLan2.QType == "7")
-                //                            //{
-                //                            //    if (currentGridListNameLan2 != "")
-                //                            //    {
-
-                //                            //        attributeMainLan2.LinkId1 = "1";
-                //                            //        attributeMainLan2.LinkId2 = currentGridListNameLan2;
-
-                //                            //    }
-                //                            //    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 +1] + " Grid list unavailable");
-                //                            //}
-                //                            //else if (myQuestionLan2.QType == "8")
-                //                            //{
-                //                            //    if (currentGridListNameLan2 != "")
-                //                            //    {
-
-                //                            //        attributeMainLan2.LinkId1 = "2";
-                //                            //        attributeMainLan2.LinkId2 = currentGridListNameLan2;
-                //                            //    }
-                //                            //    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 +1] + " Grid list unavailable");
-                //                            //}
-                //                            //Add value in list
-                //                            listOfAttributeLabelForDupliCheckLan2.Add(mylabel.Trim().ToUpper());
-                //                            //}//else {Error Message}
-                //                        }
-                //                        else
-                //                        {
-                //                            // *********** If grid attribute has property ********************
-                //                            //if (myQuestionLan2.QType == "7")
-                //                            //{
-                //                            //    if (currentGridListNameLan2 != "")
-                //                            //    {
-                //                            //        attributeMainLan2.LinkId1 = "1";
-                //                            //        attributeMainLan2.LinkId2 = currentGridListNameLan2;
-                //                            //    }
-                //                            //    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 +1] + " Grid list unavailable");
-                //                            //}
-                //                            //else if (myQuestionLan2.QType == "8")
-                //                            //{
-                //                            //    if (currentGridListNameLan2 != "")
-                //                            //    {
-                //                            //        attributeMainLan2.LinkId1 = "2";
-                //                            //        attributeMainLan2.LinkId2 = currentGridListNameLan2;
-                //                            //    }
-                //                            //    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 +1] + " Grid list unavailable");
-                //                            //}
-                //                            //*****************************************************
-
-
-                //                            //If attribute have properties
-                //                            #region Attribute Properties
-                //                            string[] myKey = mylabel.Split('*');
-
-                //                            //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
-                //                            //{
-
-                //                            attributeMainLan2.AttributeEnglish = myKey[0].Trim();
-                //                            //}
-
-
-                //                            for (int n = 1; n < myKey.Length; n++)
-                //                            {
-                //                                if (myKey[n].ToUpper().Trim().Contains("MIN") || myKey[n].ToUpper().Trim().Contains("MAX") || myKey[n].ToUpper().Trim().Contains("USEGRIDLIST"))
-                //                                    txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist");
-                //                                else
-                //                                {
-                //                                    if (myKey[n].ToUpper().Trim().Contains("OPEN"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("NMUL"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("MANDATORY"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("SR"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("MR"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("ALPHA"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("NUMBER"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("DATE"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                    else if (myKey[n].ToUpper().Trim().Contains("TIME"))
-                //                                        txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invlaid Syntax, " + myKey[n].Trim() + " Should not exist");
-                //                                }
-                //                            }
-                //                            #endregion
-
-                //                        }
-
-                //                        //Add the attribute in 
-                //                        listOfattributeMainLan2.Add(attributeMainLan2);
-
-                //                    }
-                //                    else txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Invalid syntax, Attribute code missing");
-
-                //                    if (i < lines.Count - 1)
-                //                    {
-                //                        strline = linesLanguage2[++i];
-                //                    }
-                //                }
-
-                //                if (i < lines.Count - 1)
-                //                    i--;
-                //            }
-                //            else
-                //            {
-                //                if (i < lines.Count - 1)
-                //                    i--;
-                //            }
-
-                //            #endregion
-
-                //            if (myQuestionLan2.QId != null)
-                //                dicQidVsAttributeListLan2.Add(myQuestionLan2.QId, listOfattributeMainLan2);
-                //            else
-                //                txtWriter.WriteLine("Line : " + dicLine[i + ln2 + 1] + " Question Id missing");
-
-                //            if (myAttributeFilter.QId != null)
-                //                listOfAttributeFilter.Add(myAttributeFilter);
-
-                //        }
-                //        #endregion
-
-                //    }
-                //    //next:
-                //    j++;
-                //}
-                #endregion
             }
             #endregion
 
@@ -4205,133 +917,16 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan3 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan3 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfattributeMainLan3 = new List<AttributeMain>();
-                            strline = linesLanguage3[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan3 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan3.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan3.AttributeValue = word[0].Trim();
-                                                attributeMainLan3.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan3.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan3.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan3.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan3.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfattributeMainLan3.Add(attributeMainLan3);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage3[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan3.Add(listName, listOfattributeMainLan3);
+                            i = this.prepareListForLanguage(linesLanguage3, i, txtWriter, dicLine, ln3, 3);
+                            strline = linesLanguage3[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan3 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan3 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan3 = new List<GridInfo>();
-                            strline = linesLanguage3[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan3 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan3.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan3.AttributeValue = word[0].Trim();
-                                                gridInfoLan3.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan3.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan3.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan3.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan3.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan3.Add(gridInfoLan3);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage3[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan3.Add(gridListName, listOfGridInfoLan3);
-
-                            listOfGridListForDupliCheckLan3.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage3, i, txtWriter, dicLine, ln3, 3);
+                            strline = linesLanguage3[i];
                         }
                         #endregion
 
@@ -4501,7 +1096,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln3 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -4925,133 +1520,16 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan4 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan4 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfattributeMainLan4 = new List<AttributeMain>();
-                            strline = linesLanguage4[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan4 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan4.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan4.AttributeValue = word[0].Trim();
-                                                attributeMainLan4.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan4.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan4.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan4.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan4.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfattributeMainLan4.Add(attributeMainLan4);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage4[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan4.Add(listName, listOfattributeMainLan4);
+                            i = this.prepareListForLanguage(linesLanguage4, i, txtWriter, dicLine, ln4, 4);
+                            strline = linesLanguage4[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan4 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan4 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan4 = new List<GridInfo>();
-                            strline = linesLanguage4[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan4 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan4.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan4.AttributeValue = word[0].Trim();
-                                                gridInfoLan4.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan4.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan4.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan4.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan4.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan4.Add(gridInfoLan4);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage4[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan4.Add(gridListName, listOfGridInfoLan4);
-
-                            listOfGridListForDupliCheckLan4.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage4, i, txtWriter, dicLine, ln4, 4);
+                            strline = linesLanguage4[i];
                         }
                         #endregion
 
@@ -5221,7 +1699,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln4 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -5644,133 +2122,16 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan5 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan5 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfattributeMainLan5 = new List<AttributeMain>();
-                            strline = linesLanguage5[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan5 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan5.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan5.AttributeValue = word[0].Trim();
-                                                attributeMainLan5.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan5.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan5.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan5.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan5.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfattributeMainLan5.Add(attributeMainLan5);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage5[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan5.Add(listName, listOfattributeMainLan5);
+                            i = this.prepareListForLanguage(linesLanguage5, i, txtWriter, dicLine, ln5, 5);
+                            strline = linesLanguage5[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan5 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan5 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan5 = new List<GridInfo>();
-                            strline = linesLanguage5[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan5 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan5.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan5.AttributeValue = word[0].Trim();
-                                                gridInfoLan5.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan5.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan5.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan5.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan5.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan5.Add(gridInfoLan5);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage5[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan5.Add(gridListName, listOfGridInfoLan5);
-
-                            listOfGridListForDupliCheckLan5.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage5, i, txtWriter, dicLine, ln5, 5);
+                            strline = linesLanguage5[i];
                         }
                         #endregion
 
@@ -5940,7 +2301,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln5 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -6363,133 +2724,16 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan6 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan6 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfattributeMainLan6 = new List<AttributeMain>();
-                            strline = linesLanguage6[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan6 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan6.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan6.AttributeValue = word[0].Trim();
-                                                attributeMainLan6.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan6.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan6.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan6.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan6.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfattributeMainLan6.Add(attributeMainLan6);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage6[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan6.Add(listName, listOfattributeMainLan6);
+                            i = this.prepareListForLanguage(linesLanguage6, i, txtWriter, dicLine, ln6, 6);
+                            strline = linesLanguage6[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan6 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan6 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan6 = new List<GridInfo>();
-                            strline = linesLanguage6[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan6 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan6.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan6.AttributeValue = word[0].Trim();
-                                                gridInfoLan6.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan6.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan6.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan6.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan6.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan6.Add(gridInfoLan6);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage6[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan6.Add(gridListName, listOfGridInfoLan6);
-
-                            listOfGridListForDupliCheckLan6.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage6, i, txtWriter, dicLine, ln6, 6);
+                            strline = linesLanguage6[i];
                         }
                         #endregion
 
@@ -6659,7 +2903,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln6 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -7082,133 +3326,16 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan7 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan7 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfattributeMainLan7 = new List<AttributeMain>();
-                            strline = linesLanguage7[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan7 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan7.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan7.AttributeValue = word[0].Trim();
-                                                attributeMainLan7.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan7.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan7.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan7.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan7.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfattributeMainLan7.Add(attributeMainLan7);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage7[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan7.Add(listName, listOfattributeMainLan7);
+                            i = this.prepareListForLanguage(linesLanguage7, i, txtWriter, dicLine, ln7, 7);
+                            strline = linesLanguage7[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan7 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan7 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan7 = new List<GridInfo>();
-                            strline = linesLanguage7[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan7 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan7.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan7.AttributeValue = word[0].Trim();
-                                                gridInfoLan7.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan7.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan7.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan7.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan7.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan7.Add(gridInfoLan7);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage7[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan7.Add(gridListName, listOfGridInfoLan7);
-
-                            listOfGridListForDupliCheckLan7.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage7, i, txtWriter, dicLine, ln7, 7);
+                            strline = linesLanguage7[i];
                         }
                         #endregion
 
@@ -7378,7 +3505,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln7 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -7801,133 +3928,16 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan8 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan8 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfattributeMainLan8 = new List<AttributeMain>();
-                            strline = linesLanguage8[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan8 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan8.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan8.AttributeValue = word[0].Trim();
-                                                attributeMainLan8.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan8.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan8.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan8.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan8.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfattributeMainLan8.Add(attributeMainLan8);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage8[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan8.Add(listName, listOfattributeMainLan8);
+                            i = this.prepareListForLanguage(linesLanguage8, i, txtWriter, dicLine, ln8, 8);
+                            strline = linesLanguage8[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan8 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan8 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan8 = new List<GridInfo>();
-                            strline = linesLanguage8[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan8 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan8.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan8.AttributeValue = word[0].Trim();
-                                                gridInfoLan8.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan8.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan8.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan8.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan8.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan8.Add(gridInfoLan8);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage8[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan8.Add(gridListName, listOfGridInfoLan8);
-
-                            listOfGridListForDupliCheckLan8.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage8, i, txtWriter, dicLine, ln8, 8);
+                            strline = linesLanguage8[i];
                         }
                         #endregion
 
@@ -8097,7 +4107,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln8 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -8521,133 +4531,16 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare LIST
                         if (strline.Split(' ')[0].ToUpper() == "*LIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan9 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan9 = new List<string>();
-
-                            string listName = strline.Split(' ')[1].Split('"')[1];
-                            List<AttributeMain> listOfattributeMainLan9 = new List<AttributeMain>();
-                            strline = linesLanguage9[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        AttributeMain attributeMainLan9 = new AttributeMain();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan9.Contains(word[0].Trim()))
-                                            {
-                                                attributeMainLan9.AttributeValue = word[0].Trim();
-                                                attributeMainLan9.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan9.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan9.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                attributeMainLan9.AttributeEnglish = word[1].Trim().Replace("'", "''");
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan9.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfattributeMainLan9.Add(attributeMainLan9);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage9[++i];
-                                }
-
-                                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicQidVsAttributeListLan9.Add(listName, listOfattributeMainLan9);
+                            i = this.prepareListForLanguage(linesLanguage9, i, txtWriter, dicLine, ln9, 9);
+                            strline = linesLanguage9[i];
                         }
                         #endregion
 
                         #region Prepare GRIDLIST
                         if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST")
                         {
-                            int index = 1;
-
-                            List<String> listOfAttributeValueForDupliCheckLan9 = new List<string>();
-                            List<String> listOfAttributeLabelForDupliCheckLan9 = new List<string>();
-
-                            string gridListName = strline.Split(' ')[1].Split('"')[1];
-                            List<GridInfo> listOfGridInfoLan9 = new List<GridInfo>();
-                            strline = linesLanguage9[++i];
-                            if (isAttribute(strline))
-                            {
-                                while (!strline.Trim().Substring(0, 1).Contains("*"))
-                                {
-                                    if (strline.Contains(":") && strline.Split(':').Length == 2)
-                                    {
-                                        GridInfo gridInfoLan9 = new GridInfo();
-                                        String[] word = strline.Split(':');
-
-                                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
-                                        {
-                                            if (!listOfAttributeValueForDupliCheckLan9.Contains(word[0].Trim()))
-                                            {
-                                                gridInfoLan9.AttributeValue = word[0].Trim();
-                                                gridInfoLan9.AttributeOrder = word[0].Trim(); //index.ToString();
-                                                index++;
-
-                                                //Add value in list
-                                                listOfAttributeValueForDupliCheckLan9.Add(word[0].Trim());
-
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
-
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
-
-                                        if (!word[1].Contains("*"))
-                                        {
-                                            if (!listOfAttributeLabelForDupliCheckLan9.Contains(word[1].Trim().ToUpper()))
-                                            {
-                                                gridInfoLan9.AttributeEnglish = word[1].Trim();
-                                                //Add value in list
-                                                listOfAttributeLabelForDupliCheckLan9.Add(word[1].Trim().ToUpper());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
-                                        }
-
-
-                                        listOfGridInfoLan9.Add(gridInfoLan9);
-
-                                    }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Not proper attribute syntax : " + strline);
-
-                                    strline = linesLanguage9[++i];
-                                }
-                                if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
-                                    i--;
-                            }
-                            else txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Not proper attribute syntax : " + strline);
-
-                            dicGridListNameVsListLan9.Add(gridListName, listOfGridInfoLan9);
-
-                            listOfGridListForDupliCheckLan9.Add(gridListName);
+                            i = this.prepareGridListForLanguage(linesLanguage9, i, txtWriter, dicLine, ln9, 9);
+                            strline = linesLanguage9[i];
                         }
                         #endregion
 
@@ -8817,7 +4710,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                                 { txtWriter.WriteLine("Line : " + dicLine[i + ln9 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -9329,6 +5222,17 @@ namespace DBI_Scripting.Forms.Scripting
 
         private int prepareList(List<String> lines, int i, TextWriter txtWriter, Dictionary<int, int> dicLine)
         {
+
+            ///////////////////////////////////////////////////////////
+            //     *LIST "YesNo"
+            //     1:Yes
+            //     2:No
+            //
+            //     *LIST "NameAge"
+            //     1:Name *ALPHA *MANDATORY
+            //     2:Aag *NUMBER *MIN 15 *MAX 65
+            ///////////////////////////////////////////////////////////
+
             int index = 1;
             String strline = lines[i];
             List<String> listOfAttributeValueForDupliCheck = new List<string>();
@@ -9358,12 +5262,18 @@ namespace DBI_Scripting.Forms.Scripting
                                 //Add value in list
                                 listOfAttributeValueForDupliCheck.Add(word[0].Trim());
 
+                                //if (attributeMain.AttributeValue == "123")
+                                //    MessageBox.Show("");
+
                             }
                             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
 
                         }
                         else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
 
+
+
+                        //If Attribute has any properties like 1:Name *ALPHA *MANDATORY
                         if (!word[1].Contains("*"))
                         {
                             if (!listOfAttributeLabelForDupliCheck.Contains(word[1].Trim().ToUpper()))
@@ -9383,6 +5293,104 @@ namespace DBI_Scripting.Forms.Scripting
                                 listOfAttributeLabelForDupliCheck.Add(word[1].Split('*')[0].Trim().ToUpper());
                             }
                             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
+
+
+                            string[] myKey = word[1].Split('*');
+                            if (myKey.Length > 1)
+                            {
+                                //attributeMain.AttributeEnglish = myKey[0].Trim();
+
+                                for (int x = 1; x < myKey.Length; x++)
+                                {
+                                    if (("*" + myKey[1]).ToUpper().Trim().Contains("*OPEN"))
+                                    {
+                                        attributeMain.TakeOpenended = "1";
+                                    }
+                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*ALPHA"))
+                                    {
+                                        attributeMain.LinkId1 = "3";
+                                    }
+                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*NUMBER"))
+                                    {
+                                        attributeMain.LinkId1 = "4";
+                                    }
+                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*NMUL"))
+                                    {
+                                        attributeMain.IsExclusive = "1";
+                                    }
+                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*MANDATORY"))
+                                    {
+                                        attributeMain.ForceAndMsgOpt = "11";
+                                    }
+                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*PICT"))
+                                    {
+                                        string[] xy = myKey[1].Trim().Split(' ');
+                                        if (xy.Length == 2)
+                                        {
+                                            //listOfQuestionProperties.Add(xy[0].ToUpper().Trim());
+
+                                            string[] xyz = xy[1].Split('"');
+                                            if (xyz.Length != 3)
+                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
+                                            else
+                                                attributeMain.ForceAndMsgOpt = xyz[1].Trim();
+                                        }
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *PICT is invalid ");
+                                    }
+                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*VIDEO"))
+                                    {
+                                        string[] xy = myKey[1].Trim().Split(' ');
+                                        if (xy.Length == 2)
+                                        {
+                                            //listOfQuestionProperties.Add(xy[0].ToUpper().Trim());
+
+                                            string[] xyz = xy[1].Split('"');
+                                            if (xyz.Length != 3)
+                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
+                                            else
+                                                attributeMain.ForceAndMsgOpt = xyz[1].Trim();
+                                        }
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *VIDEO is invalid ");
+                                    }
+                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*MIN"))
+                                    {
+                                        string[] xyz = myKey[1].Split(' ');
+                                        if (xyz.Length >= 2)
+                                        {
+                                            if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
+                                                attributeMain.MinValue = xyz[1].Trim();
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
+                                        }
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
+                                    }
+                                    else if (("*" + myKey[2]).ToUpper().Trim().Contains("*MAX"))
+                                    {
+                                        string[] xyz = myKey[2].Split(' ');
+                                        if (xyz.Length >= 2)
+                                        {
+                                            if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
+                                                attributeMain.MaxValue = xyz[1].Trim();
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
+                                        }
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *Max is invalid ");
+                                    }
+                                    else if (("*" + myKey[2]).ToUpper().Trim().Contains("*MANDATORY"))
+                                    {
+                                        attributeMain.ForceAndMsgOpt = "11";
+                                    }
+                                }
+
+
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is incorrect");
+
+
+
+
+
+
+
+
                         } //end Pronab added
 
 
@@ -9394,12 +5402,99 @@ namespace DBI_Scripting.Forms.Scripting
                     strline = lines[++i];
                 }
 
-                if (strline.Split(' ')[0].ToUpper() == "*LIST" && i < lines.Count - 1)
+                if ((strline.Split(' ')[0].ToUpper() == "*GRIDLIST" || strline.Split(' ')[0].ToUpper() == "*LIST") && i < lines.Count - 1)
                     i--;
             }
             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Not proper attribute syntax : " + strline);
 
-            dicListNameVsList.Add(listName, listOfAttributeMainTemp);
+            if (!dicListNameVsList.ContainsKey(listName))
+                dicListNameVsList.Add(listName, listOfAttributeMainTemp);
+            else
+                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Duplicate list name : " + listName);
+
+            return i;
+        }
+
+        private int prepareListForLanguage(List<String> linesLanguage, int i, TextWriter txtWriter, Dictionary<int, int> dicLine, int ln1, int languageNo)
+        {
+
+            ///////////////////////////////////////////////////////////
+            //     *LIST "YesNo"
+            //     1:Yes
+            //     2:No
+            //
+            //     *LIST "NameAge"
+            //     1:Name
+            //     2:Aag
+            ///////////////////////////////////////////////////////////
+
+            String strline = linesLanguage[i];
+            List<String> listOfAttributeValueForDupliCheckLan1 = new List<string>();
+            List<String> listOfAttributeLabelForDupliCheckLan1 = new List<string>();
+
+            string listName = strline.Split(' ')[1].Split('"')[1];
+            List<AttributeMain> listOfAttributeMainLanX = new List<AttributeMain>();
+            strline = linesLanguage[++i];
+
+            if (isAttribute(strline))
+            {
+                while (!strline.Trim().Substring(0, 1).Contains("*"))
+                {
+                    if (strline.Contains(":") && strline.Split(':').Length == 2)
+                    {
+
+                        AttributeMain attributeMainLanX = new AttributeMain();
+                        String[] word = strline.Split(':');
+
+                        if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
+                        {
+                            if (!listOfAttributeValueForDupliCheckLan1.Contains(word[0].Trim()))
+                            {
+                                attributeMainLanX.AttributeValue = word[0].Trim();
+                                attributeMainLanX.AttributeOrder = word[0].Trim(); //index.ToString();
+                                //Add value in list
+                                listOfAttributeValueForDupliCheckLan1.Add(word[0].Trim());
+
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
+
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
+
+                        if (!word[1].Contains("*"))
+                        {
+                            if (!listOfAttributeLabelForDupliCheckLan1.Contains(word[1].Trim().ToUpper()))
+                            {
+                                attributeMainLanX.AttributeEnglish = word[1].Trim().Replace("'", "''");
+                                //Add value in list
+                                listOfAttributeLabelForDupliCheckLan1.Add(word[1].Trim().ToUpper());
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute label " + word[0].Trim() + " is duplicate");
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute label " + word[0].Trim() + " is incorrect, Attribute parameter should not be exist");
+
+                        listOfAttributeMainLanX.Add(attributeMainLanX);
+
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Not proper attribute syntax : " + strline);
+
+                    strline = linesLanguage[++i];
+                }
+
+                if ((strline.Split(' ')[0].ToUpper() == "*GRIDLIST" || strline.Split(' ')[0].ToUpper() == "*LIST") && i < linesLanguage.Count - 1)
+                    i--;
+            }
+            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Not proper attribute syntax : " + strline);
+
+            if (languageNo == 1) dicQidVsAttributeListLan1.Add(listName, listOfAttributeMainLanX);
+            else if (languageNo == 2) dicQidVsAttributeListLan2.Add(listName, listOfAttributeMainLanX);
+            else if (languageNo == 3) dicQidVsAttributeListLan3.Add(listName, listOfAttributeMainLanX);
+            else if (languageNo == 4) dicQidVsAttributeListLan4.Add(listName, listOfAttributeMainLanX);
+            else if (languageNo == 5) dicQidVsAttributeListLan5.Add(listName, listOfAttributeMainLanX);
+            else if (languageNo == 6) dicQidVsAttributeListLan6.Add(listName, listOfAttributeMainLanX);
+            else if (languageNo == 7) dicQidVsAttributeListLan7.Add(listName, listOfAttributeMainLanX);
+            else if (languageNo == 8) dicQidVsAttributeListLan8.Add(listName, listOfAttributeMainLanX);
+            else if (languageNo == 9) dicQidVsAttributeListLan9.Add(listName, listOfAttributeMainLanX);
 
             return i;
         }
@@ -9408,7 +5503,11 @@ namespace DBI_Scripting.Forms.Scripting
         {
             try
             {
-
+                ///////////////////////////////////////////////////////////
+                //     *GRIDLIST "YesNo"
+                //     1:Yes
+                //     2:No
+                ///////////////////////////////////////////////////////////
 
                 int index = 1;
                 String strline = lines[i];
@@ -9465,6 +5564,8 @@ namespace DBI_Scripting.Forms.Scripting
                                         gridInfo.TakeOpenended = "1";
                                     else if (myKey[1].ToUpper().Trim().Contains("NMUL"))
                                         gridInfo.IsExclusive = "1";
+                                    else if (myKey[1].ToUpper().Trim().Contains("MANDATORY"))
+                                        gridInfo.ForceAndMsgOpt = "11";
                                     else if (myKey[1].ToUpper().Trim().Contains("PICT"))
                                     {
                                         string[] xy = myKey[1].Trim().Split(' ');
@@ -9496,6 +5597,42 @@ namespace DBI_Scripting.Forms.Scripting
                                         else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *VIDEO is invalid ");
                                     }
                                 }
+                                else if (myKey.Length > 2)
+                                {
+                                    gridInfo.AttributeEnglish = myKey[0].Trim();
+
+                                    for (int x = 1; x < myKey.Length; x++)
+                                    {
+                                        if (("*" + myKey[1]).ToUpper().Trim().Contains("*MIN"))
+                                        {
+                                            string[] xyz = myKey[1].Split(' ');
+                                            if (xyz.Length >= 2)
+                                            {
+                                                if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
+                                                    gridInfo.MinValue = xyz[1].Trim();
+                                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
+                                            }
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
+                                        }
+                                        else if (("*" + myKey[2]).ToUpper().Trim().Contains("*MAX"))
+                                        {
+                                            string[] xyz = myKey[2].Split(' ');
+                                            if (xyz.Length >= 2)
+                                            {
+                                                if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
+                                                    gridInfo.MaxValue = xyz[1].Trim();
+                                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
+                                            }
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *Max is invalid ");
+                                        }
+                                        else if (("*" + myKey[2]).ToUpper().Trim().Contains("*MANDATORY"))
+                                        {
+                                            gridInfo.ForceAndMsgOpt = "11";
+                                        }
+                                    }
+
+
+                                }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is incorrect");
                             }
 
@@ -9507,7 +5644,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                         strline = lines[++i];
                     }
-                    if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < lines.Count - 1)
+                    if ((strline.Split(' ')[0].ToUpper() == "*GRIDLIST" || strline.Split(' ')[0].ToUpper() == "*LIST") && i < lines.Count - 1)
                         i--;
                 }
                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Not proper attribute syntax : " + strline);
@@ -9515,6 +5652,100 @@ namespace DBI_Scripting.Forms.Scripting
                 dicGridListNameVsList.Add(gridListName, listOfGridInfo);
 
                 listOfGridListForDupliCheck.Add(gridListName);
+
+                return i;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Line : " + dicLine[i + 1] + ": Syntax Error in for Grid/Same Grid name exist");
+                return i;
+            }
+        }
+
+        private int prepareGridListForLanguage(List<String> linesLanguage, int i, TextWriter txtWriter, Dictionary<int, int> dicLine, int ln1, int languageNo)
+        {
+            try
+            {
+                ///////////////////////////////////////////////////////////
+                //     *GRIDLIST "YesNo"
+                //     1:Yes
+                //     2:No
+                ///////////////////////////////////////////////////////////
+
+                //int index = 1;
+                String strline = linesLanguage[i];
+                List<string> listOfGridListForDupliCheckLan = new List<string>();
+                List<String> listOfAttributeValueForDupliCheckLan1 = new List<string>();
+                List<String> listOfAttributeLabelForDupliCheckLan1 = new List<string>();
+
+                string gridListName = strline.Split(' ')[1].Split('"')[1];
+                List<GridInfo> listOfGridInfoLanX = new List<GridInfo>();
+                strline = linesLanguage[++i];
+                if (isAttribute(strline))
+                {
+                    while (!strline.Trim().Substring(0, 1).Contains("*"))
+                    {
+                        //if (strline.Contains(":") && strline.Split(':').Length == 2)
+                        if (strline.Contains(":"))
+                        {
+                            GridInfo gridInfoLanX = new GridInfo();
+                            String[] word = strline.Split(':');
+
+                            if (Regex.Match(word[0].Trim(), @"^\d+$").Success)
+                            {
+                                if (!listOfAttributeValueForDupliCheckLan1.Contains(word[0].Trim()))
+                                {
+                                    gridInfoLanX.AttributeValue = word[0].Trim();
+                                    gridInfoLanX.AttributeOrder = word[0].Trim(); //index.ToString();
+                                    //index++;
+
+                                    //Add value in list
+                                    listOfAttributeValueForDupliCheckLan1.Add(word[0].Trim());
+
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute value " + word[0].Trim() + " is duplicate");
+
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute value " + word[0].Trim() + " is Non numeric");
+
+                            if (!word[1].Contains("*"))
+                            {
+                                if (!listOfAttributeLabelForDupliCheckLan1.Contains(word[1].Trim().ToUpper()))
+                                {
+                                    gridInfoLanX.AttributeEnglish = word[1].Trim();
+                                    //Add value in list
+                                    listOfAttributeLabelForDupliCheckLan1.Add(word[1].Trim().ToUpper());
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute label " + word[1].Trim() + " is duplicate");
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute label " + word[1].Trim() + " is incorrect, Attribute parameter should not be exist");
+
+                            listOfGridInfoLanX.Add(gridInfoLanX);
+
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Not proper attribute syntax : " + strline);
+
+                        strline = linesLanguage[++i];
+                    }
+                    //if (strline.Split(' ')[0].ToUpper() == "*GRIDLIST" && i < linesLanguage.Count - 1)
+                    if ((strline.Split(' ')[0].ToUpper() == "*GRIDLIST" || strline.Split(' ')[0].ToUpper() == "*LIST") && i < linesLanguage.Count - 1)
+                        //if (i < linesLanguage.Count - 1)
+                        i--;
+                }
+                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Not proper attribute syntax : " + strline);
+
+                listOfGridListForDupliCheckLan.Add(gridListName);
+
+                if (languageNo == 1) dicGridListNameVsListLan1.Add(gridListName, listOfGridInfoLanX);
+                else if (languageNo == 2) dicGridListNameVsListLan2.Add(gridListName, listOfGridInfoLanX);
+                else if (languageNo == 3) dicGridListNameVsListLan3.Add(gridListName, listOfGridInfoLanX);
+                else if (languageNo == 4) dicGridListNameVsListLan4.Add(gridListName, listOfGridInfoLanX);
+                else if (languageNo == 5) dicGridListNameVsListLan5.Add(gridListName, listOfGridInfoLanX);
+                else if (languageNo == 6) dicGridListNameVsListLan6.Add(gridListName, listOfGridInfoLanX);
+                else if (languageNo == 7) dicGridListNameVsListLan7.Add(gridListName, listOfGridInfoLanX);
+                else if (languageNo == 8) dicGridListNameVsListLan8.Add(gridListName, listOfGridInfoLanX);
+                else if (languageNo == 9) dicGridListNameVsListLan9.Add(gridListName, listOfGridInfoLanX);
+
 
                 return i;
             }
@@ -9545,7 +5776,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                     // Check logical Expression
                     if (!checkLogicalExp.checkIfCondition(ifCondition, listOfQuestionIdForDupliCheck))
-                        txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + ifCondition);
+                        txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax/Incorrect Qid " + ifCondition);
 
 
                     //*IF [Q5=1] *GOTO Q2
@@ -9686,6 +5917,10 @@ namespace DBI_Scripting.Forms.Scripting
                                 //{
                                 //    myAutoResponse.ThenValue = IncludeExclude + "["+abc[2].Trim()+"]";
                                 //}
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"SPLITOF\[[a-zA-Z0-9]+[,:]+(,\d+)\]").Success)
+                                {
+                                    myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                                }
                                 else if (Regex.Match(abc[2].Trim().ToUpper(), @"RANDOMVALUEOF\[[a-zA-Z]+[a-zA-Z0-9]+(,\d+)\]").Success)
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
@@ -9707,7 +5942,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
-                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"LANGUAGEOF\[SURVEY]").Success)
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"LANGUAGEOF\[INTERVIEW]").Success)
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
@@ -9742,8 +5977,8 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
-                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"SUBTRUCTOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,\d+)\]").Success ||
-                                         Regex.Match(abc[2].Trim().ToUpper(), @"SUBTRUCTOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,)+[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?\]").Success)
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"SUBTRACTOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,\d+)\]").Success ||
+                                         Regex.Match(abc[2].Trim().ToUpper(), @"SUBTRACTOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,)+[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?\]").Success)
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
@@ -9757,7 +5992,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
-                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"PANELINFOOF\[[a-zA-Z]+[a-zA-Z0-9]+\]").Success)
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"PANELINFOOF\[[a-zA-Z]+[a-zA-Z0-9]+(,\d+)\]").Success)
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
@@ -9771,6 +6006,11 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else if (Regex.Match(abc[2].Trim().ToUpper(), @"DISTANCEBTNOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,\d+)\]").Success ||
                                      Regex.Match(abc[2].Trim().ToUpper(), @"DISTANCEBTNOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,)+[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?\]").Success)
+                                {
+                                    myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                                }
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"IDOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,\d+)\]").Success ||
+                                     Regex.Match(abc[2].Trim().ToUpper(), @"IDOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,)+[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?\]").Success)
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
@@ -9962,6 +6202,10 @@ namespace DBI_Scripting.Forms.Scripting
                     //{
                     //    myAutoResponse.ThenValue = IncludeExclude + "["+abc[2].Trim()+"]";
                     //}
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"SPLITOF\[[a-zA-Z0-9]+[,:]+(,\d+)\]").Success)
+                    {
+                        myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                    }
                     else if (Regex.Match(abc[2].Trim().ToUpper(), @"RANDOMVALUEOF\[[a-zA-Z]+[a-zA-Z0-9]+(,\d+)\]").Success)
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
@@ -9983,7 +6227,7 @@ namespace DBI_Scripting.Forms.Scripting
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
-                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"LANGUAGEOF\[SURVEY]").Success)
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"LANGUAGEOF\[INTERVIEW]").Success)
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
@@ -10018,8 +6262,8 @@ namespace DBI_Scripting.Forms.Scripting
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
-                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"SUBTRUCTOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,\d+)\]").Success ||
-                             Regex.Match(abc[2].Trim().ToUpper(), @"SUBTRUCTOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,)+[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?\]").Success)
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"SUBTRACTOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,\d+)\]").Success ||
+                             Regex.Match(abc[2].Trim().ToUpper(), @"SUBTRACTOF\[[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?(,)+[a-zA-Z]+[a-zA-Z0-9]+(.\d+)?\]").Success)
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
@@ -10033,7 +6277,7 @@ namespace DBI_Scripting.Forms.Scripting
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
-                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"PANELINFOOF\[[a-zA-Z]+[a-zA-Z0-9]+\]").Success)
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"PANELINFOOF\[[a-zA-Z]+[a-zA-Z0-9]+(,\d+)\]").Success)
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
@@ -10134,12 +6378,16 @@ namespace DBI_Scripting.Forms.Scripting
                         {
                             if (!listOfQuestionIdForDupliCheck.Contains(xyz[1].Trim()))
                             {
-                                qIdForGridQid = xyz[1].Trim();
-                                myQuestion.QId = xyz[1].Trim();
-                                listOfQuestionIdForDupliCheck.Add(xyz[1].Trim());
+                                if (!listOfQuestionIdForReject.Contains(xyz[1].Trim().ToUpper()))
+                                {
+                                    qIdForGridQid = xyz[1].Trim();
+                                    myQuestion.QId = xyz[1].Trim();
+                                    listOfQuestionIdForDupliCheck.Add(xyz[1].Trim());
 
-                                //if (myQuestion.QId == "SQ21")
-                                //    MessageBox.Show("");
+                                    //if (myQuestion.QId == "SQ21")
+                                    //    MessageBox.Show("");
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + xyz[1].Trim() + " should not be used as QId");
                             }
                             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Duplicate QId " + xyz[1].Trim() + ", QId must be unique");
                         }
@@ -10179,6 +6427,10 @@ namespace DBI_Scripting.Forms.Scripting
                 else if (myText.ToUpper().Trim().Contains("*GRIDSR"))
                 {
                     myQuestion.QType = "7"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                }
+                else if (myText.ToUpper().Trim().Contains("*SCALE7"))
+                {
+                    myQuestion.QType = "32"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
                 else if (myText.ToUpper().Trim().Contains("*SCALE10"))
                 {
@@ -10226,6 +6478,11 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.QType = "24"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*DRAGDROP"))
                 { myQuestion.QType = "26"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*GRIDNUM"))
+                {
+                    myQuestion.QType = "27"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                    qTypeForGridQid = 8;
+                }
                 else if (myText.ToUpper().Trim().Contains("*MAXDIFF"))
                 { myQuestion.QType = "40"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*GPS"))
@@ -10300,7 +6557,8 @@ namespace DBI_Scripting.Forms.Scripting
                 //Group Rot Option Rot
                 else if (myText.ToUpper().Trim().Contains("*OTPROTGROUPROT"))
                 { myQuestion.HasRandomAttrib = "11"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-
+                else if (myText.ToUpper().Trim().Contains("*FROT"))
+                { myQuestion.HasRandomAttrib = "5"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
 
                 else if (myText.ToUpper().Trim().Contains("*QROT"))
                 { myQuestion.HasRandomQntr = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
@@ -10419,8 +6677,24 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.HasAutoResponse = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { myQuestion.HasAutoResponse = "2"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
-                { myQuestion.ShowInReport = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
+                {
+                    string[] xyz = word[n].Trim().Split(' ');
+                    if (xyz.Length == 2)
+                    {
+                        listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
+
+                        if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success)
+                        {
+                            myQuestion.ShowInReport = xyz[1].Trim();
+                            //listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *DELAY is invalid "); 
+                    
+                    
+                }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { myQuestion.DisplayBackButton = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*NONEXTBTN"))
@@ -10435,6 +6709,8 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.DisplayJumpButton = "2"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*ADDRESS3"))
                 { myQuestion.DisplayJumpButton = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*ADDRESS4"))
+                { myQuestion.DisplayJumpButton = "4"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*SHOWASFORM"))
                 {
                     myQuestion.NumberOfColumn = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -10447,7 +6723,7 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     myQuestion.WrittenOEInPaper = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
-                else if (myText.ToUpper().Trim().Contains("*KEEPDOWNLOAD"))
+                else if (myText.ToUpper().Trim().Contains("*INRLD"))
                 {
                     myQuestion.ForceToTakeOE = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
@@ -10485,9 +6761,26 @@ namespace DBI_Scripting.Forms.Scripting
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *VIDEO is invalid ");
 
                 }
+                else if (myText.ToUpper().Trim().Contains("*QLABEL"))
+                {
+                    //myQuestion.QType = "6"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+
+                    string[] xy = word[n].Trim().Split('"');
+                    if (xy.Length == 3)
+                    {
+                        string[] xyz = xy[1].Split('"');
+                        if (xyz.Length != 1)
+                            txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax, Double Quatetion should not be here " + xyz[1]);
+                        else
+                            myQuestion.Comments = xyz[0];
+
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *QLABEL is invalid, Double Quatetion should not be here ");
+
+                }
 
                 //************************************* Attribute Filter ***********************************************
-                else if (myText.ToUpper().Trim().Contains("*INCLUDE") && !myText.ToUpper().Trim().Contains("*INCLUDEGRIDLIST"))
+                else if (myText.ToUpper().Trim().Contains("*INCLUDE") && !myText.ToUpper().Trim().Contains("*INCLUDEGRIDLIST") && !myText.ToUpper().Trim().Contains("*INCLUDEBYORDER"))
                 {
                     string[] xyz = word[n].Trim().Split(' ');
                     if (xyz.Length == 2)
@@ -10503,6 +6796,29 @@ namespace DBI_Scripting.Forms.Scripting
                                 myAttributeFilter.QId = myQuestion.QId;
                                 myAttributeFilter.InheritedQId = abc[1].Trim();
                                 myAttributeFilter.FilterType = "1";
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *EXCLUDE is invalid ");
+                }
+                else if (myText.ToUpper().Trim().Contains("*INCLUDEBYORDER"))
+                {
+                    string[] xyz = word[n].Trim().Split(' ');
+                    if (xyz.Length == 2)
+                    {
+                        listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
+
+                        string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
+                        if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
+                        {
+                            if (listOfQuestionIdForDupliCheck.Contains(abc[1].Trim()))
+                            {
+                                myAttributeFilter.ProjectId = projectInfoScript.ProjectCode;
+                                myAttributeFilter.QId = myQuestion.QId;
+                                myAttributeFilter.InheritedQId = abc[1].Trim();
+                                myAttributeFilter.FilterType = "5";
                             }
                             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                         }
@@ -10895,6 +7211,53 @@ namespace DBI_Scripting.Forms.Scripting
                                     }
                                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                                 }
+                                else if (myQuestion.QType == "27")
+                                {
+                                    if (currentGridListName != "")
+                                    {
+                                        for (int x = 0; x < listOfAttributeTemp.Count; x++)
+                                        {
+                                            AttributeMain myAttributeMain = new AttributeMain();
+                                            //myAttributeMain = listOfAttributeTemp[x];
+                                            myAttributeMain.ProjectId = listOfAttributeTemp[x].ProjectId;
+                                            myAttributeMain.QId = listOfAttributeTemp[x].QId;
+                                            myAttributeMain.AttributeEnglish = listOfAttributeTemp[x].AttributeEnglish;
+                                            myAttributeMain.AttributeBengali = listOfAttributeTemp[x].AttributeBengali;
+                                            myAttributeMain.AttributeValue = listOfAttributeTemp[x].AttributeValue;
+                                            myAttributeMain.AttributeOrder = listOfAttributeTemp[x].AttributeOrder;
+                                            myAttributeMain.TakeOpenended = listOfAttributeTemp[x].TakeOpenended;
+                                            myAttributeMain.IsExclusive = listOfAttributeTemp[x].IsExclusive;
+                                            myAttributeMain.LinkId1 = listOfAttributeTemp[x].LinkId1;
+                                            myAttributeMain.LinkId2 = listOfAttributeTemp[x].LinkId2;
+                                            myAttributeMain.MinValue = listOfAttributeTemp[x].MinValue;
+                                            myAttributeMain.MaxValue = listOfAttributeTemp[x].MaxValue;
+                                            myAttributeMain.ForceAndMsgOpt = listOfAttributeTemp[x].ForceAndMsgOpt;
+                                            myAttributeMain.GroupName = listOfAttributeTemp[x].GroupName;
+                                            myAttributeMain.FilterQid = listOfAttributeTemp[x].FilterQid;
+                                            myAttributeMain.FilterType = listOfAttributeTemp[x].FilterType;
+                                            myAttributeMain.ExcepValue = listOfAttributeTemp[x].ExcepValue;
+                                            myAttributeMain.Comments = listOfAttributeTemp[x].Comments;
+                                            myAttributeMain.AttributeLang3 = listOfAttributeTemp[x].AttributeLang3;
+                                            myAttributeMain.AttributeLang4 = listOfAttributeTemp[x].AttributeLang4;
+                                            myAttributeMain.AttributeLang5 = listOfAttributeTemp[x].AttributeLang5;
+                                            myAttributeMain.AttributeLang6 = listOfAttributeTemp[x].AttributeLang6;
+                                            myAttributeMain.AttributeLang7 = listOfAttributeTemp[x].AttributeLang7;
+                                            myAttributeMain.AttributeLang8 = listOfAttributeTemp[x].AttributeLang8;
+                                            myAttributeMain.AttributeLang9 = listOfAttributeTemp[x].AttributeLang9;
+                                            myAttributeMain.AttributeLang10 = listOfAttributeTemp[x].AttributeLang10;
+
+                                            listOfAttributeMain.Add(myAttributeMain);
+                                            listOfAttributeMain[x].LinkId1 = "27";
+                                            listOfAttributeMain[x].LinkId2 = currentGridListName;
+
+                                            listOfAttributeMain[x].FilterQid = GridFilterQId;
+                                            listOfAttributeMain[x].FilterType = GridFilterType;
+
+                                            index++;
+                                        }
+                                    }
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
+                                }
                                 else
                                 {
                                     //Start pronab added
@@ -11004,7 +7367,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -11154,6 +7517,19 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                             }
+                            else if (myQuestion.QType == "27")
+                            {
+                                if (currentGridListName != "")
+                                {
+
+                                    attributeMain.LinkId1 = "27";
+                                    attributeMain.LinkId2 = currentGridListName;
+
+                                    attributeMain.FilterQid = GridFilterQId;
+                                    attributeMain.FilterType = GridFilterType;
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
+                            }
                             //else if (myQuestion.QType == "22")
                             //{
                             //    if (currentGridListName != "")
@@ -11192,6 +7568,18 @@ namespace DBI_Scripting.Forms.Scripting
                                 if (currentGridListName != "")
                                 {
                                     attributeMain.LinkId1 = "2";
+                                    attributeMain.LinkId2 = currentGridListName;
+
+                                    attributeMain.FilterQid = GridFilterQId;
+                                    attributeMain.FilterType = GridFilterType;
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " list unavailable");
+                            }
+                            else if (myQuestion.QType == "27")
+                            {
+                                if (currentGridListName != "")
+                                {
+                                    attributeMain.LinkId1 = "27";
                                     attributeMain.LinkId2 = currentGridListName;
 
                                     attributeMain.FilterQid = GridFilterQId;
@@ -11312,7 +7700,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         {
                                             if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
                                             {
-                                                attributeMain.ForceAndMsgOpt = xyz[1].Trim();
+                                                attributeMain.ExcepValue = xyz[1].Trim();
                                             }
                                             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
                                         }
@@ -11524,7 +7912,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -11562,7 +7950,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid syntax x");
 
                     if (i < lines.Count - 1)
                     {
@@ -11593,6 +7981,580 @@ namespace DBI_Scripting.Forms.Scripting
             return i;
 
         }
+
+
+        private int prepareQuestionForLanguage(List<String> linesLanguageX, int i, TextWriter txtWriter, Dictionary<int, int> dicLine, int ln1, int languageNo)
+        {
+            //Pronab added for repeat
+            List<AttributeMain> listOfAttributeTempLanX = new List<AttributeMain>();
+
+            List<string> listOfQuestionIdForDupliCheckLanX = new List<string>();
+            List<string> listOfGridListForDupliCheckLanX = new List<string>();
+
+
+            bool hasRepeat = false;
+
+            String strline = linesLanguageX[i];
+
+            string[] word = strline.Split('*');
+
+            //Pronab
+            for (int n = 1; n < word.Length; n++)
+            {
+                if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
+                    txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
+
+                string myText = "*" + word[n];
+
+
+                if (myText.ToUpper().Trim().Contains("*REPEAT"))
+                {
+                    string[] xyz = word[n].Trim().Split(' ');
+                    if (xyz.Length == 2)
+                    {
+                        string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
+                        if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
+                        {
+                            listOfAttributeTempLanX = dicQidVsAttributeListLan1[abc[1].Trim()];
+                        }
+                    }
+                    hasRepeat = true;
+                }
+                else
+                {
+                    hasRepeat = false;
+                }
+
+            }
+
+
+            if (hasRepeat)
+            {
+                //int iStart = i;
+                //for (int k = 0; k < listOfAttributeTempLan1.Count; k++)
+                //{
+                //    if (listOfAttributeTempLan1[k].AttributeValue.Contains("99")) //Pronab Need to work on this for local language
+                //        break;
+
+
+                //    AttributeMain attributeMainR = new AttributeMain();
+                //    attributeMainR.AttributeEnglish = listOfAttributeTempLan1[k].AttributeEnglish;
+                //    attributeMainR.AttributeValue = listOfAttributeTempLan1[k].AttributeValue;
+
+                //    currentQuestion = new Question();
+
+                //    List<LogicalSyntax> listOfLogicalSyntaxTemp = new List<LogicalSyntax>();
+                //    List<Question> listOfQuestionTemp = new List<Question>();
+                //    Question currentQuestionTemp = new Question();
+
+                //    Dictionary<String, List<AttributeMain>> dicQidVsAttributeListTempLan1 = new Dictionary<String, List<AttributeMain>>();
+                //    List<AttributeFilter> listOfAttributeFilterTempLan1 = new List<AttributeFilter>();
+
+                //    i = iStart;
+
+                //    i = this.prepareQuestionLan1(linesLanguage1, i, listOfQuestionIdForDupliCheckLan1, listOfGridListForDupliCheckLan1, listOfLogicalSyntaxTemp, listOfQuestionTemp, currentQuestionTemp, dicQidVsAttributeListTempLan1, listOfAttributeFilterTempLan1, txtWriter, dicLine, attributeMainR, ln1);
+                //    strline = linesLanguage1[i];
+
+                //    for (int x = 0; x < listOfLogicalSyntaxTemp.Count; x++)
+                //    {
+                //        listOfLogicalSyntax.Add(listOfLogicalSyntaxTemp[x]);
+                //    }
+
+                //    for (int x = 0; x < listOfQuestionTemp.Count; x++)
+                //    {
+                //        listOfQuestionLan1.Add(listOfQuestionTemp[x]);
+                //    }
+                //    currentQuestion = listOfQuestionTemp[0];
+                //    //currentQuestion = currentQuestionTemp;
+
+                //    foreach (KeyValuePair<String, List<AttributeMain>> pair in dicQidVsAttributeListTempLan1)
+                //    {
+                //        dicQidVsAttributeListLan1.Add(pair.Key, pair.Value);
+                //    }
+
+
+                //    for (int x = 0; x < listOfAttributeFilterTempLan1.Count; x++)
+                //    {
+                //        listOfAttributeFilter.Add(listOfAttributeFilterTempLan1[x]);
+                //    }
+
+                //}
+
+            }//Pronab
+            else
+            {
+                AttributeMain attributeMain1 = new AttributeMain();
+                AttributeMain attributeMain2 = new AttributeMain();
+
+                AttributeMain attributeMainFIName = new AttributeMain();
+                AttributeMain attributeMainFICode = new AttributeMain();
+                AttributeMain attributeMainFSName = new AttributeMain();
+                AttributeMain attributeMainFSCode = new AttributeMain();
+
+                Boolean hasDKCS = false;
+
+                Question currentQuestionLanX = new Question();
+                Question myQuestionLanX = new Question();
+                AttributeFilter myAttributeFilterX = new AttributeFilter();
+
+                int QTypeCounter = 0;
+                List<string> listOfQuestionPropertiesX = new List<string>();
+                String currentGridListNameLanX = "";
+
+
+                #region Question Properties
+                for (int n = 1; n < word.Length; n++)
+                {
+                    if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
+                        txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
+
+                    string myText = "*" + word[n];
+
+
+                    if (myText.ToUpper().Trim().Contains("*QUESTION"))
+                    {
+
+                        //QID
+                        string[] xyz = word[n].Trim().Split(' ');
+                        if (xyz.Length == 2)
+                        {
+                            if (Regex.IsMatch(xyz[1].Trim(), "^[a-zA-Z0-9]+$"))
+                            {
+                                if (!listOfQuestionIdForDupliCheckLanX.Contains(xyz[1].Trim()))
+                                {
+                                    myQuestionLanX.QId = xyz[1].Trim();
+                                    listOfQuestionIdForDupliCheckLanX.Add(xyz[1].Trim());
+
+                                    //if (myQuestion.QId == "SQ21")
+                                    //    MessageBox.Show("");
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + xyz[1].Trim() + ", QId must be unique");
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid QId " + xyz[1].Trim() + ", Must be started with Alpha");
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid QId syntax" + xyz[0].Trim() + ", Only Qid exist after *QUESTION");
+
+                    }
+                    //Question Type
+                    else if (myText.ToUpper().Trim().Contains("*SR") && !myText.ToUpper().Trim().Contains("*GRIDSR"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*MR") && !myText.ToUpper().Trim().Contains("*GRIDMR"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*OPEN") && !myText.ToUpper().Trim().Contains("*ALPHALIST"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*NUMBER"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*RANK"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*IMAGE"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*GRIDSR"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*GRIDMR"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*MEDIA"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*RECORDING"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*ALPHALIST"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*NUMLIST") && !myText.ToUpper().Trim().Contains("NUMLISTTOTAL"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*DATE"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*TIME"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*CAPTUREIMAGE"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*NUMLISTTOTAL"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*AUTOCOMPLETE") && !myText.ToUpper().Trim().Contains("AUTOCOMPLETEANS"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*AUTOCOMPLETEANS"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*DROPDOWN") && !myText.ToUpper().Trim().Contains("DROPDOWNLIST"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*DROPDOWNLIST"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*FORM"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*INFO"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*END") && !myText.ToUpper().Trim().Contains("*ENDREC"))
+                    { hasEnd = true; }
+                    else if (myText.ToUpper().Trim().Contains("*TERMINATE"))
+                    { hasTerminate = true; }
+                    else if (myText.ToUpper().Trim().Contains("*FIFS"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, *FIFS Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*RANDOM"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*ROT"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*MIN"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*MAX") && !myText.ToUpper().Trim().Contains("*MAXDIFF"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*COLUMN"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*BLOCK"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*DUMMY1"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*DELAY"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*NONEXTBTN"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    //************************************* Attribute Filter ***********************************************
+                    else if (myText.ToUpper().Trim().Contains("*INCLUDE"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*EXCLUDE"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*USEGRIDLIST"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*DKCS"))
+                    {
+                        string[] xyz = word[n].Trim().Split(new Char[] { '\"' });
+                        if (xyz.Length == 5)
+                        {
+                            listOfQuestionPropertiesX.Add(xyz[0].ToUpper().Trim());
+
+                            //string[] abc = xyz[1].Trim().Split(new Char[] { '\"' });
+                            if (xyz[1].Trim() != "")
+                            {
+                                if (Regex.Match(xyz[3].Trim(), @"^\d+$").Success)
+                                {
+                                    hasDKCS = true;
+
+                                    attributeMain1 = new AttributeMain();
+                                    attributeMain1.QId = currentQuestion.QId;
+                                    attributeMain1.AttributeEnglish = "";
+                                    attributeMain1.AttributeValue = "1";
+                                    attributeMain1.AttributeOrder = "1";
+
+                                    attributeMain2 = new AttributeMain();
+                                    attributeMain2.QId = currentQuestion.QId;
+                                    attributeMain2.AttributeEnglish = xyz[1].Trim();
+                                    attributeMain2.AttributeValue = xyz[3].Trim();
+                                    attributeMain2.AttributeOrder = "2";
+                                    attributeMain2.IsExclusive = "1";
+
+
+
+                                    //Add the attribute list 
+                                    //dicQidVsAttributeList.Add(myQuestion.QId, listOfAttributeMain1);
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute code must be Number " + xyz[3].Trim());
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Attribute Label missing " + xyz[1].Trim());
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *DKCS is invalid ");
+                    }
+                    else if (myText.ToUpper().Trim().Contains("IF"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    //************************************* End of Attribute Filter ****************************************
+
+                }
+                #endregion
+
+                string questionText = "";
+                strline = linesLanguageX[++i];
+                bool getquestionText = false;
+                while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
+                {
+                    questionText = questionText + strline + "<br>";
+                    strline = linesLanguageX[++i];
+                    getquestionText = true;
+                }
+
+                if (questionText == "")
+                    txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid Question Text : should not exist");
+                else
+                    myQuestionLanX.QuestionEnglish = questionText.Substring(0, questionText.Length - 4);
+
+                //add question object to list
+                if (languageNo == 1) listOfQuestionLan1.Add(myQuestionLanX);
+                else if (languageNo == 2) listOfQuestionLan2.Add(myQuestionLanX);
+                else if (languageNo == 3) listOfQuestionLan3.Add(myQuestionLanX);
+                else if (languageNo == 4) listOfQuestionLan4.Add(myQuestionLanX);
+                else if (languageNo == 5) listOfQuestionLan5.Add(myQuestionLanX);
+                else if (languageNo == 6) listOfQuestionLan6.Add(myQuestionLanX);
+                else if (languageNo == 7) listOfQuestionLan7.Add(myQuestionLanX);
+                else if (languageNo == 8) listOfQuestionLan8.Add(myQuestionLanX);
+                else if (languageNo == 9) listOfQuestionLan9.Add(myQuestionLanX);
+
+                currentQuestionLanX = myQuestionLanX;
+
+                //this portion is for question attribute
+
+                if (getquestionText == true && strline.Substring(0, 1).Contains("*"))
+                {
+                    if (i < linesLanguageX.Count - 1)
+                        i--;
+                }
+
+                List<AttributeMain> listOfAttributeMainLanX = new List<AttributeMain>();
+                int index = 1;
+
+                List<String> listOfAttributeValueForDupliCheckLanX = new List<string>();
+                List<String> listOfAttributeLabelForDupliCheckLanX = new List<string>();
+
+                if (hasDKCS == true)
+                {
+                    listOfAttributeMainLanX.Add(attributeMain1);
+                    listOfAttributeMainLanX.Add(attributeMain2);
+                    hasDKCS = false;
+                }
+
+                #region USELIST
+
+                Dictionary<string, List<AttributeMain>> dicQidVsAttributeListLanX = new Dictionary<string, List<AttributeMain>>();
+                if (languageNo == 1) dicQidVsAttributeListLanX = dicQidVsAttributeListLan1;
+                else if (languageNo == 2) dicQidVsAttributeListLanX = dicQidVsAttributeListLan2;
+                else if (languageNo == 3) dicQidVsAttributeListLanX = dicQidVsAttributeListLan3;
+                else if (languageNo == 4) dicQidVsAttributeListLanX = dicQidVsAttributeListLan4;
+                else if (languageNo == 5) dicQidVsAttributeListLanX = dicQidVsAttributeListLan5;
+                else if (languageNo == 6) dicQidVsAttributeListLanX = dicQidVsAttributeListLan6;
+                else if (languageNo == 7) dicQidVsAttributeListLanX = dicQidVsAttributeListLan7;
+                else if (languageNo == 8) dicQidVsAttributeListLanX = dicQidVsAttributeListLan8;
+                else if (languageNo == 9) dicQidVsAttributeListLanX = dicQidVsAttributeListLan9;
+
+
+                if (strline.Split(' ')[0].ToUpper().Contains("*USELIST"))
+                {
+                    //Pronab made changes in this block
+                    string[] word1 = strline.Split(' ');
+                    if (word1.Length == 2)
+                    {
+                        if (word1[1].Split('"').Length == 3)
+                        {
+                            if (dicQidVsAttributeListLanX.ContainsKey(word1[1].Split('"')[1].Trim()))
+                            {
+                                if (dicQidVsAttributeListLanX.ContainsKey(word1[1].Split('"')[1].Trim()))
+                                {
+                                    List<AttributeMain> listOfAttributeTemp = dicQidVsAttributeListLanX[word1[1].Split('"')[1].Trim()];
+
+                                    for (int x = 0; x < listOfAttributeTemp.Count; x++)
+                                    {
+                                        if (!listOfAttributeTemp[x].AttributeEnglish.Contains("*"))
+                                        {
+                                            listOfAttributeMainLanX.Add(listOfAttributeTemp[x]);
+                                            index++;
+                                        }
+                                        else
+                                        {
+                                            //If attribute have properties
+                                            #region Attribute Properties
+                                            string[] myKey = listOfAttributeTemp[x].AttributeEnglish.Split('*');
+
+                                            AttributeMain attributeMainLanX = new AttributeMain();
+                                            //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
+                                            //{
+
+                                            attributeMainLanX.AttributeEnglish = myKey[0].Trim();
+                                            //}
+
+
+
+                                            //Add the attribute in 
+                                            listOfAttributeMainLanX.Add(attributeMainLanX);
+                                            #endregion
+                                        }
+
+                                    }
+
+                                    //listOfAttributeMain = dicQidVsAttributeList[word1[1].Split('"')[1].Trim()];
+                                    //index = listOfAttributeMain.Count + 1;
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate Attribute list name/Qid" + word1[1].Split('"')[1].Trim());
+
+                                for (int x = 0; x < listOfAttributeMainLanX.Count; x++)
+                                {
+                                    listOfAttributeValueForDupliCheckLanX.Add(listOfAttributeMainLanX[x].AttributeValue);
+                                    listOfAttributeLabelForDupliCheckLanX.Add(listOfAttributeMainLanX[x].AttributeEnglish);
+                                }
+
+                            }
+                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid use list name" + word1[1].Split('"')[1].Trim());
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for use list is wrong" + word1[1].Split('"')[1].Trim());
+
+                    strline = linesLanguageX[++i];
+                    strline = linesLanguageX[++i];
+                    //Pronab end 
+                }
+                #endregion
+
+                #region Attribute with :
+                if (isAttribute(strline))
+                {
+                    while (!strline.Trim().Substring(0, 1).Contains("*"))
+                    {
+
+                        //if (strline.Contains(":") && strline.Split(':').Length == 2)
+                        if (strline.Contains(":"))
+                        {
+                            AttributeMain attributeMainLanX = new AttributeMain();
+                            String[] myWord = strline.Split(':');
+
+                            if (Regex.Match(myWord[0].Trim(), @"^\d+$").Success)
+                            {
+                                if (!listOfAttributeValueForDupliCheckLanX.Contains(myWord[0].Trim()))
+                                {
+                                    attributeMainLanX.AttributeValue = myWord[0].Trim();
+                                    attributeMainLanX.AttributeOrder = myWord[0].Trim(); //index.ToString();
+                                    index++;
+
+                                    //Add value in list
+                                    listOfAttributeValueForDupliCheckLanX.Add(myWord[0].Trim());
+
+                                }//else {Error Message}
+
+                            }//else {Error Message}
+                            string mylabel = strline.Substring(strline.IndexOf(":", 0) + 1);
+                            if (!mylabel.Contains("*"))
+                            {
+                                //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[1].Trim().ToUpper()))
+                                //{
+
+                                attributeMainLanX.AttributeEnglish = mylabel.Trim();
+
+                                //Add value in list
+                                listOfAttributeLabelForDupliCheckLanX.Add(mylabel.Trim().ToUpper());
+                                //}//else {Error Message}
+                            }
+                            else
+                            {
+
+                                //If attribute have properties
+                                #region Attribute Properties
+                                string[] myKey = mylabel.Split('*');
+
+                                //if (!listOfAttributeLabelForDupliCheck.Contains(myWord[0].Trim().ToUpper()))
+                                //{
+
+                                attributeMainLanX.AttributeEnglish = myKey[0].Trim();
+                                //}
+
+                                for (int n = 0; n < listOfKeyWords.Count; n++)
+                                {
+                                    if (mylabel.Contains("*" + listOfKeyWords[n])) txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, *" + listOfKeyWords[n] + " Should not exist");
+                                }
+
+                                #endregion
+
+                            }
+
+                            //Add the attribute in 
+                            listOfAttributeMainLanX.Add(attributeMainLanX);
+
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax, Attribute code missing");
+
+                        if (i < linesLanguageX.Count - 1)
+                        {
+                            strline = linesLanguageX[++i];
+                        }
+                    }
+
+                    if (i < linesLanguageX.Count - 1)
+                        i--;
+                }
+                else
+                {
+                    if (i < linesLanguageX.Count - 1)
+                        i--;
+                }
+
+                #endregion
+
+                if (myQuestionLanX.QId != null)
+                {
+                    if (languageNo == 1)
+                    {
+                        if (!dicQidVsAttributeListLan1.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan1.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 1, QId must be unique");
+                    }
+                    else if (languageNo == 2)
+                    {
+                        if (!dicQidVsAttributeListLan2.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan2.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 2, QId must be unique");
+                    }
+                    else if (languageNo == 3)
+                    {
+                        if (!dicQidVsAttributeListLan3.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan3.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 3, QId must be unique");
+                    }
+                    else if (languageNo == 4)
+                    {
+                        if (!dicQidVsAttributeListLan4.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan4.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 4, QId must be unique");
+                    }
+                    else if (languageNo == 5)
+                    {
+                        if (!dicQidVsAttributeListLan5.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan5.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 5, QId must be unique");
+                    }
+                    else if (languageNo == 6)
+                    {
+                        if (!dicQidVsAttributeListLan6.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan6.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 6, QId must be unique");
+                    }
+                    else if (languageNo == 7)
+                    {
+                        if (!dicQidVsAttributeListLan7.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan7.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 7, QId must be unique");
+                    }
+                    else if (languageNo == 8)
+                    {
+                        if (!dicQidVsAttributeListLan8.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan8.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 8, QId must be unique");
+                    }
+                    else if (languageNo == 9)
+                    {
+                        if (!dicQidVsAttributeListLan9.ContainsKey(myQuestionLanX.QId))
+                            dicQidVsAttributeListLan9.Add(myQuestionLanX.QId, listOfAttributeMainLanX);
+                        else
+                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Duplicate QId " + myQuestionLanX.QId + " in Language 9, QId must be unique");
+                    }
+                }
+                else
+                    txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Question Id missing");
+
+                //if (myAttributeFilter.QId != null)
+                //    listOfAttributeFilter.Add(myAttributeFilter);
+            }
+
+            return i;
+        }
+
+
+
+
+
+
+
 
         //Pronab added this overload method for repeat questions
         private int prepareQuestion(List<String> lines, int i, List<string> listOfQuestionIdForDupliCheck, List<string> listOfGridListForDupliCheck, List<LogicalSyntax> listOfLogicalSyntaxTemp, List<Question> listOfQuestionTemp, Question currentQuestionTemp, Dictionary<String, List<AttributeMain>> dicQidVsAttributeListTemp, List<AttributeFilter> listOfAttributeFilterTemp, TextWriter txtWriter, Dictionary<int, int> dicLine, AttributeMain attributeR)
@@ -11688,6 +8650,10 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     myQuestion.QType = "7"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
+                else if (myText.ToUpper().Trim().Contains("*SCALE7"))
+                {
+                    myQuestion.QType = "32"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                }
                 else if (myText.ToUpper().Trim().Contains("*SCALE10"))
                 {
                     myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -11734,6 +8700,11 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.QType = "24"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*DRAGDROP"))
                 { myQuestion.QType = "26"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*GRIDNUM"))
+                {
+                    myQuestion.QType = "27"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                    qTypeForGridQid = 8;
+                }
                 else if (myText.ToUpper().Trim().Contains("*MAXDIFF"))
                 { myQuestion.QType = "40"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*GPS"))
@@ -11807,6 +8778,8 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.HasRandomAttrib = "01"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 //Group Rot Option Rot
                 else if (myText.ToUpper().Trim().Contains("*OTPROTGROUPROT"))
+                { myQuestion.HasRandomAttrib = "11"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*FROT"))
                 { myQuestion.HasRandomAttrib = "11"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
 
 
@@ -11893,6 +8866,19 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *IMGADJ is invalid ");
                 }
+                else if (myText.ToUpper().Trim().Contains("*IMGSIZE"))
+                {
+                    string[] xyz = word[n].Trim().Split(' ');
+                    if (xyz.Length == 2)
+                    {
+                        listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
+
+                        if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success)
+                            myQuestion.HasMediaPath = xyz[1].Trim();
+                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *IMGADJ is invalid ");
+                }
                 else if (myText.ToUpper().Trim().Contains("*JUMPFOR"))
                 {
                     string[] xyz = word[n].Trim().Split(' ');
@@ -11925,8 +8911,23 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.HasAutoResponse = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { myQuestion.HasAutoResponse = "2"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
-                { myQuestion.ShowInReport = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
+                {
+                    string[] xyz = word[n].Trim().Split(' ');
+                    if (xyz.Length == 2)
+                    {
+                        listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
+
+                        if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success)
+                        {
+                            myQuestion.ShowInReport = xyz[1].Trim();
+                            //listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
+                        }
+                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *DELAY is invalid "); 
+                    
+                }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { myQuestion.DisplayBackButton = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*NONEXTBTN"))
@@ -11939,6 +8940,8 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.DisplayJumpButton = "2"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*ADDRESS3"))
                 { myQuestion.DisplayJumpButton = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*ADDRESS4"))
+                { myQuestion.DisplayJumpButton = "4"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*SHOWASFORM"))
                 {
                     myQuestion.NumberOfColumn = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -11951,7 +8954,7 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     myQuestion.WrittenOEInPaper = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
-                else if (myText.ToUpper().Trim().Contains("*KEEPDOWNLOAD"))
+                else if (myText.ToUpper().Trim().Contains("*INRLD"))
                 {
                     myQuestion.ForceToTakeOE = "1"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
@@ -12400,6 +9403,53 @@ namespace DBI_Scripting.Forms.Scripting
                                     }
                                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                                 }
+                                else if (myQuestion.QType == "27")
+                                {
+                                    if (currentGridListName != "")
+                                    {
+                                        for (int x = 0; x < listOfAttributeTemp.Count; x++)
+                                        {
+                                            AttributeMain myAttributeMain = new AttributeMain();
+                                            //myAttributeMain = listOfAttributeTemp[x];
+                                            myAttributeMain.ProjectId = listOfAttributeTemp[x].ProjectId;
+                                            myAttributeMain.QId = listOfAttributeTemp[x].QId;
+                                            myAttributeMain.AttributeEnglish = listOfAttributeTemp[x].AttributeEnglish;
+                                            myAttributeMain.AttributeBengali = listOfAttributeTemp[x].AttributeBengali;
+                                            myAttributeMain.AttributeValue = listOfAttributeTemp[x].AttributeValue;
+                                            myAttributeMain.AttributeOrder = listOfAttributeTemp[x].AttributeOrder;
+                                            myAttributeMain.TakeOpenended = listOfAttributeTemp[x].TakeOpenended;
+                                            myAttributeMain.IsExclusive = listOfAttributeTemp[x].IsExclusive;
+                                            myAttributeMain.LinkId1 = listOfAttributeTemp[x].LinkId1;
+                                            myAttributeMain.LinkId2 = listOfAttributeTemp[x].LinkId2;
+                                            myAttributeMain.MinValue = listOfAttributeTemp[x].MinValue;
+                                            myAttributeMain.MaxValue = listOfAttributeTemp[x].MaxValue;
+                                            myAttributeMain.ForceAndMsgOpt = listOfAttributeTemp[x].ForceAndMsgOpt;
+                                            myAttributeMain.GroupName = listOfAttributeTemp[x].GroupName;
+                                            myAttributeMain.FilterQid = listOfAttributeTemp[x].FilterQid;
+                                            myAttributeMain.FilterType = listOfAttributeTemp[x].FilterType;
+                                            myAttributeMain.ExcepValue = listOfAttributeTemp[x].ExcepValue;
+                                            myAttributeMain.Comments = listOfAttributeTemp[x].Comments;
+                                            myAttributeMain.AttributeLang3 = listOfAttributeTemp[x].AttributeLang3;
+                                            myAttributeMain.AttributeLang4 = listOfAttributeTemp[x].AttributeLang4;
+                                            myAttributeMain.AttributeLang5 = listOfAttributeTemp[x].AttributeLang5;
+                                            myAttributeMain.AttributeLang6 = listOfAttributeTemp[x].AttributeLang6;
+                                            myAttributeMain.AttributeLang7 = listOfAttributeTemp[x].AttributeLang7;
+                                            myAttributeMain.AttributeLang8 = listOfAttributeTemp[x].AttributeLang8;
+                                            myAttributeMain.AttributeLang9 = listOfAttributeTemp[x].AttributeLang9;
+                                            myAttributeMain.AttributeLang10 = listOfAttributeTemp[x].AttributeLang10;
+
+                                            listOfAttributeMain.Add(myAttributeMain);
+                                            listOfAttributeMain[x].LinkId1 = "27";
+                                            listOfAttributeMain[x].LinkId2 = currentGridListName;
+
+                                            listOfAttributeMain[x].FilterQid = GridFilterQId;
+                                            listOfAttributeMain[x].FilterType = GridFilterType;
+
+                                            index++;
+                                        }
+                                    }
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
+                                }
                                 else
                                 {
                                     //Start pronab added
@@ -12509,7 +9559,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -12659,6 +9709,19 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
                             }
+                            else if (myQuestion.QType == "27")
+                            {
+                                if (currentGridListName != "")
+                                {
+
+                                    attributeMain.LinkId1 = "27";
+                                    attributeMain.LinkId2 = currentGridListName;
+
+                                    attributeMain.FilterQid = GridFilterQId;
+                                    attributeMain.FilterType = GridFilterType;
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
+                            }
                             //else if (myQuestion.QType == "22")
                             //{
                             //    if (currentGridListName != "")
@@ -12697,6 +9760,18 @@ namespace DBI_Scripting.Forms.Scripting
                                 if (currentGridListName != "")
                                 {
                                     attributeMain.LinkId1 = "2";
+                                    attributeMain.LinkId2 = currentGridListName;
+
+                                    attributeMain.FilterQid = GridFilterQId;
+                                    attributeMain.FilterType = GridFilterType;
+                                }
+                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
+                            }
+                            else if (myQuestion.QType == "27")
+                            {
+                                if (currentGridListName != "")
+                                {
+                                    attributeMain.LinkId1 = "27";
                                     attributeMain.LinkId2 = currentGridListName;
 
                                     attributeMain.FilterQid = GridFilterQId;
@@ -12817,7 +9892,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         {
                                             if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
                                             {
-                                                attributeMain.ForceAndMsgOpt = xyz[1].Trim();
+                                                attributeMain.ExcepValue = xyz[1].Trim();
                                             }
                                             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
                                         }
@@ -13029,7 +10104,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -13067,7 +10142,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid syntax y");
 
                     if (i < lines.Count - 1)
                     {
@@ -13273,7 +10348,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -13632,7 +10707,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -13966,11 +11041,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -14091,7 +11166,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -14129,7 +11204,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax z");
 
                     if (i < lines.Count - 1)
                     {
@@ -14335,7 +11410,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -14694,7 +11769,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -15028,11 +12103,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -15153,7 +12228,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -15191,7 +12266,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax a");
 
                     if (i < lines.Count - 1)
                     {
@@ -15397,7 +12472,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -15756,7 +12831,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -16090,11 +13165,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -16215,7 +13290,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -16253,7 +13328,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax b");
 
                     if (i < lines.Count - 1)
                     {
@@ -16818,7 +13893,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -17152,11 +14227,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -17277,7 +14352,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -17315,7 +14390,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax c");
 
                     if (i < lines.Count - 1)
                     {
@@ -17521,7 +14596,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -17880,7 +14955,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -18214,11 +15289,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -18339,7 +15414,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -18377,7 +15452,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax e");
 
                     if (i < lines.Count - 1)
                     {
@@ -18583,7 +15658,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -18942,7 +16017,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -19276,11 +16351,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -19401,7 +16476,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -19439,7 +16514,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax f");
 
                     if (i < lines.Count - 1)
                     {
@@ -19645,7 +16720,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -20004,7 +17079,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -20338,11 +17413,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -20463,7 +17538,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -20501,7 +17576,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax g");
 
                     if (i < lines.Count - 1)
                     {
@@ -20707,7 +17782,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -21066,7 +18141,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -21400,11 +18475,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -21525,7 +18600,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -21563,7 +18638,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax h");
 
                     if (i < lines.Count - 1)
                     {
@@ -21769,7 +18844,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*DUMMY2"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
-                else if (myText.ToUpper().Trim().Contains("*REPORT"))
+                else if (myText.ToUpper().Trim().Contains("*DELAY"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                 else if (myText.ToUpper().Trim().Contains("*NOBACKBTN"))
                 { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -22128,7 +19203,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                         attributeMain.ForceAndMsgOpt = "11";
                                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                                     {
-                                                        if (attributeMain.IsExclusive == "")
+                                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                                             attributeMain.IsExclusive = "2";
 
                                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -22462,11 +19537,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                                 attributeMain.FilterType = "1";
                                             }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid QId : " + abc[1].Trim());
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invalid QId : " + abc[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " QId must be followed by Alpha Charecter " + abc[1].Trim());
                                     }
-                                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Syntax for *INCLUDE is invalid ");
+                                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *INCLUDE is invalid ");
                                 }
                                 else if (myKey[n].ToUpper().Trim().Contains("EXCLUDE"))
                                 {
@@ -22587,7 +19662,7 @@ namespace DBI_Scripting.Forms.Scripting
                                         attributeMain.ForceAndMsgOpt = "11";
                                     else if (myKey[n].ToUpper().Trim().Contains("NOCON"))
                                     {
-                                        if (attributeMain.IsExclusive == "")
+                                        if (attributeMain.IsExclusive == "" || attributeMain.IsExclusive == null)
                                             attributeMain.IsExclusive = "2";
 
                                         if (myAttributeFilter.ExceptionalValue == null)
@@ -22625,7 +19700,7 @@ namespace DBI_Scripting.Forms.Scripting
                         listOfAttributeMain.Add(attributeMain);
 
                     }
-                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax ");
+                    else txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid syntax i");
 
                     if (i < lines.Count - 1)
                     {
@@ -22679,8 +19754,10 @@ namespace DBI_Scripting.Forms.Scripting
                     File.Delete(myPath + "\\" + projectInfoScript.DatabaseName + ".db");
 
 
-
-                string databasePath = System.AppDomain.CurrentDomain.BaseDirectory + "ShellDB\\SYSHELDB.db";
+                //String sTemp = "C:\\Temp\\ShellDB";
+                //string databasePath = System.AppDomain.CurrentDomain.BaseDirectory + "ShellDB\\SYSHELDB.db";
+                //string databasePath = System.AppDomain.CurrentDomain.BaseDirectory + "ShellDB\\" + comShellDBType.Text;
+                string databasePath = "C:\\Temp\\ShellDB\\" + comShellDBType.Text;
                 File.Copy(databasePath, myPath + "\\" + projectInfoScript.DatabaseName + ".db");
             }
             catch (Exception ex)
@@ -22780,7 +19857,7 @@ namespace DBI_Scripting.Forms.Scripting
                                             + "'" + replaceNull(myQuestion.QuestionEnglish).Substring(0, qText.Length - 4) + "',"
                                             + "'" + replaceNull(myQuestion.QuestionBengali) + "',"
                                             + "'" + replaceNull(myQuestion.AttributeId) + "',"
-                                            + "'" + replaceNull(myQuestion.Comments) + "',"
+                                            + "'" + (myQuestion.Comments == null ? replaceNull(myQuestion.QuestionEnglish).Substring(0, qText.Length - 4) : replaceNull(myQuestion.Comments)) + "',"
                                             + "'" + replaceNull(myQuestion.QType) + "',"
                                             + "'" + replaceNull(myQuestion.NoOfResponseMin) + "',"
                                             + "'" + replaceNull(myQuestion.NoOfResponseMax) + "',"
@@ -25639,7 +22716,9 @@ namespace DBI_Scripting.Forms.Scripting
 
                     if (hasQid == false)
                     {
-                        txtWriter.WriteLine(QidEnglish + " " + QidLan1 + " not exit in Language " + LanguageNo.ToString());
+                        //txtWriter.WriteLine(QidEnglish + " " + QidLan1 + " not exit in Language " + LanguageNo.ToString());
+                        if (QidEnglish != null)
+                            txtWriter.WriteLine(QidEnglish + " not exit in Language " + LanguageNo.ToString());
                     }
                 }
 
@@ -25755,6 +22834,7 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("IMAGE");
             listOfKeyWords.Add("GRIDSR");
             listOfKeyWords.Add("GRIDMR");
+            listOfKeyWords.Add("GRIDNUM");
             listOfKeyWords.Add("MEDIA");
             listOfKeyWords.Add("ALPHALIST");
             listOfKeyWords.Add("NUMLIST");
@@ -25779,12 +22859,17 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("SHOWASFORM");
             listOfKeyWords.Add("DIRIMAGE");
             listOfKeyWords.Add("SHOWASNUMTEXT");
-            listOfKeyWords.Add("KEEPDOWNLOAD");
+            //listOfKeyWords.Add("KEEPDOWNLOAD");
+            listOfKeyWords.Add("INRLD");
+            listOfKeyWords.Add("QLABEL");
+            listOfKeyWords.Add("IDOF");
+
 
             listOfKeyWords.Add("IF");
             listOfKeyWords.Add("RANDOM");
             listOfKeyWords.Add("ROT");
             listOfKeyWords.Add("QROT");
+            listOfKeyWords.Add("FROT");
             listOfKeyWords.Add("GROUPROT");
             listOfKeyWords.Add("BLOCK");
             listOfKeyWords.Add("GRANDOM");
@@ -25800,10 +22885,11 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("MANDATORY");
             listOfKeyWords.Add("COLUMN");
             listOfKeyWords.Add("INCLUDE");
+            listOfKeyWords.Add("INCLUDEBYORDER");
             listOfKeyWords.Add("EXCLUDE");
             listOfKeyWords.Add("FILTER");
             listOfKeyWords.Add("GOTO");
-            listOfKeyWords.Add("REPORT");
+            listOfKeyWords.Add("DELAY");
             listOfKeyWords.Add("EXCEPT");
             listOfKeyWords.Add("FONTSIZE");
             listOfKeyWords.Add("IMGADJBY");
@@ -25835,16 +22921,42 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("STARTREC");
             listOfKeyWords.Add("ENDREC");
             listOfKeyWords.Add("EXTCAMERA");
+            listOfKeyWords.Add("SCALE7");
             listOfKeyWords.Add("SCALE10");
 
             listOfKeyWords.Add("ADDRESS1");
             listOfKeyWords.Add("ADDRESS2");
             listOfKeyWords.Add("ADDRESS3");
+            listOfKeyWords.Add("ADDRESS4");
             listOfKeyWords.Add("PICT");
             listOfKeyWords.Add("VIDEO");
 
             listOfKeyWords.Add("REPEAT");//Pronab added for repeat
 
+
+            this.getShellDB();
+
+        }
+
+        private void getShellDB()
+        {
+
+            if (!Directory.Exists("C:\\Temp\\ShellDB"))
+                Directory.CreateDirectory("C:\\Temp\\ShellDB");
+
+            //String sTemp = System.AppDomain.CurrentDomain.BaseDirectory + "\\ShellDB";
+            String sTemp = "C:\\Temp\\ShellDB";
+            string[] fileArray = Directory.GetFiles(sTemp, "*.db");
+
+            comShellDBType.Items.Clear();
+
+            for (int i = 0; i < fileArray.Length; i++)
+            {
+                comShellDBType.Items.Add(fileArray[i].Substring(fileArray[i].LastIndexOf('\\') + 1));
+            }
+
+            if (comShellDBType.Items.Contains("SYSHELDB.db"))
+                comShellDBType.Text = "SYSHELDB.db";
         }
 
         private void btnUpload_Click(object sender, RoutedEventArgs e)
@@ -26036,6 +23148,11 @@ namespace DBI_Scripting.Forms.Scripting
             }
 
             return "true";
+        }
+
+        public static void DoEvents()
+        {
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate { }));
         }
     }
 

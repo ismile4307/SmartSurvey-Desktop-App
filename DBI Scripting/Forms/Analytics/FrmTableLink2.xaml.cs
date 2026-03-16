@@ -29,6 +29,7 @@ namespace DBI_Scripting.Forms.Analytics
 
 
         private String myPath, projectName;
+        private Boolean hasSigTest = false;
 
         public FrmTableLink2()
         {
@@ -557,6 +558,8 @@ namespace DBI_Scripting.Forms.Analytics
             //((Excel.Range)outputSheet.Cells[2, 2]).RowHeight = 24;
             ((Excel.Range)outputSheet.Cells[2, 2]).Style.VerticalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
 
+            
+
             outputSheet.Cells[3, 2] = "Prepared By : SmartSurvey BD Ltd.";
             outputSheet.Cells[3, 2].Font.Size = 11;
             outputSheet.Cells[3, 2].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black);
@@ -588,7 +591,28 @@ namespace DBI_Scripting.Forms.Analytics
             //outputSheet.Cells[startRow - 1, startColunm + 2] = "";
             //outputSheet.Cells[startRow - 1, startColunm + 3] = "";
 
+            if (hasSigTest == true)
+            {
+                outputSheet.Cells[2, 4] = "Notes of Sig Test";
+                outputSheet.Cells[2, 4].Font.Size = 11;
+                outputSheet.Cells[2, 4].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.DarkBlue);
+                outputSheet.Cells[2, 4].Font.Bold = true;
+                //((Excel.Range)outputSheet.Cells[2, 4]).Style.VerticalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
 
+
+                outputSheet.Cells[3, 4] = "Capital Letter = 95% CL";
+                outputSheet.Cells[3, 4].Font.Size = 11;
+                outputSheet.Cells[3, 4].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.DarkRed);
+                outputSheet.Cells[3, 4].Font.Italic = true;
+                //((Excel.Range)outputSheet.Cells[3, 4]).Style.VerticalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft;
+
+
+                outputSheet.Cells[4, 4] = "Small Letter = 90% CL";
+                outputSheet.Cells[4, 4].Font.Size = 11;
+                outputSheet.Cells[4, 4].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.DarkRed);
+                outputSheet.Cells[4, 4].Font.Italic = true;
+                //((Excel.Range)outputSheet.Cells[4, 4]).Style.VerticalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft;
+            }
 
 
 
@@ -843,7 +867,6 @@ namespace DBI_Scripting.Forms.Analytics
                         {
                             string temp1 = worksheet1.Cells[j, 1].Value.ToString();
 
-
                             if (temp1 == "DUMMY ROW")
                             {
                                 worksheet1.Rows[j].Delete(1);
@@ -886,7 +909,7 @@ namespace DBI_Scripting.Forms.Analytics
             {
                 if (xlWorkBook1.Worksheets[i].Name.ToString() == "Table")
                 {
-
+                    hasSigTest = false;
                     Excel.Worksheet worksheet1 = (Excel.Worksheet)xlApp1.Worksheets["Table"];
 
                     worksheet1.Select(true);
@@ -912,7 +935,11 @@ namespace DBI_Scripting.Forms.Analytics
                         {
                             string temp1 = worksheet1.Cells[j, 1].Value.ToString();
 
-
+                            if (temp1 == "S.TEST")
+                            {
+                                worksheet1.Cells[j, 1].Value = "";
+                                hasSigTest = true;
+                            }
                             if (temp1 == "DUMMY ROW")
                             {
                                 worksheet1.Rows[j].Delete(1);
@@ -1240,7 +1267,7 @@ namespace DBI_Scripting.Forms.Analytics
                             //######################
 
 
-                            if (tmp.StartsWith("Home"))
+                            if (tmp.StartsWith("Home") && tmp.Length==4)
                             {
                                 worksheet1.Rows[j + 1].Insert(1);
                                 worksheet1.Rows[j + 2].Insert(1);

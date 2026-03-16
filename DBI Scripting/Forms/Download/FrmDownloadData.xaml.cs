@@ -31,6 +31,7 @@ namespace DBI_Scripting.Forms
         private Dictionary<string, string> dicDateConsiderVsCode;
         private Dictionary<string, string> dicInterviewTypeVsCode;
         private Dictionary<string, string> dicProjectNameVsCode;
+        private Dictionary<string, string> dicFileTypeVsCode;
 
         private Dictionary<string, string> dicProjectNameVsStartDate;
 
@@ -58,6 +59,7 @@ namespace DBI_Scripting.Forms
 
             dicDateConsiderVsCode = new Dictionary<string, string>();
             dicInterviewTypeVsCode = new Dictionary<string, string>();
+            dicFileTypeVsCode = new Dictionary<string, string>();
 
             this.populateDic();
             dtpDateFrom.Text = DateTime.Now.ToShortDateString().ToString();
@@ -65,6 +67,7 @@ namespace DBI_Scripting.Forms
 
             comInterviewType.Text = "Final Interviews";
             comConsiderDate.Text = "Sync Date";
+            comFileType.Text = "Excel";
 
             this.getProjectsFromServer();
 
@@ -97,6 +100,14 @@ namespace DBI_Scripting.Forms
             dicInterviewTypeVsCode.Add("Incomplete Interviews", "5");
             dicInterviewTypeVsCode.Add("Final & Terminate Interviews", "6");
             dicInterviewTypeVsCode.Add("Deleted Interviews", "7");
+
+            comFileType.Items.Clear();
+            comFileType.Items.Add("Excel");
+            comFileType.Items.Add("CSV");
+
+            dicFileTypeVsCode.Clear();
+            dicFileTypeVsCode.Add("Excel", "1");
+            dicFileTypeVsCode.Add("CSV", "2");
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)
@@ -107,7 +118,12 @@ namespace DBI_Scripting.Forms
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "Excel 2007|*.xlsx|All Files|*.*";
+
+            if (comFileType.Text == "Excel")
+                saveFileDialog1.Filter = "Excel 2007|*.xlsx|All Files|*.*";
+            else if (comFileType.Text == "CSV")
+                saveFileDialog1.Filter = "Comma Seperated Value|*.csv|All Files|*.*";
+
             saveFileDialog1.Title = "Save Data File";
             //saveFileDialog1.ShowDialog();
 
@@ -187,28 +203,28 @@ namespace DBI_Scripting.Forms
         {
             //try
             //{
-                lblExecute.Content = "Execute Now : " + "Download Data";
-                DoEvents();
+            lblExecute.Content = "Execute Now : " + "Download Data";
+            DoEvents();
 
-                WebClient c = new WebClient();
-                MyWebRequest myRequest1;
-                //if (chkDeletedRec.Checked == false)
-                //myRequest1 = new MyWebRequest(Properties.Settings.Default.ServerAddress + "/respondent.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
-                myRequest1 = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/respondentbyproject.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
-                //else
-                //myRequest1 = new MyWebRequest("http://capiapi.chronometerhub.com/download_data/respondentdel.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comDateConsider.Text] + "&projectCode=" + dicProjectNameVsCode[comProject.Text]);
-            string temp=StaticClass.SERVER_URL + "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text];
-                //Console.WriteLine(data);
-                //JObject o = JObject.Parse(data);
-                string data = myRequest1.GetResponse().ToString();
+            WebClient c = new WebClient();
+            MyWebRequest myRequest1;
+            //if (chkDeletedRec.Checked == false)
+            //myRequest1 = new MyWebRequest(Properties.Settings.Default.ServerAddress + "/respondent.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
+            myRequest1 = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/respondentbyproject.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
+            //else
+            //myRequest1 = new MyWebRequest("http://capiapi.chronometerhub.com/download_data/respondentdel.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comDateConsider.Text] + "&projectCode=" + dicProjectNameVsCode[comProject.Text]);
+            string temp = StaticClass.SERVER_URL + "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text];
+            //Console.WriteLine(data);
+            //JObject o = JObject.Parse(data);
+            string data = myRequest1.GetResponse().ToString();
 
-                DataTable dt1_temp = (DataTable)JsonConvert.DeserializeObject(data, (typeof(DataTable)));
+            DataTable dt1_temp = (DataTable)JsonConvert.DeserializeObject(data, (typeof(DataTable)));
 
-                if (dt1_temp.Rows.Count > 0)
-                    dt1.Merge(dt1_temp);
+            if (dt1_temp.Rows.Count > 0)
+                dt1.Merge(dt1_temp);
 
-                //if (!dicDateVsTInterviewInfo.ContainsKey(startDate))
-                //    dicDateVsTInterviewInfo.Add(startDate, dt1);
+            //if (!dicDateVsTInterviewInfo.ContainsKey(startDate))
+            //    dicDateVsTInterviewInfo.Add(startDate, dt1);
 
             //}
             //catch (Exception ex)
@@ -296,137 +312,176 @@ namespace DBI_Scripting.Forms
             //try
             //{
 
-                databasePath = @"C:\Temp\" + dicProjectNameVsDBName[comProjectName.Text];
-                //databasePath = System.AppDomain.CurrentDomain.BaseDirectory + "\\" + dicProjectNameVsDBName[comProjectName.Text];
+            databasePath = @"C:\Temp\" + dicProjectNameVsDBName[comProjectName.Text];
+            //databasePath = System.AppDomain.CurrentDomain.BaseDirectory + "\\" + dicProjectNameVsDBName[comProjectName.Text];
 
-                if (File.Exists(databasePath) == false)
+            if (File.Exists(databasePath) == false)
+            {
+                MessageBox.Show("Script file not found..");
+                return;
+            }
+
+
+            SQLite sql = new SQLite(databasePath);
+            sql.connect();
+
+
+
+            lblOperationNo.Content = "Operation No : 3/3";
+            lblExecute.Content = "Execute Now : Populate Excel";
+            //Application.DoEvents();
+
+
+
+
+            Microsoft.Office.Interop.Excel.Application xlApp;
+            Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
+            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
+            object misValue = System.Reflection.Missing.Value;
+
+            xlApp = new Microsoft.Office.Interop.Excel.Application();
+            xlWorkBook = xlApp.Workbooks.Add(misValue);
+
+            xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+            xlWorkSheet.Name = "Openeneded";
+
+
+            xlWorkSheet.Cells[1, 1] = "Respondent Id";
+            xlWorkSheet.Cells[1, 2] = "QId";
+            xlWorkSheet.Cells[1, 3] = "Attribute Value";
+            xlWorkSheet.Cells[1, 4] = "OE Verbatim";
+
+            int row = 2;
+            DataTableReader drd = dt3.CreateDataReader();// sql.getDataTableOpenended();
+
+            while (drd.Read())
+            {
+                xlWorkSheet.Cells[row, 1] = "'" + drd["respondent_id"].ToString();
+                xlWorkSheet.Cells[row, 2] = "'" + drd["q_id"].ToString();
+                xlWorkSheet.Cells[row, 3] = "'" + drd["attribute_value"].ToString();
+                xlWorkSheet.Cells[row, 4] = "'" + ReplaceNewlines(drd["response"].ToString(), " ");
+                row = row + 1;
+            }
+
+            xlWorkSheet.Columns.AutoFit();
+
+
+
+
+
+
+
+
+
+
+            //******************* Get the Openended *****************************************************
+
+            Microsoft.Office.Interop.Excel.Sheets worksheets = xlWorkBook.Worksheets;
+            var xlNewSheet = (Microsoft.Office.Interop.Excel.Worksheet)worksheets.Add(worksheets[1]);
+            xlNewSheet.Name = "Data";
+
+
+            List<string> columnName = new List<string>();
+            List<List<string>> tableData = new List<List<string>>();
+
+            columnName = sql.getTableColumnReport();
+            tableData = sql.getTableDataReport(columnName, dt1, dt2, dt3, progressBar1);
+
+            for (int i = 1; i <= columnName.Count; i++)
+            {
+                xlNewSheet.Cells[1, i] = "'" + columnName[i - 1];
+            }
+
+
+
+            int p = 1;
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = tableData.Count * tableData[0].Count;
+
+            // Get dimensions of the 2-d array
+            int rowCount = tableData.Count;// arrays.GetLength(0);
+            int columnCount = tableData[0].Count;// arrays.GetLength(0);
+
+            string[,] arrays = new string[rowCount, columnCount];//tableData.Select(a => a.ToArray()).ToArray();
+
+
+            for (int i = 1; i <= tableData.Count; i++)
+            {
+                for (int j = 1; j <= tableData[i - 1].Count; j++)
                 {
-                    MessageBox.Show("Script file not found..");
-                    return;
+                    progressBar1.Value = p;
+                    p++;
+
+                    arrays[i - 1, j - 1] = "'" + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ");
+
+                    //xlNewSheet.Cells[i + 1, j] = "'" + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ");
                 }
-
-
-                SQLite sql = new SQLite(databasePath);
-                sql.connect();
+            }
 
 
 
-                lblOperationNo.Content = "Operation No : 3/3";
-                lblExecute.Content = "Execute Now : Populate Excel";
-                //Application.DoEvents();
+            //// Get an Excel Range of the same dimensions
+            //Microsoft.Office.Interop.Excel.Range range = (Microsoft.Office.Interop.Excel.Range)xlNewSheet.Cells[2, 1];
+            //range = range.get_Resize(rowCount, columnCount);
+            //// Assign the 2-d array to the Excel Range
+            //range.set_Value(Microsoft.Office.Interop.Excel.XlRangeValueDataType.xlRangeValueDefault, arrays);
 
 
+            //xlNewSheet.Columns.AutoFit();
 
+            int batchSize = 500;
+            int totalRows = arrays.GetLength(0);
+            int totalCols = arrays.GetLength(1);
 
-                Microsoft.Office.Interop.Excel.Application xlApp;
-                Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
-                Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
-                object misValue = System.Reflection.Missing.Value;
+            for (int rowStart = 0; rowStart < totalRows; rowStart += batchSize)
+            {
+                int currentBatchSize = Math.Min(batchSize, totalRows - rowStart);
 
-                xlApp = new Microsoft.Office.Interop.Excel.Application();
-                xlWorkBook = xlApp.Workbooks.Add(misValue);
+                object[,] batchArray = new object[currentBatchSize, totalCols];
 
-                xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-                xlWorkSheet.Name = "Openeneded";
-
-
-                xlWorkSheet.Cells[1, 1] = "Respondent Id";
-                xlWorkSheet.Cells[1, 2] = "QId";
-                xlWorkSheet.Cells[1, 3] = "Attribute Value";
-                xlWorkSheet.Cells[1, 4] = "OE Verbatim";
-
-                int row = 2;
-                DataTableReader drd = dt3.CreateDataReader();// sql.getDataTableOpenended();
-
-                while (drd.Read())
+                // Copy current batch to batchArray
+                for (int i = 0; i < currentBatchSize; i++)
                 {
-                    xlWorkSheet.Cells[row, 1] = "'" + drd["respondent_id"].ToString();
-                    xlWorkSheet.Cells[row, 2] = "'" + drd["q_id"].ToString();
-                    xlWorkSheet.Cells[row, 3] = "'" + drd["attribute_value"].ToString();
-                    xlWorkSheet.Cells[row, 4] = "'" + ReplaceNewlines(drd["response"].ToString(), " ");
-                    row = row + 1;
-                }
-
-                xlWorkSheet.Columns.AutoFit();
-
-
-
-
-
-
-
-
-
-
-                //******************* Get the Openended *****************************************************
-
-                Microsoft.Office.Interop.Excel.Sheets worksheets = xlWorkBook.Worksheets;
-                var xlNewSheet = (Microsoft.Office.Interop.Excel.Worksheet)worksheets.Add(worksheets[1]);
-                xlNewSheet.Name = "Data";
-
-
-                List<string> columnName = new List<string>();
-                List<List<string>> tableData = new List<List<string>>();
-
-                columnName = sql.getTableColumnReport();
-                tableData = sql.getTableDataReport(columnName, dt1, dt2, dt3, progressBar1);
-
-                for (int i = 1; i <= columnName.Count; i++)
-                {
-                    xlNewSheet.Cells[1, i] = "'" + columnName[i - 1];
-                }
-
-
-
-                int p = 1;
-                progressBar1.Minimum = 0;
-                progressBar1.Maximum = tableData.Count * tableData[0].Count;
-
-                // Get dimensions of the 2-d array
-                int rowCount = tableData.Count;// arrays.GetLength(0);
-                int columnCount = tableData[0].Count;// arrays.GetLength(0);
-
-                string[,] arrays = new string[rowCount, columnCount];//tableData.Select(a => a.ToArray()).ToArray();
-
-
-                for (int i = 1; i <= tableData.Count; i++)
-                {
-                    for (int j = 1; j <= tableData[i - 1].Count; j++)
+                    for (int j = 0; j < totalCols; j++)
                     {
-                        progressBar1.Value = p;
-                        p++;
-
-                        arrays[i - 1, j - 1] = "'" + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ");
-
-                        //xlNewSheet.Cells[i + 1, j] = "'" + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ");
+                        batchArray[i, j] = arrays[rowStart + i, j];
                     }
                 }
 
+                // Define the Excel range
+                Microsoft.Office.Interop.Excel.Range startCell = (Microsoft.Office.Interop.Excel.Range)xlNewSheet.Cells[rowStart + 2, 1];
+                Microsoft.Office.Interop.Excel.Range writeRange = startCell.get_Resize(currentBatchSize, totalCols);
+
+                // Assign values
+                writeRange.Value2 = batchArray;
+
+                // Optional: release COM references (can help in long runs)
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(writeRange);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(startCell);
+                writeRange = null;
+                startCell = null;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+
+            // Auto-fit columns after writing all data
+            xlNewSheet.Columns.AutoFit();
 
 
-                // Get an Excel Range of the same dimensions
-                Microsoft.Office.Interop.Excel.Range range = (Microsoft.Office.Interop.Excel.Range)xlNewSheet.Cells[2, 1];
-                range = range.get_Resize(rowCount, columnCount);
-                // Assign the 2-d array to the Excel Range
-                range.set_Value(Microsoft.Office.Interop.Excel.XlRangeValueDataType.xlRangeValueDefault, arrays);
-
-
-                xlNewSheet.Columns.AutoFit();
-
-                //xlApp.Visible = true;
+            //xlApp.Visible = true;
 
 
 
 
-                //xlWorkBook.SaveAs(txt_SQLiteDB_Location.Text.Substring(0, txt_SQLiteDB_Location.Text.LastIndexOf("\\")) + "\\" + comProject.Text + "_" + txtWeekNo.Text + ".xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
-                //xlWorkBook.SaveAs("D:\\Ismile Personal\\New folder (2)\\Analysis\\" + comProject.Text + "_" + txtWeekNo.Text + ".xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
-                xlWorkBook.SaveAs(txtSaveLocation.Text, Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
-                xlWorkBook.Close(true, misValue, misValue);
-                xlApp.Quit();
+            //xlWorkBook.SaveAs(txt_SQLiteDB_Location.Text.Substring(0, txt_SQLiteDB_Location.Text.LastIndexOf("\\")) + "\\" + comProject.Text + "_" + txtWeekNo.Text + ".xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
+            //xlWorkBook.SaveAs("D:\\Ismile Personal\\New folder (2)\\Analysis\\" + comProject.Text + "_" + txtWeekNo.Text + ".xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
+            xlWorkBook.SaveAs(txtSaveLocation.Text, Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
+            xlWorkBook.Close(true, misValue, misValue);
+            xlApp.Quit();
 
-                sql.releaseObject(xlWorkSheet);
-                sql.releaseObject(xlWorkBook);
-                sql.releaseObject(xlApp);
+            sql.releaseObject(xlWorkSheet);
+            sql.releaseObject(xlWorkBook);
+            sql.releaseObject(xlApp);
             //}
             //catch (Exception ex)
             //{
@@ -434,9 +489,201 @@ namespace DBI_Scripting.Forms
             //}
         }
 
+        private void exportToCSV()
+        {
+            //string TypeOfReport;
+            //try
+            //{
+
+            databasePath = @"C:\Temp\" + dicProjectNameVsDBName[comProjectName.Text];
+            //databasePath = System.AppDomain.CurrentDomain.BaseDirectory + "\\" + dicProjectNameVsDBName[comProjectName.Text];
+
+            if (File.Exists(databasePath) == false)
+            {
+                MessageBox.Show("Script file not found..");
+                return;
+            }
+
+
+            SQLite sql = new SQLite(databasePath);
+            sql.connect();
+
+
+
+            lblOperationNo.Content = "Operation No : 3/3";
+            lblExecute.Content = "Execute Now : Populate Excel";
+            //Application.DoEvents();
+
+
+
+
+            Microsoft.Office.Interop.Excel.Application xlApp;
+            Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
+            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
+            object misValue = System.Reflection.Missing.Value;
+
+            xlApp = new Microsoft.Office.Interop.Excel.Application();
+            xlWorkBook = xlApp.Workbooks.Add(misValue);
+
+            xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+            xlWorkSheet.Name = "Openeneded";
+
+
+            xlWorkSheet.Cells[1, 1] = "Respondent Id";
+            xlWorkSheet.Cells[1, 2] = "QId";
+            xlWorkSheet.Cells[1, 3] = "Attribute Value";
+            xlWorkSheet.Cells[1, 4] = "OE Verbatim";
+
+            int row = 2;
+            DataTableReader drd = dt3.CreateDataReader();// sql.getDataTableOpenended();
+
+            while (drd.Read())
+            {
+                xlWorkSheet.Cells[row, 1] = "'" + drd["respondent_id"].ToString();
+                xlWorkSheet.Cells[row, 2] = "'" + drd["q_id"].ToString();
+                xlWorkSheet.Cells[row, 3] = "'" + drd["attribute_value"].ToString();
+                xlWorkSheet.Cells[row, 4] = "'" + ReplaceNewlines(drd["response"].ToString(), " ");
+                row = row + 1;
+            }
+
+            xlWorkSheet.Columns.AutoFit();
+
+            string fileName = txtSaveLocation.Text.Substring(0, txtSaveLocation.Text.LastIndexOf('.')) + ".xlsx";
+            xlWorkBook.SaveAs(fileName, Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
+            xlWorkBook.Close(true, misValue, misValue);
+            xlApp.Quit();
+
+            sql.releaseObject(xlWorkSheet);
+            sql.releaseObject(xlWorkBook);
+            sql.releaseObject(xlApp);
+
+
+
+
+
+
+
+            //******************* Get the Openended *****************************************************
+
+            List<string> columnName = new List<string>();
+            List<List<string>> tableData = new List<List<string>>();
+
+            columnName = sql.getTableColumnReport();
+            tableData = sql.getTableDataReport(columnName, dt1, dt2, dt3, progressBar1);
+            fileName = txtSaveLocation.Text.Substring(0, txtSaveLocation.Text.LastIndexOf('.')) + ".csv";
+
+            SaveToCsvStream(columnName, tableData, fileName);
+
+            //TextWriter txtWriter = new StreamWriter(fileName);
+            //String colName = "";
+            //for (int i = 1; i <= columnName.Count; i++)
+            //{
+            //    colName = colName + columnName[i - 1] + ",";
+            //}
+
+            //txtWriter.WriteLine(colName);
+
+
+            //int p = 1;
+            //progressBar1.Minimum = 0;
+            //progressBar1.Maximum = tableData.Count * tableData[0].Count;
+
+            //// Get dimensions of the 2-d array
+            //int rowCount = tableData.Count;// arrays.GetLength(0);
+            //int columnCount = tableData[0].Count;// arrays.GetLength(0);
+
+            //string[,] arrays = new string[rowCount, columnCount];//tableData.Select(a => a.ToArray()).ToArray();
+
+
+            //for (int i = 1; i <= tableData.Count; i++)
+            //{
+            //    String myData = "";
+            //    for (int j = 1; j <= tableData[i - 1].Count; j++)
+            //    {
+            //        progressBar1.Value = p;
+            //        p++;
+
+            //        myData = myData + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ").Replace(",", ";") + ",";
+
+            //        //xlNewSheet.Cells[i + 1, j] = "'" + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ");
+            //    }
+
+            //    txtWriter.WriteLine(myData);
+
+            //}
+
+            //txtWriter.Close();
+
+        }
+
+        public static void SaveToCsv(List<string> columnName, List<List<string>> tableData, string filePath)
+        {
+            var sb = new StringBuilder();
+
+            // ---- Add Header ----
+            var escapedHeader = columnName.Select(field =>
+            {
+                if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
+                    return "\"" + field.Replace("\"", "\"\"") + "\"";
+                return field;
+            });
+
+            sb.AppendLine(string.Join(",", escapedHeader));
+
+
+            // ---- Add Rows ----
+            foreach (var row in tableData)
+            {
+                var escapedRow = row.Select(field =>
+                {
+                    if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
+                        return "\"" + field.Replace("\"", "\"\"") + "\"";
+                    return field;
+                });
+
+                sb.AppendLine(string.Join(",", escapedRow));
+            }
+
+            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        public static void SaveToCsvStream(List<string> columnName,List<List<string>> tableData,string filePath)
+            {
+                using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
+                {
+                    // Write header
+                    writer.WriteLine(EscapeCsvLine(columnName));
+
+                    // Write each row
+                    foreach (var row in tableData)
+                    {
+                        writer.WriteLine(EscapeCsvLine(row));
+                    }
+                }
+            }
+
+            // CSV escaping helper
+            private static string EscapeCsvLine(List<string> fields)
+            {
+                return string.Join(",", fields.Select(f =>
+                {
+                    if (string.IsNullOrEmpty(f)) return "";
+
+                    if (f.Contains(",") || f.Contains("\"") || f.Contains("\n"))
+                        return "\"" + f.Replace("\"", "\"\"") + "\"";
+
+                    return f;
+                }));
+        }
+
+
         private string ReplaceNewlines(string blockOfText, string replaceWith)
         {
             return blockOfText.Replace("\r\n", replaceWith).Replace("\n", replaceWith).Replace("\r", replaceWith);
+        }
+        private string ReplaceQuomma(string blockOfText, string replaceWith)
+        {
+            return blockOfText.Replace(",", replaceWith);
         }
 
         private void btnExecute_Click(object sender, RoutedEventArgs e)
@@ -532,7 +779,10 @@ namespace DBI_Scripting.Forms
                 lblExecute.Content = "Execute Now : Populate Table";
                 DoEvents();
 
-                this.exportToExcel();
+                if (comFileType.Text == "Excel")
+                    this.exportToExcel();
+                else
+                    this.exportToCSV();
 
                 //if (chkDataBackup.Checked == true)
                 //{

@@ -412,7 +412,18 @@ namespace DBI_Scripting.Forms.Scripting
 
                             }
                         }
+
                     }
+                    //this is for OE
+                    for (int n = 0; n < listOfOEVariables.Count; n++)
+                    {
+                        listOfAlterTypeSyntax.Add("ALTER TYPE " + listOfOEVariables[n] + " (A100).");
+                    }
+
+                    
+
+
+
 
 
                     TextWriter txtWriter = new StreamWriter(myPath + "\\00.Syntax_SPSS_DataPrep.sps");
@@ -466,9 +477,19 @@ namespace DBI_Scripting.Forms.Scripting
                     txtWriter.WriteLine("SyncDateTime    \"SyncDateTime\"");
                     txtWriter.WriteLine("Status          \"Status\"");
                     txtWriter.WriteLine("TabId           \"TabId\"");
+                    for (int n = 0; n < listOfOEVariables.Count; n++)
+                    {
+                        txtWriter.WriteLine("" + listOfOEVariables[n] + "   \"" + listOfOEVariables[n] + "\"");
+                    }
                     txtWriter.WriteLine(".");
                     txtWriter.WriteLine("");
                     txtWriter.WriteLine("VALUE LABELS");
+
+
+                    List<string> listOfDummyQid = new List<string>();
+
+
+
                     for (int j = 0; j < listOfQuestion.Count; j++)
                     {
                         string qid = listOfQuestion[j].QId;
@@ -480,12 +501,16 @@ namespace DBI_Scripting.Forms.Scripting
                             //for (int n = 0; n < listOfAttribute.Count; n++)
                             //{
                             string myQid = qid + "_" + listOfAttribute[0].attributeOrder;
+
                             if (dicQIdVsListOfQId.ContainsKey(myQid))
                             {
                                 List<string> listOfQid = dicQIdVsListOfQId[myQid];
                                 for (int k = 0; k < listOfQid.Count; k++)
                                 {
                                     txtWriter.WriteLine(listOfQid[k]);
+
+                                    if (listOfQid[k].ToUpper().Contains("DUMMY"))
+                                        listOfDummyQid.Add(listOfQid[k]);
                                 }
                             }
                             //}
@@ -517,6 +542,9 @@ namespace DBI_Scripting.Forms.Scripting
                                 for (int k = 0; k < listOfQid.Count; k++)
                                 {
                                     txtWriter.WriteLine(listOfQid[k]);
+
+                                    if (listOfQid[k].ToUpper().Contains("DUMMY"))
+                                    listOfDummyQid.Add(listOfQid[k]);
                                 }
                             }
                             //}
@@ -544,6 +572,9 @@ namespace DBI_Scripting.Forms.Scripting
                                 for (int k = 0; k < listOfQid.Count; k++)
                                 {
                                     txtWriter.WriteLine(listOfQid[k]);
+
+                                    if (listOfQid[k].ToUpper().Contains("DUMMY"))
+                                        listOfDummyQid.Add(listOfQid[k]);
                                 }
 
                                 List<string> listOfValueLabel = dicQIdVsListOfValueLabel[qid];
@@ -560,27 +591,68 @@ namespace DBI_Scripting.Forms.Scripting
                     txtWriter.WriteLine(".");
 
                     txtWriter.WriteLine("");
-                    txtWriter.WriteLine(@"SAVE OUTFILE=''");
+                    txtWriter.WriteLine(@"SAVE OUTFILE='_Raw.sav'");
                     txtWriter.WriteLine("/COMPRESSED.");
 
-
-                    if (chkIncludeOE.IsChecked == true)
+                    txtWriter.WriteLine("");
+                    txtWriter.WriteLine("");
+                    txtWriter.WriteLine("DELETE VARIABLES");
+                    for (int x = 0; x < listOfDummyQid.Count;x++ )
                     {
-                        txtWriter.WriteLine("");
-                        txtWriter.WriteLine("");
-                        txtWriter.WriteLine("");
-
-
-                        for (int n = 0; n < listOfOEVariables.Count; n++)
-                        {
-                            txtWriter.WriteLine("STRING " + listOfOEVariables[n] + " (A100).");
-                        }
-                        txtWriter.WriteLine("");
-                        for (int n = 0; n < listOfOEVariables.Count; n++)
-                        {
-                            txtWriter.WriteLine("" + listOfOEVariables[n] + "   \"" + listOfOEVariables[n] + "\"");
-                        }
+                        txtWriter.WriteLine(listOfDummyQid[x]);
                     }
+                    txtWriter.WriteLine("name_resp");
+                    txtWriter.WriteLine("mobile_resp");
+                    txtWriter.WriteLine("FICode");
+                    txtWriter.WriteLine("FSCode");
+                    txtWriter.WriteLine("AccompaniedBy");
+                    txtWriter.WriteLine("BackCheckedBy");
+                    txtWriter.WriteLine("ScriptVersion");
+                    txtWriter.WriteLine("SyncDateTime");
+                    txtWriter.WriteLine("Status");
+                    txtWriter.WriteLine("field_ex2");
+                    txtWriter.WriteLine("TabId");
+                    txtWriter.WriteLine(".");
+
+                    txtWriter.WriteLine("");
+
+                    txtWriter.WriteLine("");
+                    txtWriter.WriteLine(@"SAVE OUTFILE='_Final.sav'");
+                    txtWriter.WriteLine("/COMPRESSED.");
+
+                    txtWriter.WriteLine("");
+                    txtWriter.WriteLine("");
+
+
+                    txtWriter.WriteLine("SAVE TRANSLATE OUTFILE='.xlsx'");
+                    txtWriter.WriteLine("  /TYPE=XLS");
+                    txtWriter.WriteLine("  /VERSION=12");
+                    txtWriter.WriteLine("  /MAP");
+                    txtWriter.WriteLine("  /FIELDNAMES VALUE=LABELS");
+                    txtWriter.WriteLine("  /CELLS=LABELS");
+                    txtWriter.WriteLine("  /REPLACE.");
+
+
+
+
+
+                    //if (chkIncludeOE.IsChecked == true)
+                    //{
+                    //    txtWriter.WriteLine("");
+                    //    txtWriter.WriteLine("");
+                    //    txtWriter.WriteLine("");
+
+
+                    //    for (int n = 0; n < listOfOEVariables.Count; n++)
+                    //    {
+                    //        txtWriter.WriteLine("STRING " + listOfOEVariables[n] + " (A100).");
+                    //    }
+                    //    txtWriter.WriteLine("");
+                    //    for (int n = 0; n < listOfOEVariables.Count; n++)
+                    //    {
+                    //        txtWriter.WriteLine("" + listOfOEVariables[n] + "   \"" + listOfOEVariables[n] + "\"");
+                    //    }
+                    //}
 
 
                     txtWriter.Close();
@@ -648,7 +720,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 txtWriter2.WriteLine("MULT RESPONSE GROUPS=$" + qId + " \"" + qText.Replace("<b>", " ").Replace("</b>", " ").Replace("<br>", " ").Replace("<big>", " ").Replace("</big>", " ") + "\" (" + listOfQid[0] + " to " + listOfQid[x] + " (1,100))");
                                 txtWriter2.WriteLine("/FREQUENCIES $" + qId + ".");
                                 txtWriter2.WriteLine("");
-                                
+
                             }
                             else
                             {

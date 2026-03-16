@@ -84,7 +84,7 @@ namespace DBI_Scripting.Forms {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/DBI Scripting;component/forms/frmserveraddress.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Smart Survey;component/forms/frmserveraddress.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\Forms\FrmServerAddress.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

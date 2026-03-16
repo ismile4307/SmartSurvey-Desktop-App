@@ -1,7 +1,7 @@
 ﻿<Window x:Name="frmRLDPreparation" x:Class="DBI_Scripting.Forms.Download.FrmRLDPreparation"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Download and Prepare RLD" Height="408.667" Width="897.333" WindowStartupLocation="CenterScreen" Icon="/DBI Scripting;component/Images/download_48.png" Loaded="frmRLDPreparation_Loaded">
+        Title="Download and Prepare RLD" Height="408.667" Width="897.333" WindowStartupLocation="CenterScreen" Icon="/Smart Survey;component/Images/download_48.png" Loaded="frmRLDPreparation_Loaded">
     <Grid>
         <Label Content="Server Address :" HorizontalAlignment="Left" Margin="22,48,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="103"/>
         <TextBox x:Name="txtServerAddress" HorizontalAlignment="Left" Height="23" Margin="130,51,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="486"/>

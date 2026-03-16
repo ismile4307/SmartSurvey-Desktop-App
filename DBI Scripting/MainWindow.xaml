@@ -75,6 +75,7 @@
                     <!--<RibbonButton LargeImageSource="Images\Script132.png" Label="Placeholder" KeyTip="C" />
                     <RibbonButton SmallImageSource="Images\checkData32.png" Label="Upload" KeyTip="X" />-->
                 </RibbonGroup>
+                
             </RibbonTab>
 
 
@@ -155,9 +156,12 @@
                 </RibbonGroup>
                 <RibbonGroup x:Name="AnalyticsGroup4" Header="CTable Analysis">
                     <RibbonButton x:Name="btnCumulativeSyntax" LargeImageSource="Images\Excel_17559_32.png" Label="Cumulative Syntax" KeyTip="V" Click="btnCumulativeSyntax_Click"/>
-                    <RibbonButton x:Name="btnCTableSyntax" LargeImageSource="Images\getBrandCode32.png" Label="CTable Syntax" KeyTip="V"/>
+                    <RibbonButton x:Name="btnCTableSyntax" LargeImageSource="Images\getBrandCode32.png" Label="CTable Syntax" KeyTip="V" Click="btnCTableSyntax_Click"/>
                     <RibbonButton x:Name="btnCTableLink" LargeImageSource="Images\Table132.png" Label="CTable Link" KeyTip="X" Click="btnCTableLink_Click"/>
                     <RibbonButton x:Name="btn4" LargeImageSource="Images\Folder-Blue-Apps-icon.png" Label="Compare SPSS" KeyTip="V"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="AnalyticsGroup5" Header="Process">
+                    <RibbonButton x:Name="btnKillProcess" LargeImageSource="Images\System-Folder-smooth-icon.png" Label="Kill Excell" Click="btnKillProcess_Click"/>
                 </RibbonGroup>
             </RibbonTab>
 
@@ -166,6 +170,14 @@
 
             <!-- Ribbon Tab #4: -->
             <RibbonTab Header="Automation" KeyTip="L">
+                <!-- Home  group-->
+                <RibbonGroup x:Name="AutomationGroup1" Header="Media Management">
+                    <RibbonButton x:Name="btnMediaManagement" LargeImageSource="Images\Notebook132.png" Label="Media Settings" KeyTip="V" />
+
+                    <RibbonButton x:Name="btnTransposex" SmallImageSource="Images\Notebook232.png" Label="Transpose" KeyTip="X"/>
+                    <RibbonButton SmallImageSource="Images\Placeholder32.png" Label="MR Syntax" KeyTip="C" />
+                    <!--<RibbonButton SmallImageSource="Images\Places32.png" Label="Format Painter" KeyTip="FP" />-->
+                </RibbonGroup>
             </RibbonTab>
 
             <!-- Ribbon Tab #4: -->
@@ -211,6 +223,7 @@
         </Ribbon>
         <Image HorizontalAlignment="Left" Height="300" Margin="526,38.667,0,0" Grid.Row="1" VerticalAlignment="Top" Width="300" Source="Images/ic_surveybd2.png"/>
         <Label Content="Smart Survey Management System" HorizontalAlignment="Left" Margin="291,357.667,0,0" Grid.Row="1" VerticalAlignment="Top" Height="79" Width="757" FontSize="48"/>
-        <Label x:Name="lblServerName" Content="Server URL : " HorizontalAlignment="Left" Margin="375,436.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="30" Width="741" Background="Transparent" Foreground="#FF1E0FED"/>
+        <Label x:Name="lblServerName" Content="Server URL : " HorizontalAlignment="Left" Margin="386,436.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="30" Width="741" Background="Transparent" Foreground="#FF1E0FED"/>
+        <Label x:Name="lblAppVersion" Content="App Version : v1.0.0.2" HorizontalAlignment="Left" Margin="507,485.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="26" Width="741" Background="Transparent" Foreground="DarkRed"/>
     </Grid>
 </RibbonWindow>

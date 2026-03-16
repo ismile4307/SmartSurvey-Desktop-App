@@ -156,7 +156,7 @@ namespace DBI_Scripting.Forms.Analytics {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/DBI Scripting;component/forms/analytics/frmtablelink2.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Smart Survey;component/forms/analytics/frmtablelink2.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Forms\Analytics\FrmTableLink2.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

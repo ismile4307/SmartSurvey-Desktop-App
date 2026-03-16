@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ServerAddress" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://smartsurveybd.com/deskapi</Value>
+      <Value Profile="(Default)">https://smartsurveybd.com</Value>
     </Setting>
     <Setting Name="StartupPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\</Value>

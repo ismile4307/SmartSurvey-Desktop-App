@@ -474,12 +474,9 @@ D:\DBI Scripting - ss\DBI Scripting\obj\Debug\DBI_Scripting.Properties.Resources
 D:\DBI Scripting - ss\DBI Scripting\obj\Debug\DBI Scripting.csproj.GenerateResource.Cache
 D:\DBI Scripting - ss\DBI Scripting\obj\Debug\DBI Scripting.exe
 D:\DBI Scripting - ss\DBI Scripting\obj\Debug\DBI Scripting.pdb
-D:\SmartSurvey - ss\DBI Scripting\bin\Debug\DBI Scripting.exe.config
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting.csproj.ResolveComReference.cache
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting.exe
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting.pdb
-D:\SmartSurvey - ss\DBI Scripting\bin\Debug\DBI Scripting.exe
-D:\SmartSurvey - ss\DBI Scripting\bin\Debug\DBI Scripting.pdb
+D:\SmartSurvey - ss\DBI Scripting\bin\Debug\Smart Survey.exe.config
+D:\SmartSurvey - ss\DBI Scripting\bin\Debug\Smart Survey.exe
+D:\SmartSurvey - ss\DBI Scripting\bin\Debug\Smart Survey.pdb
 D:\SmartSurvey - ss\DBI Scripting\bin\Debug\Xceed.Wpf.AvalonDock.dll
 D:\SmartSurvey - ss\DBI Scripting\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Aero.dll
 D:\SmartSurvey - ss\DBI Scripting\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
@@ -501,7 +498,7 @@ D:\SmartSurvey - ss\DBI Scripting\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dl
 D:\SmartSurvey - ss\DBI Scripting\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
 D:\SmartSurvey - ss\DBI Scripting\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
 D:\SmartSurvey - ss\DBI Scripting\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting.csprojResolveAssemblyReference.cache
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting.csproj.ResolveComReference.cache
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Admin\FrmLogin.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Analytics\FrmAnalysisStructure.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Analytics\FrmAnalysisTable.baml
@@ -527,12 +524,14 @@ D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmPrepareAnsDB.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmRejectInterview.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmRemoveMedia.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmRLDPreparation.baml
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmSyncData.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmUnPivotOE.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmUpdateLOI.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmUpdateRLD.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\FrmScripting.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\FrmServerAddress.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\ChkPostFixNote.baml
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\frmAddPanelData.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\FrmBuildScript.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\FrmBuildSPSSScript.baml
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\FrmCreateLoopSyntax.baml
@@ -574,12 +573,14 @@ D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmPrepareAnsDB.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmRejectInterview.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmRemoveMedia.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmRLDPreparation.g.cs
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmSyncData.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmUnPivotOE.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmUpdateLOI.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmUpdateRLD.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\FrmScripting.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\FrmServerAddress.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\ChkPostFixNote.g.cs
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\frmAddPanelData.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\FrmBuildScript.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\FrmBuildSPSSScript.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\FrmCreateLoopSyntax.g.cs
@@ -597,11 +598,10 @@ D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\WebPortal\FrmQuestionTable.g.c
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\WebPortal\FrmSRSyntaxPrep.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\MainWindow.g.cs
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\App.g.cs
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting_MarkupCompile.cache
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting.g.resources
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey_MarkupCompile.cache
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey.g.resources
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI_Scripting.Properties.Resources.resources
 D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting.csproj.GenerateResource.Cache
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\frmAddPanelData.baml
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Scripting\frmAddPanelData.g.cs
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmSyncData.baml
-D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmSyncData.g.cs
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey.exe
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey.pdb
+D:\SmartSurvey - ss\DBI Scripting\obj\Debug\DBI Scripting.csprojResolveAssemblyReference.cache

@@ -39,7 +39,8 @@ namespace DBI_Scripting.Forms.Admin
                 {
                     string sTemp;
 
-                    sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
+                    //sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
+                    sTemp = "C:\\Temp";
                     TextWriter txtWriter = new StreamWriter(sTemp + "\\index.ini");
                     txtWriter.WriteLine(txtUserId.Text);
                     txtWriter.WriteLine(txtPasscode.Text);

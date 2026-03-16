@@ -84,7 +84,7 @@ namespace DBI_Scripting.Forms.Scripting {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/DBI Scripting;component/forms/scripting/frmtransplaceholder2.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Smart Survey;component/forms/scripting/frmtransplaceholder2.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Forms\Scripting\FrmTransPlaceholder2.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

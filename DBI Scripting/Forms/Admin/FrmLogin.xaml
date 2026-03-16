@@ -1,7 +1,7 @@
 ﻿<Window x:Class="DBI_Scripting.Forms.Admin.FrmLogin"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Login DBI Master" Height="224.457" Width="575.253" WindowStartupLocation="CenterScreen" Icon="/DBI Scripting;component/Images/dbi_logo.png" ResizeMode="NoResize">
+        Title="Login DBI Master" Height="224.457" Width="575.253" WindowStartupLocation="CenterScreen" Icon="/Smart Survey;component/Images/dbi_logo.png" ResizeMode="NoResize">
     <Grid>
         <Label Content="User Id :" HorizontalAlignment="Left" Margin="24,23,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="58"/>
         <TextBox x:Name="txtUserId" HorizontalAlignment="Left" Height="23" Margin="88,25,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="450"/>

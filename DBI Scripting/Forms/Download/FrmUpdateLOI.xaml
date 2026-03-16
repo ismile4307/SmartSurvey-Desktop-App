@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:WPF="clr-namespace:Microsoft.TeamFoundation.Controls.WPF;assembly=Microsoft.TeamFoundation.Controls" x:Name="frmDownloadLOI" x:Class="DBI_Scripting.Forms.Download.FrmUpdateLOI"
-        Title="Update LOI" Height="486.252" Width="768.885" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="/DBI Scripting;component/Images/reject_64.png" Loaded="frmDownloadLOI_Loaded">
+        Title="Update LOI" Height="486.252" Width="768.885" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="/Smart Survey;component/Images/reject_64.png" Loaded="frmDownloadLOI_Loaded">
     <Grid>
         <Label Content="Data file Path :" HorizontalAlignment="Left" Margin="11,59,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
         <TextBox x:Name="txtDataFileLocation" HorizontalAlignment="Left" Height="23" Margin="103,62,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="551"/>

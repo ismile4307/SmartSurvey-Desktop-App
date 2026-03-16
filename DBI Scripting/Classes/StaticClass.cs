@@ -27,8 +27,8 @@ namespace DBI_Scripting.Classes
 
             string sTemp;
 
-            sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
-
+            //sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
+            sTemp = "C:\\Temp";
             TextReader txtReader = new StreamReader(sTemp + "\\index.ini");
 
             string strline = txtReader.ReadLine();

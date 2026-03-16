@@ -328,7 +328,7 @@ namespace DBI_Scripting.Forms.Analytics
 
             for (int i = 0; i < lstTableType.Count; i++)
             {
-                if (lstTableType[i] == "1" || lstTableType[i] == "2")
+                if (lstTableType[i] == "5" || lstTableType[i] == "6")
                 {
 
                     txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
@@ -345,7 +345,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("VALUE LABELS B2_" + lstVariableName[i] + @" 1 ""BOTTOM 2 BOX [01/02]"".");
                     txt_writer.WriteLine("");
                 }
-                else if (lstTableType[i] == "3" || lstTableType[i] == "4")
+                else if (lstTableType[i] == "7")
                 {
                     txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
@@ -372,26 +372,27 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) into R3_" + lstVariableName[i] + ".");
                     txt_writer.WriteLine("");
                 }
-                else if (lstTableType[i] == "10")
+                else if (lstTableType[i] == "9")
                 {
-
                     txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
 
-                    //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) into T1_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (11=1) (10=1) into xTPro_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (9=1) (8=1) into xTPas_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (7=1) (6=1) (5=1) (4=1) (3=1) (2=1) (1=1) into xTDic_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (9=1) into T1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (9=1) (8=1) into T2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (9=1) (8=1) (7=1) into T3_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) into B1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) into B2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) into B3_" + lstVariableName[i] + ".");
 
-
-                    //txt_writer.WriteLine("VALUE LABELS T1_" + lstVariableName[i] + @" 1 ""TOP BOX [07]"".");
-                    txt_writer.WriteLine("VALUE LABELS xTPro_" + lstVariableName[i] + @" 1 ""Promoter [9-10]"".");
-                    txt_writer.WriteLine("VALUE LABELS xTPas_" + lstVariableName[i] + @" 1 ""Passive [7-8]"".");
-                    txt_writer.WriteLine("VALUE LABELS xTDic_" + lstVariableName[i] + @" 1 ""Detractor [0-6]"".");
-
+                    txt_writer.WriteLine("VALUE LABELS T1_" + lstVariableName[i] + @" 1 ""TOP BOX [09]"".");
+                    txt_writer.WriteLine("VALUE LABELS T2_" + lstVariableName[i] + @" 1 ""TOP 2 BOX [09/08]"".");
+                    txt_writer.WriteLine("VALUE LABELS T3_" + lstVariableName[i] + @" 1 ""TOP 3 BOX [09/08/07]"".");
+                    txt_writer.WriteLine("VALUE LABELS B1_" + lstVariableName[i] + @" 1 ""BOTTOM BOX [01]"".");
+                    txt_writer.WriteLine("VALUE LABELS B2_" + lstVariableName[i] + @" 1 ""BOTTOM 2 BOX [01/02]"".");
+                    txt_writer.WriteLine("VALUE LABELS B3_" + lstVariableName[i] + @" 1 ""BOTTOM 3 BOX [01/02/03]"".");
                     txt_writer.WriteLine("");
                 }
-                else if (lstTableType[i] == "11")
+                else if (lstTableType[i] == "10")
                 {
 
                     txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
@@ -425,6 +426,60 @@ namespace DBI_Scripting.Forms.Analytics
                     //txt_writer.WriteLine("VALUE LABELS B6_" + lstVariableName[i] + @" 1 ""BOTTOM 6 BOX [01/02/03/04/05/06]"".");
                     txt_writer.WriteLine("");
                 }
+                else if (lstTableType[i] == "11")
+                {
+
+                    txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                    //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
+
+                    //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) into T1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (11=1) (10=1) into T2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (11=1) (10=1) (9=1) into T3_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (11=1) (10=1) (9=1) (8=1) into T4_" + lstVariableName[i] + ".");
+
+
+                    //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) into B1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) into B2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) into B3_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) (4=1) into B4_" + lstVariableName[i] + ".");
+
+                    //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) (4=1) (5=1) into B5_" + lstVariableName[i] + ".");
+                    //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) (4=1) (5=1) (6=1) into B6_" + lstVariableName[i] + ".");
+
+                    //txt_writer.WriteLine("VALUE LABELS T1_" + lstVariableName[i] + @" 1 ""TOP BOX [07]"".");
+                    txt_writer.WriteLine("VALUE LABELS T2_" + lstVariableName[i] + @" 1 ""TOP 2 BOX [11/10]"".");
+                    txt_writer.WriteLine("VALUE LABELS T3_" + lstVariableName[i] + @" 1 ""TOP 3 BOX [11/10/09]"".");
+                    txt_writer.WriteLine("VALUE LABELS T4_" + lstVariableName[i] + @" 1 ""TOP 4 BOX [11/11/09/08]"".");
+
+                    //txt_writer.WriteLine("VALUE LABELS B1_" + lstVariableName[i] + @" 1 ""BOTTOM BOX [01]"".");
+                    txt_writer.WriteLine("VALUE LABELS B2_" + lstVariableName[i] + @" 1 ""BOTTOM 2 BOX [00/01]"".");
+                    txt_writer.WriteLine("VALUE LABELS B3_" + lstVariableName[i] + @" 1 ""BOTTOM 3 BOX [00/01/02]"".");
+                    txt_writer.WriteLine("VALUE LABELS B4_" + lstVariableName[i] + @" 1 ""BOTTOM 4 BOX [00/01/02/03]"".");
+
+                    //txt_writer.WriteLine("VALUE LABELS B5_" + lstVariableName[i] + @" 1 ""BOTTOM 5 BOX [01/02/03/04/05]"".");
+                    //txt_writer.WriteLine("VALUE LABELS B6_" + lstVariableName[i] + @" 1 ""BOTTOM 6 BOX [01/02/03/04/05/06]"".");
+                    txt_writer.WriteLine("");
+                }
+                else if (lstTableType[i] == "12")
+                {
+
+                    txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                    //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
+
+                    //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) into T1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) (9=1) into xTPro_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (8=1) (7=1) into xTPas_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (6=1) (5=1) (4=1) (3=1) (2=1) (1=1) (0=1) into xTDic_" + lstVariableName[i] + ".");
+
+
+                    //txt_writer.WriteLine("VALUE LABELS T1_" + lstVariableName[i] + @" 1 ""TOP BOX [07]"".");
+                    txt_writer.WriteLine("VALUE LABELS xTPro_" + lstVariableName[i] + @" 1 ""Promoter [9-10]"".");
+                    txt_writer.WriteLine("VALUE LABELS xTPas_" + lstVariableName[i] + @" 1 ""Passive [7-8]"".");
+                    txt_writer.WriteLine("VALUE LABELS xTDic_" + lstVariableName[i] + @" 1 ""Detractor [0-6]"".");
+
+                    txt_writer.WriteLine("");
+                }
+
 
                 //txt_writer.Close();
             }
@@ -472,269 +527,6 @@ namespace DBI_Scripting.Forms.Analytics
                 //************************************ For Table ************************************************
 
                 if (lstTableType[i] == "1")
-                {
-                    //1	Scaled Question (5)	T1B T2B Cpct B2B B1B Mean S.D. S.E. 
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute Filt=0.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
-                            txt_writer.WriteLine("Filter by Filt.");
-                        }
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    if (lstFilterCondition[i] != "")
-                    {
-                        txt_writer.WriteLine("Compute Filt=0.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
-                        txt_writer.WriteLine("Filter by Filt.");
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "2")
-                {
-                    //2	Scaled Question (5)	T1B T2B Cpct B2B B1B Mean S.T S.D. S.E. 
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute Filt=0.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
-                            txt_writer.WriteLine("Filter by Filt.");
-                        }
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    if (lstFilterCondition[i] != "")
-                    {
-
-                        txt_writer.WriteLine("Compute Filt=0.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
-                        txt_writer.WriteLine("Filter by Filt.");
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "3")
-                {
-                    //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute Filt=0.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
-                            txt_writer.WriteLine("Filter by Filt.");
-                        }
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
-
-                        txt_writer.WriteLine("Compute Filt=0.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
-                        txt_writer.WriteLine("Filter by Filt.");
-
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "4")
-                {
-                    //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute Filt=0.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
-                            txt_writer.WriteLine("Filter by Filt.");
-                        }
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
-
-                        txt_writer.WriteLine("Compute Filt=0.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
-                        txt_writer.WriteLine("Filter by Filt.");
-
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "5")
                 {
                     //5	Single Response	CpcT
 
@@ -790,7 +582,7 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     i_TableNo = i_TableNo + 1;
                 }
-                else if (lstTableType[i] == "6")
+                else if (lstTableType[i] == "2")
                 {
                     //6	Multiple Response	CpcT
 
@@ -860,7 +652,7 @@ namespace DBI_Scripting.Forms.Analytics
                         i_varCount = 0;
                     }
                 }
-                else if (lstTableType[i] == "7")
+                else if (lstTableType[i] == "3")
                 {
                     // For Single Response With Mean
 
@@ -940,6 +732,269 @@ namespace DBI_Scripting.Forms.Analytics
                     i_TableNo = i_TableNo + 1;
 
                 }
+                else if (lstTableType[i] == "4")
+                {
+                    //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "5")
+                {
+                    //1	Scaled Question (5)	T1B T2B Cpct B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    if (lstFilterCondition[i] != "")
+                    {
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "6")
+                {
+                    //2	Scaled Question (5)	T1B T2B Cpct B2B B1B Mean S.T S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "7")
+                {
+                    //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
                 else if (lstTableType[i] == "8")
                 {
                     //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
@@ -1004,9 +1059,9 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     i_TableNo = i_TableNo + 1;
                 }
-                else if (lstTableType[i] == "10")
+                else if (lstTableType[i] == "9")
                 {
-                    //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
+                    //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
 
                     if (lstFilterCondition[i] == "")
                     {
@@ -1017,22 +1072,20 @@ namespace DBI_Scripting.Forms.Analytics
                             txt_writer.WriteLine("Filter by Filt.");
                         }
 
-                        txt_writer.WriteLine("Define @Row1() nBlank+xTPro_" + lstVariableName[i] + "+xTPas_" + lstVariableName[i] + "+xTDic_" + lstVariableName[i] + " !Enddefine.");
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
 
-                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        //txt_writer.WriteLine("Tables Observation nBlank SigTest");
-                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
                         txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
                         txt_writer.WriteLine("/Format=Zero MISSING ('')");
                         txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
                         txt_writer.WriteLine("/BASE=ALL");
-                        //txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Table=t1+Mr1+@Row1+nBlank+NPS+nBlank by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
                         txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(xTPro_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xTPas_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xTDic_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        //txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
                         txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
                         txt_writer.WriteLine("/Caption=\"Home\"");
                         if (lstFilterLabel[i] != "")
@@ -1050,23 +1103,87 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine("Filter by Filt.");
 
 
-                        txt_writer.WriteLine("Define @Row1() nBlank+xTPro_" + lstVariableName[i] + "+xTPas_" + lstVariableName[i] + "+xTDic_" + lstVariableName[i] + " !Enddefine.");
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
 
-                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        //txt_writer.WriteLine("Tables Observation nBlank SigTest");
-                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
                         txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
                         txt_writer.WriteLine("/Format=Zero MISSING ('')");
                         txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
                         txt_writer.WriteLine("/BASE=ALL");
-                        //txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Table=t1+Mr1+@Row1+nBlank+NPS+nBlank by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
                         txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(xTPro_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xTPas_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xTDic_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        //txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("Cpct(T1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "10")
+                {
+                    //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+B4_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
                         txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+B4_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Cpct(B2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(B3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(B4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(T2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(T3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(T4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
                         txt_writer.WriteLine("/Caption=\"Home\"");
                         txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
                         txt_writer.WriteLine("USE ALL.");
@@ -1149,6 +1266,77 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     i_TableNo = i_TableNo + 1;
                 }
+                else if (lstTableType[i] == "12")
+                {
+                    //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xTPro_" + lstVariableName[i] + "+xTPas_" + lstVariableName[i] + "+xTDic_" + lstVariableName[i] + " !Enddefine.");
+
+                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        //txt_writer.WriteLine("Tables Observation nBlank SigTest");
+                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        //txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Table=t1+Mr1+@Row1+nBlank+NPS+nBlank by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xTPro_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xTPas_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xTDic_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        //txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xTPro_" + lstVariableName[i] + "+xTPas_" + lstVariableName[i] + "+xTDic_" + lstVariableName[i] + " !Enddefine.");
+
+                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        //txt_writer.WriteLine("Tables Observation nBlank SigTest");
+                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        //txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Table=t1+Mr1+@Row1+nBlank+NPS+nBlank by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xTPro_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xTPas_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xTDic_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        //txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+
             }
             txt_writer.WriteLine("OMSEND.");
 
@@ -1200,9 +1388,12 @@ namespace DBI_Scripting.Forms.Analytics
             for (int i = 0; i < lstTableType.Count; i++)
             {
 
-                //************************************ For Table ************************************************8
+                //************************************ For Table ************************************************
+
                 if (lstTableType[i] == "1")
                 {
+                    //5	Single Response	Count
+
                     if (lstFilterCondition[i] == "")
                     {
                         if (lstFilterLabel[i] != "All Respondents")
@@ -1212,20 +1403,15 @@ namespace DBI_Scripting.Forms.Analytics
                             txt_writer.WriteLine("Filter by Filt.");
                         }
 
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("Tables Observation nBlank");
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
                         txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
                         txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
                         txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)'') Count(B2_" + lstVariableName[i] + " (f5)'') ");
-                        txt_writer.WriteLine("Count(Mr1(F5)'')");
-                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)'') Count(T2_" + lstVariableName[i] + " (f5)'')");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Table=t1+nBlank+Mr1 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
                         txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
                         txt_writer.WriteLine("/Caption=\"Home\"");
                         if (lstFilterLabel[i] != "")
@@ -1237,277 +1423,40 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     else if (lstFilterCondition[i] != "")
                     {
+
                         txt_writer.WriteLine("Compute Filt=0.");
                         txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
                         txt_writer.WriteLine("Filter by Filt.");
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
 
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+
+                        txt_writer.WriteLine("Tables Observation nBlank");
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
                         txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
                         txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
                         txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)'') Count(B2_" + lstVariableName[i] + " (f5)'') ");
-                        txt_writer.WriteLine("Count(Mr1(F5)'')");
-                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)'') Count(T2_" + lstVariableName[i] + " (f5)'')");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Table=t1+nBlank+Mr1 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
                         txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
                         txt_writer.WriteLine("/Caption=\"Home\"");
                         txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
                         txt_writer.WriteLine("USE ALL.");
                         txt_writer.WriteLine("");
                     }
-
                     i_TableNo = i_TableNo + 1;
                 }
                 else if (lstTableType[i] == "2")
                 {
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute Filt=0.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
-                            txt_writer.WriteLine("Filter by Filt.");
-                        }
+                    //6	Multiple Response	Count
 
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)'') Count(B2_" + lstVariableName[i] + " (f5)'') ");
-                        txt_writer.WriteLine("Count(Mr1(F5)'')");
-                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)'') Count(T2_" + lstVariableName[i] + " (f5)'')");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
-                        txt_writer.WriteLine("Compute Filt=0.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
-                        txt_writer.WriteLine("Filter by Filt.");
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)'') Count(B2_" + lstVariableName[i] + " (f5)'') ");
-                        txt_writer.WriteLine("Count(Mr1(F5)'')");
-                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)'') Count(T2_" + lstVariableName[i] + " (f5)'')");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "3")
-                {
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute Filt=0.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
-                            txt_writer.WriteLine("Filter by Filt.");
-                        }
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)'') Count(B2_" + lstVariableName[i] + " (f5)'' )  Count(B3_" + lstVariableName[i] + " (f5)'' ) ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)'' ) Count(T2_" + lstVariableName[i] + " (f5)'' )  Count(T3_" + lstVariableName[i] + " (f5)'' )");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
-                        txt_writer.WriteLine("Compute Filt=0.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
-                        txt_writer.WriteLine("Filter by Filt.");
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)'') Count(B2_" + lstVariableName[i] + " (f5)'' )  Count(B3_" + lstVariableName[i] + " (f5)'' ) ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)'' ) Count(T2_" + lstVariableName[i] + " (f5)'' )  Count(T3_" + lstVariableName[i] + " (f5)'' )");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "4")
-                {
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute Filt=0.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
-                            txt_writer.WriteLine("Filter by Filt.");
-                        }
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)'') Count(B2_" + lstVariableName[i] + " (f5)'' )  Count(B3_" + lstVariableName[i] + " (f5)'' ) ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)'' ) Count(T2_" + lstVariableName[i] + " (f5)'' )  Count(T3_" + lstVariableName[i] + " (f5)'' )");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    if (lstFilterCondition[i] != "")
-                    {
-                        txt_writer.WriteLine("Compute Filt=0.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
-                        txt_writer.WriteLine("Filter by Filt.");
-                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)'') Count(B2_" + lstVariableName[i] + " (f5)'' )  Count(B3_" + lstVariableName[i] + " (f5)'' ) ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)'' ) Count(T2_" + lstVariableName[i] + " (f5)'' )  Count(T3_" + lstVariableName[i] + " (f5)'' )");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "5")
-                {
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute Filt=0.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
-                            txt_writer.WriteLine("Filter by Filt.");
-                        }
-
-                        txt_writer.WriteLine("Tables Observation nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+nBlank+Mr1 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    if (lstFilterCondition[i] != "")
-                    {
-                        txt_writer.WriteLine("Compute Filt=0.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
-                        txt_writer.WriteLine("Filter by Filt.");
-                        txt_writer.WriteLine("Tables Observation nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+nBlank+Mr1 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "6")
-                {
 
                     mrVarList = mrVarList + lstVariableName[i] + " ";
                     i_varCount++;
 
                     if (lstMRBreakPoint[i] == "XXX")
                     {
+
                         if (lstFilterCondition[i] == "")
                         {
                             if (lstFilterLabel[i] != "All Respondents")
@@ -1526,8 +1475,8 @@ namespace DBI_Scripting.Forms.Analytics
                             txt_writer.WriteLine("/BASE=ALL");
                             txt_writer.WriteLine("/Table=t1+nBlank+Mr1 by @ColVar");
                             txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
-                            txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                            txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", "") + "'");
+                            txt_writer.WriteLine("Count(Mr1 (f5)");
+                            txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", " ") + "'");
                             txt_writer.WriteLine("/Caption=\"Home\"");
                             if (lstFilterLabel[i] != "")
                                 txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
@@ -1538,11 +1487,14 @@ namespace DBI_Scripting.Forms.Analytics
 
                             mrVarList = "";
                         }
-                        if (lstFilterCondition[i] != "")
+                        else if (lstFilterCondition[i] != "")
                         {
+
                             txt_writer.WriteLine("Compute Filt=0.");
                             txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
                             txt_writer.WriteLine("Filter by Filt.");
+
+
                             txt_writer.WriteLine("Tables Observation nBlank");
                             txt_writer.WriteLine("/Ptotal=t1 'Base'");
                             txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
@@ -1551,7 +1503,7 @@ namespace DBI_Scripting.Forms.Analytics
                             txt_writer.WriteLine("/BASE=ALL");
                             txt_writer.WriteLine("/Table=t1+nBlank+Mr1 by @ColVar");
                             txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
-                            txt_writer.WriteLine("Count(Mr1 (f5)'') ");
+                            txt_writer.WriteLine("Count(Mr1 (f5)");
                             txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", "") + "'");
                             txt_writer.WriteLine("/Caption=\"Home\"");
                             txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
@@ -1564,9 +1516,9 @@ namespace DBI_Scripting.Forms.Analytics
                         i_varCount = 0;
                     }
                 }
-                else if (lstTableType[i] == "7")
+                else if (lstTableType[i] == "3")
                 {
-                    // Single Response with Mean
+                    // For Single Response With Mean
 
                     if (lstFilterCondition[i] == "")
                     {
@@ -1588,8 +1540,220 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine("/BASE=ALL");
                         txt_writer.WriteLine("/Table=t1+nBlank+Mr1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
                         txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
                         txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                        txt_writer.WriteLine("");
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Tables Observation nBlank m_" + lstVariableName[i]);
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+nBlank+Mr1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+
+                    //    txt_writer.WriteLine("Tables Observation nBlank m_S1");
+                    //    txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                    //    txt_writer.WriteLine("/Ftotal = f1 ""Total""");
+                    //    txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                    //    txt_writer.WriteLine("/MrGroup=Mr1 '' ExS1");
+                    //    txt_writer.WriteLine("/BASE=ALL");
+                    //    txt_writer.WriteLine("/Table=t1+nBlank+Mr1+nBlank+m_S1 by @ColVar");
+                    //    txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                    //    txt_writer.WriteLine("Count(Mr1 (f5)");
+                    //    txt_writer.WriteLine("Mean(m_S1 (F3.2)'MEAN')");
+                    //    txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString + ": QS1. Number of Member in Household'");
+                    //    txt_writer.WriteLine("/Corner='Base : All Respondent'.");
+
+                    i_TableNo = i_TableNo + 1;
+
+                }
+                else if (lstTableType[i] == "4")
+                {
+                    //4	Scaled Question (5+)	T1B T2B T3B Count B3B B2B B1B Mean S.T S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "5")
+                {
+                    //1	Scaled Question (5)	T1B T2B Count B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    if (lstFilterCondition[i] != "")
+                    {
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "6")
+                {
+                    //2	Scaled Question (5)	T1B T2B Count B2B B1B Mean S.T S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
                         txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
                         txt_writer.WriteLine("/Caption=\"Home\"");
                         if (lstFilterLabel[i] != "")
@@ -1602,23 +1766,288 @@ namespace DBI_Scripting.Forms.Analytics
                     if (lstFilterCondition[i] != "")
                     {
 
-                        txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
                         txt_writer.WriteLine("");
+                    }
+
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "7")
+                {
+                    //3	Scaled Question (5+)	T1B T2B T3B Count B3B B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
 
                         txt_writer.WriteLine("Compute Filt=0.");
                         txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
                         txt_writer.WriteLine("Filter by Filt.");
-                        txt_writer.WriteLine("Tables Observation nBlank m_" + lstVariableName[i]);
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
                         txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
                         txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
                         txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+nBlank+Mr1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN')");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "8")
+                {
+                    //3	Scaled Question (5+)	T1B T2B T3B Count B3B B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+R1_" + lstVariableName[i] + "+R2_" + lstVariableName[i] + "+R3_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'')");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(R1_" + lstVariableName[i] + " (f5)) Count(R2_" + lstVariableName[i] + " (f5)) Count(R3_" + lstVariableName[i] + " (f5)");
                         txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+R1_" + lstVariableName[i] + "+R2_" + lstVariableName[i] + "+R3_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'')");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(R1_" + lstVariableName[i] + " (f5)) Count(R2_" + lstVariableName[i] + " (f5)) Count(R3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "9")
+                {
+                    //3	Scaled Question (5+)	T1B T2B T3B Count B3B B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B1_" + lstVariableName[i] + "+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T1_" + lstVariableName[i] + "+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B1_" + lstVariableName[i] + " (f5)) Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T1_" + lstVariableName[i] + " (f5)) Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "10")
+                {
+                    //3	Scaled Question (5+)	T1B T2B T3B Count B3B B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+B4_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)) Count(B4_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)) Count(T4_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+B4_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)) Count(B4_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)) Count(T4_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
                         txt_writer.WriteLine("/Caption=\"Home\"");
                         txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
                         txt_writer.WriteLine("USE ALL.");
@@ -1628,6 +2057,7 @@ namespace DBI_Scripting.Forms.Analytics
                 }
                 else if (lstTableType[i] == "11")
                 {
+                    //4	Scaled Question (5+)	T1B T2B T3B Count B3B B2B B1B Mean S.T S.D. S.E. 
 
                     if (lstFilterCondition[i] == "")
                     {
@@ -1639,20 +2069,23 @@ namespace DBI_Scripting.Forms.Analytics
                         }
 
                         txt_writer.WriteLine("Define @Row1() nBlank+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+B4_" + lstVariableName[i] + "+B5_" + lstVariableName[i] + "+B6_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + " !Enddefine.");
 
-                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        //txt_writer.WriteLine("Tables Observation nBlank SigTest");
                         txt_writer.WriteLine("Tables Observation nBlank");
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
                         txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
                         txt_writer.WriteLine("/Format=Zero MISSING ('')");
                         txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
                         txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B2_" + lstVariableName[i] + " (f5)'') Count(B3_" + lstVariableName[i] + " (f5)'' )  Count(B4_" + lstVariableName[i] + " (f5)'' )   Count(B5_" + lstVariableName[i] + " (f5)'' )   Count(B6_" + lstVariableName[i] + " (f5)'' ) ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("Count(T2_" + lstVariableName[i] + " (f5)'' ) Count(T3_" + lstVariableName[i] + " (f5)'' )  Count(T4_" + lstVariableName[i] + " (f5)'' )");
+                        //txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Table=t1+Mr1+@Row2+@Row1 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)) Count(B4_" + lstVariableName[i] + " (f5)  Count(B5_" + lstVariableName[i] + " (f5)  Count(B6_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)) Count(T4_" + lstVariableName[i] + " (f5)");
                         //txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
                         txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
                         txt_writer.WriteLine("/Caption=\"Home\"");
@@ -1663,26 +2096,101 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine("USE ALL.");
                         txt_writer.WriteLine("");
                     }
-                    if (lstFilterCondition[i] != "")
+                    else if (lstFilterCondition[i] != "")
                     {
+
                         txt_writer.WriteLine("Compute Filt=0.");
                         txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
                         txt_writer.WriteLine("Filter by Filt.");
-                        txt_writer.WriteLine("Define @Row1() nBlank+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+B4_" + lstVariableName[i] + "+B5_" + lstVariableName[i] + "+B6_" + lstVariableName[i] + "+nBlank !Enddefine.");
-                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank !Enddefine.");
 
-                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+B2_" + lstVariableName[i] + "+B3_" + lstVariableName[i] + "+B4_" + lstVariableName[i] + "+B5_" + lstVariableName[i] + "+B5_" + lstVariableName[i] + "+nBlank !Enddefine.");
+                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + " !Enddefine.");
+
+                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("Tables Observation nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        //txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Table=t1+Mr1+@Row2+@Row1 by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B2_" + lstVariableName[i] + " (f5)) Count(B3_" + lstVariableName[i] + " (f5)) Count(B4_" + lstVariableName[i] + " (f5)  Count(B5_" + lstVariableName[i] + " (f5)  Count(B6_" + lstVariableName[i] + " (f5)");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(T2_" + lstVariableName[i] + " (f5)) Count(T3_" + lstVariableName[i] + " (f5)) Count(T4_" + lstVariableName[i] + " (f5)");
+                        //txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "12")
+                {
+                    //4	Scaled Question (5+)	T1B T2B T3B Count B3B B2B B1B Mean S.T S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute Filt=0.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") Filt=1.");
+                            txt_writer.WriteLine("Filter by Filt.");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xTPro_" + lstVariableName[i] + "+xTPas_" + lstVariableName[i] + "+xTDic_" + lstVariableName[i] + " !Enddefine.");
+
+                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        //txt_writer.WriteLine("Tables Observation nBlank SigTest");
                         txt_writer.WriteLine("Tables Observation nBlank");
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
                         txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
                         txt_writer.WriteLine("/Format=Zero MISSING ('')");
                         txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
                         txt_writer.WriteLine("/BASE=ALL");
-                        txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
-                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') Count(B2_" + lstVariableName[i] + " (f5)'') Count(B3_" + lstVariableName[i] + " (f5)'' )  Count(B4_" + lstVariableName[i] + " (f5)'' )  Count(B5_" + lstVariableName[i] + " (f5)'' )   Count(B6_" + lstVariableName[i] + " (f5)'' )  ");
-                        txt_writer.WriteLine("Count(Mr1 (f5)'') ");
-                        txt_writer.WriteLine("Count(T2_" + lstVariableName[i] + " (f5)'' ) Count(T3_" + lstVariableName[i] + " (f5)'' )  Count(T4_" + lstVariableName[i] + " (f5)'' )");
+                        //txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Table=t1+Mr1+@Row1+nBlank+NPS+nBlank by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(xTPro_" + lstVariableName[i] + " (f5)) Count(xTPas_" + lstVariableName[i] + " (f5)) Count(xTDic_" + lstVariableName[i] + " (f5)");
+                        //txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute Filt=0.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " Filt=1.");
+                        txt_writer.WriteLine("Filter by Filt.");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xTPro_" + lstVariableName[i] + "+xTPas_" + lstVariableName[i] + "+xTDic_" + lstVariableName[i] + " !Enddefine.");
+
+                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        //txt_writer.WriteLine("Tables Observation nBlank SigTest");
+                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ALL");
+                        //txt_writer.WriteLine("/Table=t1+@Row1+Mr1+@Row2 by @ColVar");
+                        txt_writer.WriteLine("/Table=t1+Mr1+@Row1+nBlank+NPS+nBlank by @ColVar");
+                        txt_writer.WriteLine("/Stat=Count(t1(F5)'') ");
+                        txt_writer.WriteLine("Count(Mr1 (f5)");
+                        txt_writer.WriteLine("Count(xTPro_" + lstVariableName[i] + " (f5)) Count(xTPas_" + lstVariableName[i] + " (f5)) Count(xTDic_" + lstVariableName[i] + " (f5)");
                         //txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
                         txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
                         txt_writer.WriteLine("/Caption=\"Home\"");
@@ -1745,14 +2253,27 @@ namespace DBI_Scripting.Forms.Analytics
             txt_writer.WriteLine("EXECUTE.");
 
             txt_writer.WriteLine("");
+            txt_writer.WriteLine(""); txt_writer.WriteLine("***************************************************************************");
             txt_writer.WriteLine("");
 
+
+            txt_writer.WriteLine("* ADD FILES /FILE=*");
+            txt_writer.WriteLine(@" /FILE='D:\DBI Projects\2023 Projects\Data_Dummy.sav'.");
+            txt_writer.WriteLine("* EXECUTE.");
+
+            txt_writer.WriteLine("COMPUTE DummyATotal=1.");
+            txt_writer.WriteLine(@"VALUE LABELS DummyATotal 1 ""DummyTotal"".");
+
+            txt_writer.WriteLine("COMPUTE Dummy=1.");
+            txt_writer.WriteLine(@"VARIABLE LABELS Dummy ""DUMMY ROW"".");
+
+            txt_writer.WriteLine("");
             txt_writer.WriteLine("***************************************************************************");
             txt_writer.WriteLine("");
 
             for (int i = 0; i < lstTableType.Count; i++)
             {
-                if (lstTableType[i] == "1" || lstTableType[i] == "2")
+                if (lstTableType[i] == "5")
                 {
 
                     txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
@@ -1774,7 +2295,30 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("VALUE LABELS xB2_" + lstVariableName[i] + @" 1 ""BOTTOM 2 BOX [01/02]""  99  ""DUMMY ROW"".");
                     txt_writer.WriteLine("");
                 }
-                else if (lstTableType[i] == "3" || lstTableType[i] == "4")
+                else if (lstTableType[i] == "6")
+                {
+
+                    txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE m_" + lstVariableName[i] + " (1=5)(2=4)(3=3)(4=2)(5=1).");
+                    //txt_writer.WriteLine("RECODE m_" + lstVariableName[i] + " (88=sysmis) (99=sysmis).")
+
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) into xT1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (2=1) (1=1) into xT2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (5=1) into xB1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (5=1) (4=1) into xB2_" + lstVariableName[i] + ".");
+
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xT1_" + lstVariableName[i] + ") xT1_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xT2_" + lstVariableName[i] + ") xT2_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xB1_" + lstVariableName[i] + ") xB1_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xB2_" + lstVariableName[i] + ") xB2_" + lstVariableName[i] + "=99.");
+
+                    txt_writer.WriteLine("VALUE LABELS xT1_" + lstVariableName[i] + @" 1 ""TOP BOX [01]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xT2_" + lstVariableName[i] + @" 1 ""TOP 2 BOX [01/02]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xB1_" + lstVariableName[i] + @" 1 ""BOTTOM BOX [05]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xB2_" + lstVariableName[i] + @" 1 ""BOTTOM 2 BOX [05/04]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("");
+                }
+                else if (lstTableType[i] == "7")
                 {
                     txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
@@ -1810,27 +2354,62 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) into xR3_" + lstVariableName[i] + ".");
                     txt_writer.WriteLine("");
                 }
-                else if (lstTableType[i] == "10")
+                else if (lstTableType[i] == "9")
                 {
-
                     txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
 
-                    //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) into T1_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (11=1) (10=1) into xTPro_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (9=1) (8=1) into xTPas_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (7=1) (6=1) (5=1) (4=1) (3=1) (2=1) (1=1) into xTDic_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (9=1) into xT1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (9=1) (8=1) into xT2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (9=1) (8=1) (7=1) into xT3_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) into xB1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) into xB2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) into xB3_" + lstVariableName[i] + ".");
+
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xT1_" + lstVariableName[i] + ") xT1_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xT2_" + lstVariableName[i] + ") xT2_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xT3_" + lstVariableName[i] + ") xT3_" + lstVariableName[i] + "=99.");
+
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xB1_" + lstVariableName[i] + ") xB1_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xB2_" + lstVariableName[i] + ") xB2_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xB3_" + lstVariableName[i] + ") xB3_" + lstVariableName[i] + "=99.");
 
 
-                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xTPro_" + lstVariableName[i] + ") xTPro_" + lstVariableName[i] + "=99.");
-                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xTPas_" + lstVariableName[i] + ") xTPas_" + lstVariableName[i] + "=99.");
-                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xTDic_" + lstVariableName[i] + ") xTDic_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("VALUE LABELS xT1_" + lstVariableName[i] + @" 1 ""TOP BOX [09]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xT2_" + lstVariableName[i] + @" 1 ""TOP 2 BOX [09/08]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xT3_" + lstVariableName[i] + @" 1 ""TOP 3 BOX [09/08/07]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xB1_" + lstVariableName[i] + @" 1 ""BOTTOM BOX [01]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xB2_" + lstVariableName[i] + @" 1 ""BOTTOM 2 BOX [01/02]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xB3_" + lstVariableName[i] + @" 1 ""BOTTOM 3 BOX [01/02/03]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("");
+                }
+                else if (lstTableType[i] == "10")
+                {
+                    txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                    //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
 
-                    //txt_writer.WriteLine("VALUE LABELS T1_" + lstVariableName[i] + @" 1 ""TOP BOX [07]"".");
-                    txt_writer.WriteLine("VALUE LABELS xTPro_" + lstVariableName[i] + @" 1 ""Promoter [9-10]""  99  ""DUMMY ROW"".");
-                    txt_writer.WriteLine("VALUE LABELS xTPas_" + lstVariableName[i] + @" 1 ""Passive [7-8]""  99  ""DUMMY ROW"".");
-                    txt_writer.WriteLine("VALUE LABELS xTDic_" + lstVariableName[i] + @" 1 ""Detractor [0-6]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) into xT1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) (9=1) into xT2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) (9=1) (8=1) into xT3_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) into xB1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) into xB2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) (2=1) (3=1) into xB3_" + lstVariableName[i] + ".");
 
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xT1_" + lstVariableName[i] + ") xT1_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xT2_" + lstVariableName[i] + ") xT2_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xT3_" + lstVariableName[i] + ") xT3_" + lstVariableName[i] + "=99.");
+
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xB1_" + lstVariableName[i] + ") xB1_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xB2_" + lstVariableName[i] + ") xB2_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xB3_" + lstVariableName[i] + ") xB3_" + lstVariableName[i] + "=99.");
+
+
+                    txt_writer.WriteLine("VALUE LABELS xT1_" + lstVariableName[i] + @" 1 ""TOP BOX [10]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xT2_" + lstVariableName[i] + @" 1 ""TOP 2 BOX [10/09]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xT3_" + lstVariableName[i] + @" 1 ""TOP 3 BOX [10/09/08]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xB1_" + lstVariableName[i] + @" 1 ""BOTTOM BOX [01]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xB2_" + lstVariableName[i] + @" 1 ""BOTTOM 2 BOX [01/02]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xB3_" + lstVariableName[i] + @" 1 ""BOTTOM 3 BOX [01/02/03]""  99  ""DUMMY ROW"".");
                     txt_writer.WriteLine("");
                 }
                 else if (lstTableType[i] == "11")
@@ -1840,9 +2419,9 @@ namespace DBI_Scripting.Forms.Analytics
                     //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
 
                     //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) into T1_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) (9=1) into xT2_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) (9=1) (8=1) into xT3_" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) (9=1) (8=1) (7=1) into xT4_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (11=1) (10=1) into xT2_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (11=1) (10=1) (9=1) into xT3_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (11=1) (10=1) (9=1) (8=1) into xT4_" + lstVariableName[i] + ".");
 
 
                     //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (1=1) into B1_" + lstVariableName[i] + ".");
@@ -1868,9 +2447,9 @@ namespace DBI_Scripting.Forms.Analytics
 
 
                     //txt_writer.WriteLine("VALUE LABELS T1_" + lstVariableName[i] + @" 1 ""TOP BOX [07]"".");
-                    txt_writer.WriteLine("VALUE LABELS xT2_" + lstVariableName[i] + @" 1 ""TOP 2 BOX [10/09]""  99  ""DUMMY ROW"".");
-                    txt_writer.WriteLine("VALUE LABELS xT3_" + lstVariableName[i] + @" 1 ""TOP 3 BOX [10/09/08]""  99  ""DUMMY ROW"".");
-                    txt_writer.WriteLine("VALUE LABELS xT4_" + lstVariableName[i] + @" 1 ""TOP 4 BOX [10/09/08/07]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xT2_" + lstVariableName[i] + @" 1 ""TOP 2 BOX [11/10]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xT3_" + lstVariableName[i] + @" 1 ""TOP 3 BOX [11/10/09]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xT4_" + lstVariableName[i] + @" 1 ""TOP 4 BOX [11/10/09/08]""  99  ""DUMMY ROW"".");
 
                     //txt_writer.WriteLine("VALUE LABELS B1_" + lstVariableName[i] + @" 1 ""BOTTOM BOX [01]"".");
                     txt_writer.WriteLine("VALUE LABELS xB2_" + lstVariableName[i] + @" 1 ""BOTTOM 2 BOX [00/01]""  99  ""DUMMY ROW"".");
@@ -1881,6 +2460,30 @@ namespace DBI_Scripting.Forms.Analytics
                     //txt_writer.WriteLine("VALUE LABELS xB6_" + lstVariableName[i] + @" 1 ""BOTTOM 6 BOX [01/02/03/04/05/06]""  99  ""DUMMY ROW"".");
                     txt_writer.WriteLine("");
                 }
+                else if (lstTableType[i] == "12")
+                {
+
+                    txt_writer.WriteLine("Compute m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                    //txt_writer.WriteLine("RECODE m_" + lstVariableName [i] + " (88=sysmis) (99=sysmis).");
+
+                    //txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) into T1_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (10=1) (9=1) into xTPro_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (8=1) (7=1) into xTPas_" + lstVariableName[i] + ".");
+                    txt_writer.WriteLine("RECODE " + lstVariableName[i] + " (6=1) (5=1) (4=1) (3=1) (2=1) (1=1) (0=1) into xTDic_" + lstVariableName[i] + ".");
+
+
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xTPro_" + lstVariableName[i] + ") xTPro_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xTPas_" + lstVariableName[i] + ") xTPas_" + lstVariableName[i] + "=99.");
+                    txt_writer.WriteLine("IF NOT Missing (" + lstVariableName[i] + ") AND Missing(xTDic_" + lstVariableName[i] + ") xTDic_" + lstVariableName[i] + "=99.");
+
+                    //txt_writer.WriteLine("VALUE LABELS T1_" + lstVariableName[i] + @" 1 ""TOP BOX [07]"".");
+                    txt_writer.WriteLine("VALUE LABELS xTPro_" + lstVariableName[i] + @" 1 ""Promoter [9-10]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xTPas_" + lstVariableName[i] + @" 1 ""Passive [7-8]""  99  ""DUMMY ROW"".");
+                    txt_writer.WriteLine("VALUE LABELS xTDic_" + lstVariableName[i] + @" 1 ""Detractor [0-6]""  99  ""DUMMY ROW"".");
+
+                    txt_writer.WriteLine("");
+                }
+
                 //txt_writer.Close();
             }
             txt_writer.WriteLine(" ");
@@ -1932,6 +2535,356 @@ namespace DBI_Scripting.Forms.Analytics
                 //************************************ For Table ************************************************
 
                 if (lstTableType[i] == "1")
+                {
+                    //5	Single Response	CpcT
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                            txt_writer.WriteLine("");
+                        }
+
+                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+nBlank by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
+
+
+                        txt_writer.WriteLine("Tables Observation nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+nBlank by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "2")
+                {
+                    //6	Multiple Response	CpcT
+
+
+                    mrVarList = mrVarList + lstVariableName[i] + " ";
+                    i_varCount++;
+
+                    if (lstMRBreakPoint[i] == "XXX")
+                    {
+
+                        if (lstFilterCondition[i] == "")
+                        {
+                            if (lstFilterLabel[i] != "All Respondents")
+                            {
+                                txt_writer.WriteLine("Compute aBase=1.");
+                                txt_writer.WriteLine("COUNT myCount= " + mrVarList + " (Missing).");
+                                txt_writer.WriteLine("if myCount=" + i_varCount.ToString() + " aBase=$Sysmis.");
+                                if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                                txt_writer.WriteLine("");
+                            }
+
+                            txt_writer.WriteLine("Tables Observation nBlank");
+                            txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                            txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                            txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                            txt_writer.WriteLine("/MrGroup=Mr1 '' " + mrVarList + "");
+                            txt_writer.WriteLine("/BASE=ANSWERING");
+                            if (comAnalysisType.Text == "Weighted Analysis")
+                                txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+nBlank by @ColVar");
+                            else
+                                txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank by @ColVar");
+
+                            if (comAnalysisType.Text == "Weighted Analysis")
+                                txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                            else
+                                txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+
+                            txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                            txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", " ") + "'");
+                            txt_writer.WriteLine("/Caption=\"Home\"");
+                            if (lstFilterLabel[i] != "")
+                                txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                            else
+                                txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                            txt_writer.WriteLine("USE ALL.");
+                            txt_writer.WriteLine("");
+
+                            mrVarList = "";
+                        }
+                        else if (lstFilterCondition[i] != "")
+                        {
+
+                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                            txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
+                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                            txt_writer.WriteLine("");
+
+
+                            txt_writer.WriteLine("Tables Observation nBlank");
+                            txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                            txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                            txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                            txt_writer.WriteLine("/MrGroup=Mr1 '' " + mrVarList + "");
+                            txt_writer.WriteLine("/BASE=ANSWERING");
+                            if (comAnalysisType.Text == "Weighted Analysis")
+                                txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+nBlank by @ColVar");
+                            else
+                                txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank by @ColVar");
+
+                            if (comAnalysisType.Text == "Weighted Analysis")
+                                txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                            else
+                                txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+
+                            txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                            txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", "") + "'");
+                            txt_writer.WriteLine("/Caption=\"Home\"");
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                            txt_writer.WriteLine("USE ALL.");
+                            txt_writer.WriteLine("");
+
+                            mrVarList = "";
+                        }
+                        i_TableNo = i_TableNo + 1;
+                        i_varCount = 0;
+                    }
+                }
+                else if (lstTableType[i] == "3")
+                {
+                    // For Single Response With Mean
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                        txt_writer.WriteLine("");
+
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                            txt_writer.WriteLine("");
+                        }
+
+                        txt_writer.WriteLine("Tables Observation nBlank m_" + lstVariableName[i]);
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+nBlank+m_" + lstVariableName[i] + "+nBlank by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank+m_" + lstVariableName[i] + "+nBlank by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
+                        txt_writer.WriteLine("");
+
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
+
+
+                        txt_writer.WriteLine("Tables Observation nBlank m_" + lstVariableName[i]);
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+nBlank+m_" + lstVariableName[i] + "+nBlank by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank+m_" + lstVariableName[i] + "+nBlank by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+
+                    //    txt_writer.WriteLine("Tables Observation nBlank m_S1");
+                    //    txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                    //    txt_writer.WriteLine("/Ftotal = f1 ""Total""");
+                    //    txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                    //    txt_writer.WriteLine("/MrGroup=Mr1 '' ExS1");
+                    //    txt_writer.WriteLine("/BASE=ANSWERING");
+                    //    txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank+m_S1 by @ColVar");
+                    //                            if (comAnalysisType.Text == "Weighted Analysis")
+                    //    txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                    //    txt_writer.WriteLine("Mean(m_S1 (F3.2)'MEAN')");
+                    //    txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString + ": QS1. Number of Member in Household'");
+                    //    txt_writer.WriteLine("/Corner='Base : All Respondent'.");
+
+                    i_TableNo = i_TableNo + 1;
+
+                }
+                else if (lstTableType[i] == "4")
+                {
+                    //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                            txt_writer.WriteLine("");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xT1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Cpct(xB1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xT1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Cpct(xB1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "5")
                 {
                     //1	Scaled Question (5)	T1B T2B Cpct B2B B1B Mean S.D. S.E. 
 
@@ -2037,7 +2990,7 @@ namespace DBI_Scripting.Forms.Analytics
 
                     i_TableNo = i_TableNo + 1;
                 }
-                else if (lstTableType[i] == "2")
+                else if (lstTableType[i] == "6")
                 {
                     //2	Scaled Question (5)	T1B T2B Cpct B2B B1B Mean S.T S.D. S.E. 
 
@@ -2140,7 +3093,7 @@ namespace DBI_Scripting.Forms.Analytics
 
                     i_TableNo = i_TableNo + 1;
                 }
-                else if (lstTableType[i] == "3")
+                else if (lstTableType[i] == "7")
                 {
                     //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
 
@@ -2226,356 +3179,7 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     i_TableNo = i_TableNo + 1;
                 }
-                else if (lstTableType[i] == "4")
-                {
-                    //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
 
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ANSWERING");
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Table=aBase+uBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
-                        else
-                            txt_writer.WriteLine("/Table=aBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
-
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                        else
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(xT1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Cpct(xB1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
-
-                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
-                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                        txt_writer.WriteLine("");
-
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
-
-                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ANSWERING");
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Table=aBase+uBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
-                        else
-                            txt_writer.WriteLine("/Table=aBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
-
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                        else
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(xT1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Cpct(xB1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "5")
-                {
-                    //5	Single Response	CpcT
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
-
-                        txt_writer.WriteLine("Tables Observation nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ANSWERING");
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1 by @ColVar");
-                        else
-                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1 by @ColVar");
-
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                        else
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
-
-                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
-                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                        txt_writer.WriteLine("");
-
-
-                        txt_writer.WriteLine("Tables Observation nBlank");
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ANSWERING");
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1 by @ColVar");
-                        else
-                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1 by @ColVar");
-
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                        else
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-                }
-                else if (lstTableType[i] == "6")
-                {
-                    //6	Multiple Response	CpcT
-
-
-                    mrVarList = mrVarList + lstVariableName[i] + " ";
-                    i_varCount++;
-
-                    if (lstMRBreakPoint[i] == "XXX")
-                    {
-
-                        if (lstFilterCondition[i] == "")
-                        {
-                            if (lstFilterLabel[i] != "All Respondents")
-                            {
-                                txt_writer.WriteLine("Compute aBase=1.");
-                                txt_writer.WriteLine("COUNT myCount= " + mrVarList + " (Missing).");
-                                txt_writer.WriteLine("if myCount=" + i_varCount.ToString() + " aBase=$Sysmis.");
-                                if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                                txt_writer.WriteLine("");
-                            }
-
-                            txt_writer.WriteLine("Tables Observation nBlank");
-                            txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                            txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                            txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                            txt_writer.WriteLine("/MrGroup=Mr1 '' " + mrVarList + "");
-                            txt_writer.WriteLine("/BASE=ANSWERING");
-                            if (comAnalysisType.Text == "Weighted Analysis")
-                                txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1 by @ColVar");
-                            else
-                                txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1 by @ColVar");
-
-                            if (comAnalysisType.Text == "Weighted Analysis")
-                                txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                            else
-                                txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-
-                            txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                            txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", " ") + "'");
-                            txt_writer.WriteLine("/Caption=\"Home\"");
-                            if (lstFilterLabel[i] != "")
-                                txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                            else
-                                txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                            txt_writer.WriteLine("USE ALL.");
-                            txt_writer.WriteLine("");
-
-                            mrVarList = "";
-                        }
-                        else if (lstFilterCondition[i] != "")
-                        {
-
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-
-
-                            txt_writer.WriteLine("Tables Observation nBlank");
-                            txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                            txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                            txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                            txt_writer.WriteLine("/MrGroup=Mr1 '' " + mrVarList + "");
-                            txt_writer.WriteLine("/BASE=ANSWERING");
-                            if (comAnalysisType.Text == "Weighted Analysis")
-                                txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1 by @ColVar");
-                            else
-                                txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1 by @ColVar");
-
-                            if (comAnalysisType.Text == "Weighted Analysis")
-                                txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                            else
-                                txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-
-                            txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                            txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", "") + "'");
-                            txt_writer.WriteLine("/Caption=\"Home\"");
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                            txt_writer.WriteLine("USE ALL.");
-                            txt_writer.WriteLine("");
-
-                            mrVarList = "";
-                        }
-                        i_TableNo = i_TableNo + 1;
-                        i_varCount = 0;
-                    }
-                }
-                else if (lstTableType[i] == "7")
-                {
-                    // For Single Response With Mean
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                        txt_writer.WriteLine("");
-
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
-
-                        txt_writer.WriteLine("Tables Observation nBlank m_" + lstVariableName[i]);
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ANSWERING");
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-                        else
-                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                        else
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
-
-                        txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                        txt_writer.WriteLine("");
-
-                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
-                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                        txt_writer.WriteLine("");
-
-
-                        txt_writer.WriteLine("Tables Observation nBlank m_" + lstVariableName[i]);
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 '' " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ANSWERING");
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-                        else
-                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                        else
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-
-                    //    txt_writer.WriteLine("Tables Observation nBlank m_S1");
-                    //    txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                    //    txt_writer.WriteLine("/Ftotal = f1 ""Total""");
-                    //    txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                    //    txt_writer.WriteLine("/MrGroup=Mr1 '' ExS1");
-                    //    txt_writer.WriteLine("/BASE=ANSWERING");
-                    //    txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+nBlank+m_S1 by @ColVar");
-                    //                            if (comAnalysisType.Text == "Weighted Analysis")
-                    //    txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                    //    txt_writer.WriteLine("Mean(m_S1 (F3.2)'MEAN')");
-                    //    txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString + ": QS1. Number of Member in Household'");
-                    //    txt_writer.WriteLine("/Corner='Base : All Respondent'.");
-
-                    i_TableNo = i_TableNo + 1;
-
-                }
                 else if (lstTableType[i] == "8")
                 {
                     //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
@@ -2659,7 +3263,270 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     i_TableNo = i_TableNo + 1;
                 }
+                else if (lstTableType[i] == "9")
+                {
+                    //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                            txt_writer.WriteLine("");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xT1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Cpct(xB1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xT1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Cpct(xB1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
                 else if (lstTableType[i] == "10")
+                {
+                    //3	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                            txt_writer.WriteLine("");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xT1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Cpct(xB1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
+
+                        txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank");
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+dummy+nBlank+Mr1+@Row2+@Row1 by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xT1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Cpct(xB1_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title=Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "11")
+                {
+                    //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
+
+                    if (lstFilterCondition[i] == "")
+                    {
+                        if (lstFilterLabel[i] != "All Respondents")
+                        {
+                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                            txt_writer.WriteLine("");
+                        }
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+xB4_" + lstVariableName[i] + "+xB5_" + lstVariableName[i] + "+xB6_" + lstVariableName[i] + " !Enddefine.");
+                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+                        //txt_writer.WriteLine("Define @Row2() nBlank+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + "+xT4_" + lstVariableName[i] + "+nBlank+SigTest !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + "+xT4_" + lstVariableName[i] + " !Enddefine.");
+
+                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("Tables Observation nBlank SigTest m_" + lstVariableName[i]);
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        //txt_writer.WriteLine("/Table=aBase+dummy+@Row1+Mr1+@Row2 by @ColVar");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+@Row2+@Row1+nBlank+m_" + lstVariableName[i] + "+nBlank by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+@Row2+@Row1+nBlank+m_" + lstVariableName[i] + "+nBlank by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)   Cpct(xB5_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)   Cpct(xB6_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) "); txt_writer.WriteLine("Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        if (lstFilterLabel[i] != "")
+                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        else
+                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    else if (lstFilterCondition[i] != "")
+                    {
+
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
+                        txt_writer.WriteLine("");
+
+
+                        txt_writer.WriteLine("Define @Row1() nBlank+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+xB4_" + lstVariableName[i] + "+xB5_" + lstVariableName[i] + "+xB6_" + lstVariableName[i] + " !Enddefine.");
+                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
+                        //txt_writer.WriteLine("Define @Row2() nBlank+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + "+xT4_" + lstVariableName[i] + "+nBlank+SigTest !Enddefine.");
+                        txt_writer.WriteLine("Define @Row2() nBlank+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + "+xT4_" + lstVariableName[i] + " !Enddefine.");
+
+                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
+                        txt_writer.WriteLine("Tables Observation nBlank SigTest m_" + lstVariableName[i]);
+                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
+                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
+                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
+                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
+                        txt_writer.WriteLine("/BASE=ANSWERING");
+                        //txt_writer.WriteLine("/Table=aBase+dummy+@Row1+Mr1+@Row2 by @ColVar");
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+@Row2+@Row1+nBlank+m_" + lstVariableName[i] + "+nBlank by @ColVar");
+                        else
+                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+@Row2+@Row1+nBlank+m_" + lstVariableName[i] + "+nBlank by @ColVar");
+
+                        if (comAnalysisType.Text == "Weighted Analysis")
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
+                        else
+                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
+
+                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
+                        txt_writer.WriteLine("Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)   Cpct(xB5_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)   Cpct(xB6_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) "); txt_writer.WriteLine("Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
+                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
+                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("/Caption=\"Home\"");
+                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
+                        txt_writer.WriteLine("USE ALL.");
+                        txt_writer.WriteLine("");
+                    }
+                    i_TableNo = i_TableNo + 1;
+                }
+                else if (lstTableType[i] == "12")
                 {
                     //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
 
@@ -2745,97 +3612,6 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     i_TableNo = i_TableNo + 1;
                 }
-                else if (lstTableType[i] == "11")
-                {
-                    //4	Scaled Question (5+)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
-
-                    if (lstFilterCondition[i] == "")
-                    {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+xB4_" + lstVariableName[i] + "+xB5_" + lstVariableName[i] + "+xB6_" + lstVariableName[i] + " !Enddefine.");
-                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
-                        //txt_writer.WriteLine("Define @Row2() nBlank+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + "+xT4_" + lstVariableName[i] + "+nBlank+SigTest !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + "+xT4_" + lstVariableName[i] + " !Enddefine.");
-
-                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("Tables Observation nBlank SigTest m_" + lstVariableName[i]);
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ANSWERING");
-                        //txt_writer.WriteLine("/Table=aBase+dummy+@Row1+Mr1+@Row2 by @ColVar");
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+@Row2+@Row1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-                        else
-                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+@Row2+@Row1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                        else
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)   Cpct(xB5_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)   Cpct(xB6_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) "); txt_writer.WriteLine("Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        if (lstFilterLabel[i] != "")
-                            txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        else
-                            txt_writer.WriteLine("/Corner='Base : All Respondents'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
-
-                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                        txt_writer.WriteLine(lstFilterCondition[i] + " aBase=1.");
-                        txt_writer.WriteLine("");
-
-
-                        txt_writer.WriteLine("Define @Row1() nBlank+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+xB4_" + lstVariableName[i] + "+xB5_" + lstVariableName[i] + "+xB6_" + lstVariableName[i] + " !Enddefine.");
-                        //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
-                        //txt_writer.WriteLine("Define @Row2() nBlank+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + "+xT4_" + lstVariableName[i] + "+nBlank+SigTest !Enddefine.");
-                        txt_writer.WriteLine("Define @Row2() nBlank+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + "+xT4_" + lstVariableName[i] + " !Enddefine.");
-
-                        //txt_writer.WriteLine("Tables Observation m_" + lstVariableName[i] + " nBlank SigTest");
-                        txt_writer.WriteLine("Tables Observation nBlank SigTest m_" + lstVariableName[i]);
-                        txt_writer.WriteLine("/Ptotal=t1 'Base'");
-                        txt_writer.WriteLine(@"/Ftotal = f1 ""Total""");
-                        txt_writer.WriteLine("/Format=Zero MISSING ('')");
-                        txt_writer.WriteLine("/MrGroup=Mr1 ''  " + lstVariableName[i] + "");
-                        txt_writer.WriteLine("/BASE=ANSWERING");
-                        //txt_writer.WriteLine("/Table=aBase+dummy+@Row1+Mr1+@Row2 by @ColVar");
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Table=aBase+uBase+nBlank+dummy+Mr1+@Row2+@Row1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-                        else
-                            txt_writer.WriteLine("/Table=aBase+nBlank+dummy+Mr1+@Row2+@Row1+nBlank+m_" + lstVariableName[i] + " by @ColVar");
-
-                        if (comAnalysisType.Text == "Weighted Analysis")
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') U Count(uBase(F40)'')");
-                        else
-                            txt_writer.WriteLine("/Stat=Count(aBase(F5)'') ");
-
-                        txt_writer.WriteLine("Cpct(Mr1 (f3." + decimalNumber + ")'' : @ColVarPct) ");
-                        txt_writer.WriteLine("Cpct(xB2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xB3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xB4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)   Cpct(xB5_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)   Cpct(xB6_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) "); txt_writer.WriteLine("Cpct(xT2_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct) Cpct(xT3_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)  Cpct(xT4_" + lstVariableName[i] + " (f3." + decimalNumber + ")'' : @ColVarPct)");
-                        txt_writer.WriteLine("Mean(m_" + lstVariableName[i] + " (F3.2)'MEAN') STDDEV(m_" + lstVariableName[i] + " (F3.2)'S. D.') SEMEAN(m_" + lstVariableName[i] + " (F3.2)'S. E.')");
-                        txt_writer.WriteLine("/Title='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
-                        txt_writer.WriteLine("/Caption=\"Home\"");
-                        txt_writer.WriteLine("/Corner='Base : " + lstFilterLabel[i] + "'.");
-                        txt_writer.WriteLine("USE ALL.");
-                        txt_writer.WriteLine("");
-                    }
-                    i_TableNo = i_TableNo + 1;
-                }
             }
 
             if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("WEIGHT Off.");
@@ -2844,6 +3620,8 @@ namespace DBI_Scripting.Forms.Analytics
 
             //txt_writer.Close();
         }
+
+        
 
         private void save_ExcellSheetAsText()
         {
@@ -2986,26 +3764,56 @@ namespace DBI_Scripting.Forms.Analytics
 
         private void btnGetStructureHelp_Click(object sender, RoutedEventArgs e)
         {
-            string sTemp;
+            FrmGetStructureFile frmGetStructureFile = new FrmGetStructureFile();
+            frmGetStructureFile.ShowDialog();
 
-            sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
-            string[] arrayPath = sTemp.Split('\\');
+            //string sTemp;
 
-            FileInfo fi = new FileInfo(sTemp + "\\SPSS Analysis strcture.xlsx");
-            if (fi.Exists)
-            {
-                System.Diagnostics.Process.Start(sTemp + "\\SPSS Analysis strcture.xlsx");
-            }
-            else
-            {
-                //file doesn't exist
-            }
+            //sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
+            //string[] arrayPath = sTemp.Split('\\');
+
+            //FileInfo fi = new FileInfo(sTemp + "\\SPSS Analysis strcture.xlsx");
+            //if (fi.Exists)
+            //{
+            //    System.Diagnostics.Process.Start(sTemp + "\\SPSS Analysis strcture.xlsx");
+            //}
+            //else
+            //{
+            //    //file doesn't exist
+            //}
         }
 
         private void btnGetBannerHelp_Click(object sender, RoutedEventArgs e)
         {
-            //Process.Start("notepad++.exe", Application.StartupPath+"\\banner_help.txt");
+            String sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
+            TextWriter txtWriter = new StreamWriter(sTemp + "\\banner_help.txt");
+            txtWriter.WriteLine("********************************************************************************************************************");
+            txtWriter.WriteLine("*  ********* ColVar ***********************                                                                        *");
+            txtWriter.WriteLine("*  ATotal+Product+(Center+UserType)*Product                                                                        *");
+            txtWriter.WriteLine("*  ATotal+S1Banner+S2Banner+DhakaBanner+DhakaUrbanRuralBanner+CTGBanner+CTGUrbanRuralBanner+SECBanner+PBQ1Banner   *");
+            txtWriter.WriteLine("*                                                                                                                  *");
+            txtWriter.WriteLine("*  ********* ColVarPct ********************                                                                        *");
+            txtWriter.WriteLine("*  ATotal Product Center UserType Product                                                                          *");
+            txtWriter.WriteLine("*  ATotal S1Banner S2Banner DhakaBanner DhakaUrbanRuralBanner CTGBanner CTGUrbanRuralBanner SECBanner PBQ1Banner   *");
+            txtWriter.WriteLine("*                                                                                                                  *");
+            txtWriter.WriteLine("********************************************************************************************************************");
+            txtWriter.WriteLine("");
+            txtWriter.WriteLine("*Banner (ColVar)");
+            txtWriter.WriteLine("ATotal+Product+(Center+UserType)*Product");
+            txtWriter.WriteLine("");
+            txtWriter.WriteLine("*Banner (ColVarPct)");
+            txtWriter.WriteLine("ATotal Product Center UserType Product");
+            txtWriter.WriteLine("");
+            txtWriter.WriteLine("*Output File Name");
+            txtWriter.WriteLine("ProjectName");
+
+            txtWriter.Close();
+
+
             Process.Start(System.AppDomain.CurrentDomain.BaseDirectory + "\\banner_help.txt");
+
+            //Process.Start("notepad++.exe", Application.StartupPath+"\\banner_help.txt");
+            //Process.Start(System.AppDomain.CurrentDomain.BaseDirectory + "\\banner_help.txt");
         }
 
         private void chkListBoxWorksheet_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)

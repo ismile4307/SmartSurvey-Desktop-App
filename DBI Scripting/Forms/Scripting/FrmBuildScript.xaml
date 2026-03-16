@@ -10,6 +10,8 @@
         <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="359,114,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnExit_Click"/>
         <TextBox x:Name="txtBuildResult" HorizontalAlignment="Left" Height="249" Margin="10,144,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="774"/>
         <Button x:Name="btnUpload" Content="Upload to Server" HorizontalAlignment="Left" Margin="677,106,0,0" VerticalAlignment="Top" Width="107" Height="30" Click="btnUpload_Click"/>
+        <Label Content="Type Of Shell :" HorizontalAlignment="Left" Margin="16,58,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.022,0.481"/>
+        <ComboBox x:Name="comShellDBType" HorizontalAlignment="Left" Margin="113,62,0,0" VerticalAlignment="Top" Width="165"/>
 
     </Grid>
 </Window>

@@ -133,7 +133,7 @@ namespace DBI_Scripting.Forms.WebPortal {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/DBI Scripting;component/forms/webportal/frmquestiontable.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Smart Survey;component/forms/webportal/frmquestiontable.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Forms\WebPortal\FrmQuestionTable.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

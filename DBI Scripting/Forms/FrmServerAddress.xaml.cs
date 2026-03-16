@@ -30,6 +30,7 @@ namespace DBI_Scripting.Forms
             comServerAddress.Items.Add("https://smartsurveybd.com");
             comServerAddress.Items.Add("https://surveyhive.dbibd.xyz");
             comServerAddress.Items.Add("https://surveyhive.dbibd.com");
+            comServerAddress.Items.Add("https://surveydevs.com");
             //txtServerAddress.Text = Properties.Settings.Default.ServerAddress;
             comServerAddress.Text = StaticClass.SERVER_URL;
         }

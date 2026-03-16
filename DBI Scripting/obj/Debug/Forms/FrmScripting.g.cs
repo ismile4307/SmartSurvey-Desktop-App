@@ -148,7 +148,7 @@ namespace DBI_Scripting.Forms {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/DBI Scripting;component/forms/frmscripting.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Smart Survey;component/forms/frmscripting.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\Forms\FrmScripting.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

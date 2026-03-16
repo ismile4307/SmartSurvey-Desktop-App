@@ -26,6 +26,8 @@ using Newtonsoft.Json.Linq;
 using System.Data;
 using Newtonsoft.Json;
 using DBI_Scripting.Forms.WebPortal;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace DBI_Scripting
 {
@@ -85,7 +87,8 @@ namespace DBI_Scripting
             //MessageBox.Show("Ismile");
             string sTemp;
 
-            sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
+            //sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
+            sTemp = "C:\\Temp";
             if (!File.Exists(sTemp + "\\index.ini"))
             {
                 TextWriter txtWriter = new StreamWriter(sTemp + "\\index.ini");
@@ -95,7 +98,7 @@ namespace DBI_Scripting
 
             StaticClass.SERVER_URL = Properties.Settings.Default.ServerAddress;
             this.Activated += AfterLoading;
-            lblServerName.Content = "Server Name : " + StaticClass.SERVER_URL;
+            lblServerName.Content = "Server URL : " + StaticClass.SERVER_URL;
         }
 
         private void btnRejectInterview_Click(object sender, RoutedEventArgs e)
@@ -277,8 +280,8 @@ namespace DBI_Scripting
 
         private void btnCTableLink_Click(object sender, RoutedEventArgs e)
         {
-            FrmCTableLink frmCTableLink = new FrmCTableLink();
-            frmCTableLink.ShowDialog();
+            FrmCTableLink2 frmCTableLink2 = new FrmCTableLink2();
+            frmCTableLink2.ShowDialog();
         }
 
         private void btnSRTable_Click(object sender, RoutedEventArgs e)
@@ -354,7 +357,46 @@ namespace DBI_Scripting
             frmSyncData.ShowDialog();
         }
 
+        private void btnCTableSyntax_Click(object sender, RoutedEventArgs e)
+        {
+            FrmCTableSyntax frmCTableSyntax = new FrmCTableSyntax();
+            frmCTableSyntax.ShowDialog();
+        }
 
+        private void btnKillProcess_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult result = System.Windows.Forms.MessageBox.Show(
+                "Are you sure you want to kill all Excel processes?",
+                "Confirmation",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                this.quitProcess();
+                System.Windows.Forms.MessageBox.Show("All Excel processes are killed.",
+                                "Completed",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+            }
+        }
+
+        private void quitProcess()
+        {
+            //try
+            //{
+            Process[] proc = Process.GetProcessesByName("EXCEL");
+            foreach (Process myProcess in proc)
+            {
+                myProcess.Kill();
+            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+        }
 
 
     }

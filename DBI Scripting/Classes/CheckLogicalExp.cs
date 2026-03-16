@@ -26,9 +26,17 @@ namespace DBI_Scripting.Classes
             _postfixExpression = "";
             listOfQuestionIdForDupliCheck = _listOfQuestionIdForDupliCheck;
             listOfQuestionIdForDupliCheck.Add("Interview");
+            listOfQuestionIdForDupliCheck.Add("User");
 
             if (expression.ToUpper().Contains("MOBILENUMBER"))
                 expression = expression + "=1";
+
+            if (expression.ToUpper().Contains("WRONGLOCATIONOF"))
+            {
+                if (!Regex.IsMatch(expression.Trim(), @"WrongLocationOf\[(.*?)\]"))
+                    return false;
+                expression = expression + "=1";
+            }
 
             if (!expression.ToUpper().Contains("REGULAREXPOF"))
                 if (!Regex.IsMatch(expression.Trim(), @"^[A-Za-z0-9=.,;<>!_/\&\|\[\]\(\)\{\}\-\s]+$"))
@@ -333,6 +341,8 @@ namespace DBI_Scripting.Classes
             listOfFunctionName.Add("TIMEDIFFOF");
             listOfFunctionName.Add("TYPEOF");
             listOfFunctionName.Add("DISTANCEFROM");
+            listOfFunctionName.Add("IDOF");
+            listOfFunctionName.Add("WRONGLOCATIONOF");
         }
 
     }

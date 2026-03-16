@@ -124,10 +124,10 @@ namespace DBI_Scripting.Forms.Scripting
             string[] fileArray = Directory.GetFiles(fileDirectory, "*.q");
 
             chkListBoxQFiles.Items.Clear();
-            
+
             for (int i = 0; i < fileArray.Length; i++)
             {
-                chkListBoxQFiles.Items.Add(fileArray[i].Substring(fileArray[i].LastIndexOf('\\')+1));
+                chkListBoxQFiles.Items.Add(fileArray[i].Substring(fileArray[i].LastIndexOf('\\') + 1));
             }
         }
 
@@ -156,72 +156,72 @@ namespace DBI_Scripting.Forms.Scripting
                         File.Delete(myPath + "\\temp\\" + fileName);
                         File.Copy(txtScriptPath.Text, myPath + "\\temp\\" + fileName);
                     }
-                    //try
-                    //{
-                    //if (preparedScript == true)
-                    //{
-                    ServicePointManager.Expect100Continue = true;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                    ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-
-                    WebClient client = new WebClient();
-                    //string myFile = scriptFilePath;
-                    string myFile = myPath + "\\temp\\" + fileName;// txtScriptPath.Text;
-                    client.Credentials = CredentialCache.DefaultCredentials;
-                    //string temp=System.AppDomain.CurrentDomain.BaseDirectory+"//uploadfile.php";
-                    //string temp = Properties.Settings.Default.ServerAddress + "//uploadfile.php";
-                    //byte[] responseArray = client.UploadFile(Properties.Settings.Default.ServerAddress + "//uploadfile.php", "POST", myFile);
-                    byte[] responseArray = client.UploadFile(StaticClass.SERVER_URL + "/deskapi/uploadfile.php", "POST", myFile);
-                    client.Dispose();
-
-
-                    //MessageBox.Show(client.Encoding.GetString(responseArray));
-                    string UploadMessage = client.Encoding.GetString(responseArray).ToString();
-
-                    //Update script version *************************************
-                    if (UploadMessage == "Script uploaded successfully..")
+                    try
                     {
-                        UploadMessage = "";
+                        //if (preparedScript == true)
+                        //{
+                        ServicePointManager.Expect100Continue = true;
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                        WebClient client2 = new WebClient();
+                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+
+                        WebClient client = new WebClient();
                         //string myFile = scriptFilePath;
-                        string myFile2 = myPath + "\\" + sSelectedQFile;// txtScriptPath.Text;
+                        string myFile = myPath + "\\temp\\" + fileName;// txtScriptPath.Text;
                         client.Credentials = CredentialCache.DefaultCredentials;
                         //string temp=System.AppDomain.CurrentDomain.BaseDirectory+"//uploadfile.php";
                         //string temp = Properties.Settings.Default.ServerAddress + "//uploadfile.php";
                         //byte[] responseArray = client.UploadFile(Properties.Settings.Default.ServerAddress + "//uploadfile.php", "POST", myFile);
-                        byte[] responseArray2 = client.UploadFile(StaticClass.SERVER_URL + "/deskapi/uploadfile.php", "POST", myFile2);
-                        client2.Dispose();
+                        byte[] responseArray = client.UploadFile(StaticClass.SERVER_URL + "/deskapi/uploadfile.php", "POST", myFile);
+                        client.Dispose();
 
 
                         //MessageBox.Show(client.Encoding.GetString(responseArray));
-                        UploadMessage = client2.Encoding.GetString(responseArray2).ToString();
+                        string UploadMessage = client.Encoding.GetString(responseArray).ToString();
+
+                        //Update script version *************************************
+                        if (UploadMessage == "Script uploaded successfully..")
+                        {
+                            UploadMessage = "";
+
+                            WebClient client2 = new WebClient();
+                            //string myFile = scriptFilePath;
+                            string myFile2 = myPath + "\\" + sSelectedQFile;// txtScriptPath.Text;
+                            client.Credentials = CredentialCache.DefaultCredentials;
+                            //string temp=System.AppDomain.CurrentDomain.BaseDirectory+"//uploadfile.php";
+                            //string temp = Properties.Settings.Default.ServerAddress + "//uploadfile.php";
+                            //byte[] responseArray = client.UploadFile(Properties.Settings.Default.ServerAddress + "//uploadfile.php", "POST", myFile);
+                            byte[] responseArray2 = client.UploadFile(StaticClass.SERVER_URL + "/deskapi/uploadfile.php", "POST", myFile2);
+                            client2.Dispose();
+
+
+                            //MessageBox.Show(client.Encoding.GetString(responseArray));
+                            UploadMessage = client2.Encoding.GetString(responseArray2).ToString();
+                        }
+
+                        //Update script version *************************************
+
+                        //MyWebRequest myRequest = new MyWebRequest(Properties.Settings.Default.ServerAddress + "/updatescriptversion.php", "POST", "projectId=" + projectId + "&scriptVersion=" + txtScriptVersion.Text); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
+                        MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/updatescriptversion.php", "POST", "projectId=" + projectId + "&scriptVersion=" + txtScriptVersion.Text + "&qFileName=" + sSelectedQFile); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
+
+                        string temp = myRequest.GetResponse().ToString();
+
+                        if (temp == "Record updated successfully\r\n" && UploadMessage == "Script uploaded successfully..")
+                            MessageBox.Show("Script uploaded successfully..");
+                        else
+                            MessageBox.Show("Opps... Somthing error...");
+                        //***********************************************************
+
+
+                        //}
+                        //else
+                        //    MessageBox.Show("Need to prepare the script first..");
                     }
-
-                    //Update script version *************************************
-
-                    //MyWebRequest myRequest = new MyWebRequest(Properties.Settings.Default.ServerAddress + "/updatescriptversion.php", "POST", "projectId=" + projectId + "&scriptVersion=" + txtScriptVersion.Text); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-                    MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/updatescriptversion.php", "POST", "projectId=" + projectId + "&scriptVersion=" + txtScriptVersion.Text + "&qFileName=" + sSelectedQFile); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-
-                    string temp = myRequest.GetResponse().ToString();
-
-                    if (temp == "Record updated successfully\r\n" && UploadMessage == "Script uploaded successfully..")
-                        MessageBox.Show("Script uploaded successfully..");
-                    else
-                        MessageBox.Show("Opps... Somthing error...");
-                    //***********************************************************
-
-
-                    //}
-                    //else
-                    //    MessageBox.Show("Need to prepare the script first..");
-                    //}
-                    //catch (Exception err)
-                    //{
-                    //    MessageBox.Show(err.Message);
-                    //}
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message);
+                    }
 
                     //<?php
                     //    $filepath = $_FILES["file"]["tmp_name"];
@@ -481,7 +481,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                         myCounter++;
 
-                        if (myCounter == 25)
+                        if (myCounter == 20)
                         {
                             listOfmyData.Add(myData + "listCounter=" + listCounter.ToString());
                             myCounter = 0;
@@ -489,7 +489,7 @@ namespace DBI_Scripting.Forms.Scripting
                             listCounter++;
                         }
                     }
-                    if (myData!="")
+                    if (myData != "")
                         listOfmyData.Add(myData + "listCounter=" + listCounter.ToString());
 
                 }
@@ -565,7 +565,7 @@ namespace DBI_Scripting.Forms.Scripting
                             }
                         }
                     }
-                    if (myData!="")
+                    if (myData != "")
                         listOfmyData.Add(myData + "listCounter=" + listCounter.ToString());
 
                 }
