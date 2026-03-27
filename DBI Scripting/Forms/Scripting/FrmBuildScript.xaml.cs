@@ -5946,6 +5946,12 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"NUMBEROF\[INTERVIEW]").Success ||
+                                        Regex.Match(abc[2].Trim().ToUpper(), @"NUMBEROF\[INTERVIEW,[a-zA-Z]+[a-zA-Z0-9]]").Success ||
+                                        Regex.Match(abc[2].Trim().ToUpper(), @"^NUMBEROF\[INTERVIEW,[A-Z][A-Z0-9]*,[A-Z][A-Z0-9]*\]$").Success)
+                                {
+                                    myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                                }
                                 else if (Regex.Match(abc[2].Trim().ToUpper(), @"DATEOF\[TODAY]").Success)
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
@@ -6228,6 +6234,12 @@ namespace DBI_Scripting.Forms.Scripting
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
                     else if (Regex.Match(abc[2].Trim().ToUpper(), @"LANGUAGEOF\[INTERVIEW]").Success)
+                    {
+                        myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                    }
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"NUMBEROF\[INTERVIEW]").Success || 
+                        Regex.Match(abc[2].Trim().ToUpper(), @"NUMBEROF\[INTERVIEW,[a-zA-Z]+[a-zA-Z0-9]]").Success ||
+                        Regex.Match(abc[2].Trim().ToUpper(), @"^NUMBEROF\[INTERVIEW,[A-Z][A-Z0-9]*,[A-Z][A-Z0-9]*\]$").Success)
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }

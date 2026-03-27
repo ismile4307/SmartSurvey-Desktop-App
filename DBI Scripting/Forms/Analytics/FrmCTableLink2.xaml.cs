@@ -300,8 +300,7 @@ namespace DBI_Scripting.Forms.Analytics
                     filterIndex++;
 
                 }
-                //else if (tmp.StartsWith("Base"))
-                else if (tmp == "Total")
+                else if (tmp.StartsWith("Base"))
                 {
                     string myBase = removeDoubleCot(String.Empty + inputSheet.Cells[i, 2].value2);
                     tableBase[baseIndex] = myBase;
@@ -526,8 +525,7 @@ namespace DBI_Scripting.Forms.Analytics
                     inputSheet.Cells[i, j].value2 = "";
 
                 }
-                //else if (tmp.StartsWith("Base"))
-                else if (tmp == "Total")
+                else if (tmp.StartsWith("Base") && tmp.Length==4)
                 {
                     string myBase = removeDoubleCot(String.Empty + inputSheet.Cells[i, 2].value2);
                     tableBase[baseIndex] = myBase;
@@ -1273,9 +1271,13 @@ namespace DBI_Scripting.Forms.Analytics
                             //######################
                             if (tmp.StartsWith("Total") && tmp.Length == 5)
                             {
+                                string tmp2 = removeDoubleCot(String.Empty + worksheet1.Cells[j+1, 1].value2);
                                 worksheet1.Cells[j, 1] = "Base";
-                                worksheet1.Rows[j + 1].Insert(1);
-                                j++;
+                                if (tmp2 != "Home")
+                                {
+                                    worksheet1.Rows[j + 1].Insert(1);
+                                    j++;
+                                }
                             }
                             else if (tmp.StartsWith("Mean") || tmp.StartsWith("MEAN") || tmp.StartsWith("Mean (Rev)"))
                             {
