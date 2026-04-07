@@ -305,6 +305,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\Settings\FrmCheckScript.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\WebPortal\FrmAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -498,6 +502,9 @@
     </Compile>
     <Compile Include="Forms\Scripting\FrmUploadScript.xaml.cs">
       <DependentUpon>FrmUploadScript.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Settings\FrmCheckScript.xaml.cs">
+      <DependentUpon>FrmCheckScript.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\WebPortal\FrmAttributes.xaml.cs">
       <DependentUpon>FrmAttributes.xaml</DependentUpon>

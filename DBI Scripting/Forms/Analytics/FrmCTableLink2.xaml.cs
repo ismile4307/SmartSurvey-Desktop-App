@@ -560,7 +560,7 @@ namespace DBI_Scripting.Forms.Analytics
 
             
 
-            outputSheet.Cells[3, 2] = "Prepared By : Luminaries Research Pvt. Ltd.";
+            outputSheet.Cells[3, 2] = "Prepared By : SmartSurveyBD Pvt. Ltd.";
             outputSheet.Cells[3, 2].Font.Size = 11;
             outputSheet.Cells[3, 2].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black);
             outputSheet.Cells[3, 2].Font.Italic = true;

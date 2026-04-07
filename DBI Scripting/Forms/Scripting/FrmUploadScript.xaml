@@ -1,22 +1,92 @@
-﻿<Window
+<Window x:Class="DBI_Scripting.Forms.Scripting.FrmUploadScript"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Name="frmUploadScript" x:Class="DBI_Scripting.Forms.Scripting.FrmUploadScript"
-        Title="Upload Script" Height="271.265" Width="866.136" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Label Content="Script Path :" HorizontalAlignment="Left" Margin="45,83,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="80"/>
-        <TextBox x:Name="txtScriptPath" HorizontalAlignment="Left" Height="23" Margin="130,85,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="575"/>
-        <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="725,86,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnBrowse_Click"/>
-        <Button x:Name="btnUpload" Content="Upload" HorizontalAlignment="Left" Margin="370,126,0,0" VerticalAlignment="Top" Width="111" Height="33" Click="btnUpload_Click"/>
-        <Button x:Name="btnExit" Content="Exit" HorizontalAlignment="Left" Margin="389,178,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnExit_Click"/>
-        <Label Content="Script Version :" HorizontalAlignment="Left" Margin="42,47,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtScriptVersion" HorizontalAlignment="Left" Height="23" Margin="130,51,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226" FontSize="14"/>
-        <Label Content="Project Name :" HorizontalAlignment="Left" Margin="42,13,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtProjectName" HorizontalAlignment="Left" Height="23" Margin="130,17,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226" FontSize="14"/>
-        <Button x:Name="btnUpload_Copy" Content="Upload" HorizontalAlignment="Left" Margin="555,126,0,0" VerticalAlignment="Top" Width="111" Height="33" Click="btnUpload_Copy_Click"/>
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        x:Name="frmUploadScript"
+        Title="Upload Script" Height="520" Width="866"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel>
 
-        <xctk:CheckListBox x:Name="chkListBoxQFiles" HorizontalAlignment="Left" Height="89" Margin="130,126,0,0" VerticalAlignment="Top" Width="186" ItemSelectionChanged="chkListBoxQFiles_ItemSelectionChanged"/>
-        <Label Content="Q Files :" HorizontalAlignment="Left" Margin="68,126,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="55"/>
+        <!-- Status bar pinned to the bottom -->
+        <StatusBar DockPanel.Dock="Bottom" Height="26">
+            <StatusBarItem>
+                <TextBlock x:Name="txtStatus" Text="Ready"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <ProgressBar x:Name="progressBar"
+                             Width="160" Height="14"
+                             IsIndeterminate="True"
+                             Visibility="Collapsed"/>
+            </StatusBarItem>
+        </StatusBar>
 
-    </Grid>
+        <Grid Margin="12,12,12,8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Row 0: Project Name -->
+            <DockPanel Grid.Row="0">
+                <Label Content="Project Name :" Width="110" VerticalAlignment="Center"/>
+                <TextBox x:Name="txtProjectName" Height="26" FontSize="14" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="273"/>
+            </DockPanel>
+
+            <!-- Row 2: Script Version -->
+            <DockPanel Grid.Row="2">
+                <Label Content="Script Version :" Width="110" VerticalAlignment="Center"/>
+                <TextBox x:Name="txtScriptVersion" Height="26" FontSize="14" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="273"/>
+            </DockPanel>
+
+            <!-- Row 4: Script Path -->
+            <DockPanel Grid.Row="4">
+                <Label Content="Script Path :" Width="110" VerticalAlignment="Center"/>
+                <Button x:Name="btnBrowse" Content="Browse" Width="75" Height="26"
+                        DockPanel.Dock="Right" Margin="4,0,0,0"
+                        Click="btnBrowse_Click"/>
+                <TextBox x:Name="txtScriptPath" Height="26" IsReadOnly="True" VerticalContentAlignment="Center"/>
+            </DockPanel>
+
+            <!-- Row 6: Q Files + action buttons -->
+            <Grid Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Q Files :" VerticalAlignment="Top"/>
+                <xctk:CheckListBox x:Name="chkListBoxQFiles"
+                                   Grid.Column="1" Height="89" VerticalAlignment="Center"
+                                   ItemSelectionChanged="chkListBoxQFiles_ItemSelectionChanged" Grid.ColumnSpan="2" Margin="41,0,531,0"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="btnUpload" Content="Upload for Android" Width="111" Height="33"
+                            Margin="0,0,8,0" Click="btnUpload_Click"/>
+                    <Button x:Name="btnUpload_Copy" Content="Upload for Web" Width="111" Height="33"
+                            Margin="0,0,8,0" Click="btnUpload_Copy_Click"/>
+                    <Button x:Name="btnExit" Content="Exit" Width="106" Height="33"
+                            Click="btnExit_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Row 8: Upload output -->
+            <GroupBox Grid.Row="8" Header="Upload Output">
+                <RichTextBox x:Name="txtUploadResult"
+                             IsReadOnly="True"
+                             FontFamily="Consolas"
+                             FontSize="12"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto"
+                             Padding="6"/>
+            </GroupBox>
+
+        </Grid>
+    </DockPanel>
 </Window>

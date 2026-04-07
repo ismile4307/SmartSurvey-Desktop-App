@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
@@ -131,104 +132,125 @@ namespace DBI_Scripting.Forms.Scripting
             }
         }
 
-        private void btnUpload_Click(object sender, RoutedEventArgs e)
+        private async void btnUpload_Click(object sender, RoutedEventArgs e)
         {
             if (txtScriptPath.Text == "")
-                MessageBox.Show("Script must be selected first.");
-            else if (sSelectedQFile == "")
-                MessageBox.Show("Q file must be selected.");
-            else
             {
-                if (!File.Exists(txtScriptPath.Text))
-                    MessageBox.Show("Selected file is not valid.");
+                MessageBox.Show("Script must be selected first.");
+                return;
+            }
+            if (sSelectedQFile == "")
+            {
+                MessageBox.Show("Q file must be selected.");
+                return;
+            }
+            if (!File.Exists(txtScriptPath.Text))
+            {
+                MessageBox.Show("Selected file is not valid.");
+                return;
+            }
+
+            ClearOutput();
+            SetUIState(true);
+            txtStatus.Text = "Uploading, please wait...";
+
+            try
+            {
+                // Update script version in the local DB first
+                this.updateScriptVersion();
+
+                // Copy .db to temp folder
+                if (!Directory.Exists(myPath + "\\Temp"))
+                    Directory.CreateDirectory(myPath + "\\temp");
+                if (!File.Exists(myPath + "\\temp\\" + fileName))
+                    File.Copy(txtScriptPath.Text, myPath + "\\temp\\" + fileName);
                 else
                 {
-
-                    this.updateScriptVersion();
-
-
-                    if (!Directory.Exists(myPath + "\\Temp"))
-                        Directory.CreateDirectory(myPath + "\\temp");
-                    if (!File.Exists(myPath + "\\temp\\" + fileName))
-                        File.Copy(txtScriptPath.Text, myPath + "\\temp\\" + fileName);
-                    else
-                    {
-                        File.Delete(myPath + "\\temp\\" + fileName);
-                        File.Copy(txtScriptPath.Text, myPath + "\\temp\\" + fileName);
-                    }
-                    try
-                    {
-                        //if (preparedScript == true)
-                        //{
-                        ServicePointManager.Expect100Continue = true;
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-
-                        WebClient client = new WebClient();
-                        //string myFile = scriptFilePath;
-                        string myFile = myPath + "\\temp\\" + fileName;// txtScriptPath.Text;
-                        client.Credentials = CredentialCache.DefaultCredentials;
-                        //string temp=System.AppDomain.CurrentDomain.BaseDirectory+"//uploadfile.php";
-                        //string temp = Properties.Settings.Default.ServerAddress + "//uploadfile.php";
-                        //byte[] responseArray = client.UploadFile(Properties.Settings.Default.ServerAddress + "//uploadfile.php", "POST", myFile);
-                        byte[] responseArray = client.UploadFile(StaticClass.SERVER_URL + "/deskapi/uploadfile.php", "POST", myFile);
-                        client.Dispose();
-
-
-                        //MessageBox.Show(client.Encoding.GetString(responseArray));
-                        string UploadMessage = client.Encoding.GetString(responseArray).ToString();
-
-                        //Update script version *************************************
-                        if (UploadMessage == "Script uploaded successfully..")
-                        {
-                            UploadMessage = "";
-
-                            WebClient client2 = new WebClient();
-                            //string myFile = scriptFilePath;
-                            string myFile2 = myPath + "\\" + sSelectedQFile;// txtScriptPath.Text;
-                            client.Credentials = CredentialCache.DefaultCredentials;
-                            //string temp=System.AppDomain.CurrentDomain.BaseDirectory+"//uploadfile.php";
-                            //string temp = Properties.Settings.Default.ServerAddress + "//uploadfile.php";
-                            //byte[] responseArray = client.UploadFile(Properties.Settings.Default.ServerAddress + "//uploadfile.php", "POST", myFile);
-                            byte[] responseArray2 = client.UploadFile(StaticClass.SERVER_URL + "/deskapi/uploadfile.php", "POST", myFile2);
-                            client2.Dispose();
-
-
-                            //MessageBox.Show(client.Encoding.GetString(responseArray));
-                            UploadMessage = client2.Encoding.GetString(responseArray2).ToString();
-                        }
-
-                        //Update script version *************************************
-
-                        //MyWebRequest myRequest = new MyWebRequest(Properties.Settings.Default.ServerAddress + "/updatescriptversion.php", "POST", "projectId=" + projectId + "&scriptVersion=" + txtScriptVersion.Text); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-                        MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/updatescriptversion.php", "POST", "projectId=" + projectId + "&scriptVersion=" + txtScriptVersion.Text + "&qFileName=" + sSelectedQFile); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-
-                        string temp = myRequest.GetResponse().ToString();
-
-                        if (temp == "Record updated successfully\r\n" && UploadMessage == "Script uploaded successfully..")
-                            MessageBox.Show("Script uploaded successfully..");
-                        else
-                            MessageBox.Show("Opps... Somthing error...");
-                        //***********************************************************
-
-
-                        //}
-                        //else
-                        //    MessageBox.Show("Need to prepare the script first..");
-                    }
-                    catch (Exception err)
-                    {
-                        MessageBox.Show(err.Message);
-                    }
-
-                    //<?php
-                    //    $filepath = $_FILES["file"]["tmp_name"];
-                    //    move_uploaded_file($filepath,"test_file.txt");
-                    //?>
-                    //MessageBox.Show("Version changed");
+                    File.Delete(myPath + "\\temp\\" + fileName);
+                    File.Copy(txtScriptPath.Text, myPath + "\\temp\\" + fileName);
                 }
+
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+                // Step 1 - Upload .db file
+                txtStatus.Text = "Uploading .db file...";
+                AppendResult("Uploading database file (" + fileName + ")...", false);
+
+                string uploadMessage;
+                using (WebClient client = new WebClient())
+                {
+                    client.Credentials = CredentialCache.DefaultCredentials;
+                    byte[] responseArray = await client.UploadFileTaskAsync(
+                        StaticClass.SERVER_URL + "/deskapi/uploaddbfile.php", "POST",
+                        myPath + "\\temp\\" + fileName);
+                    uploadMessage = client.Encoding.GetString(responseArray);
+                }
+
+                if (uploadMessage != "Script uploaded successfully..")
+                {
+                    AppendResult("DB upload failed: " + uploadMessage, true);
+                    txtStatus.Text = "Upload failed.";
+                    return;
+                }
+                AppendResult("Database file uploaded successfully.", false);
+
+                // Step 2 - Upload .q file
+                txtStatus.Text = "Uploading script file...";
+                AppendResult("Uploading script file (" + sSelectedQFile + ")...", false);
+
+                using (WebClient client2 = new WebClient())
+                {
+                    client2.Credentials = CredentialCache.DefaultCredentials;
+                    byte[] responseArray2 = await client2.UploadFileTaskAsync(
+                        StaticClass.SERVER_URL + "/deskapi/uploadqfile.php", "POST",
+                        myPath + "\\" + sSelectedQFile);
+                    uploadMessage = client2.Encoding.GetString(responseArray2);
+                }
+
+                if (uploadMessage != "Script uploaded successfully..")
+                {
+                    AppendResult("Script upload failed: " + uploadMessage, true);
+                    txtStatus.Text = "Upload failed.";
+                    return;
+                }
+                AppendResult("Script file uploaded successfully.", false);
+
+                // Step 3 - Update script version on server
+                txtStatus.Text = "Updating script version...";
+                AppendResult("Updating script version on server...", false);
+
+                MyWebRequest myRequest = new MyWebRequest(
+                    StaticClass.SERVER_URL + "/deskapi/updatescriptversion.php",
+                    "POST",
+                    "projectId=" + projectId +
+                    "&scriptVersion=" + txtScriptVersion.Text +
+                    "&qFileName=" + sSelectedQFile);
+
+                string versionResponse = myRequest.GetResponse().ToString();
+
+                if (versionResponse == "Record updated successfully\r\n")
+                {
+                    AppendResult("Script version updated successfully.", false);
+                    AppendResult("-------------------------------------------", false);
+                    AppendResult("Upload complete.", false);
+                    txtStatus.Text = "Upload complete.";
+                }
+                else
+                {
+                    AppendResult("Version update failed: " + versionResponse, true);
+                    txtStatus.Text = "Upload failed.";
+                }
+            }
+            catch (Exception err)
+            {
+                AppendResult("Error: " + err.Message, true);
+                txtStatus.Text = "Upload failed.";
+            }
+            finally
+            {
+                SetUIState(false);
             }
         }
 
@@ -277,147 +299,205 @@ namespace DBI_Scripting.Forms.Scripting
             }
         }
 
-        private void btnUpload_Copy_Click(object sender, RoutedEventArgs e)
+        private async void btnUpload_Copy_Click(object sender, RoutedEventArgs e)
         {
-            List<string> listOfQuestionData = getQuestionDBData();
-            bool uploadStatus = true;
-
-            for (int x = 0; x < listOfQuestionData.Count; x++)
+            if (txtScriptPath.Text == "")
             {
-                if (listOfQuestionData[x].Length > 15)
-                {
-                    MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/savequestion.php", "POST", listOfQuestionData[x]); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-
-                    string temp = myRequest.GetResponse().ToString();
-                    if (temp != "New record created successfully")
-                    {
-                        uploadStatus = false;
-                        MessageBox.Show(temp);
-                    }
-                }
+                MessageBox.Show("Script must be selected first.");
+                return;
             }
 
-            //********** Save Attribute *****************************
+            ClearOutput();
+            SetUIState(true);
+            txtStatus.Text = "Reading data...";
 
-            List<string> listOfAttributeData = getAttributeDBData();
+            // Read all DB data on the UI thread (methods access txtScriptPath.Text)
+            List<string> questionData        = getQuestionDBData();
+            List<string> attributeData       = getAttributeDBData();
+            List<string> attributeFilterData = getAttributeFilterDBData();
+            List<string> gridInfoData        = getGridInfoDBData();
+            List<string> logicTableData      = getLogicTableDBData();
+            List<string> logicAutoData       = getLogicAutoDBData();
+            List<string> languageData        = getLanguageDBData();
 
-            for (int x = 0; x < listOfAttributeData.Count; x++)
+            bool anyFailure = false;
+
+            try
             {
-                if (listOfAttributeData[x].Length > 15)
+                await Task.Run(() =>
                 {
-                    MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/saveattribute.php", "POST", listOfAttributeData[x]); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
+                    const int MaxRetries  = 3;
+                    const int RetryDelay  = 2000; // ms
 
-                    string temp = myRequest.GetResponse().ToString();
-                    if (temp != "New record created successfully")
+                    Action<string, bool> append = (text, isError) =>
+                        Dispatcher.Invoke(() => AppendResult(text, isError));
+                    Action<string> status = text =>
+                        Dispatcher.Invoke(() => { txtStatus.Text = text; });
+
+                    // Returns true on success; prints retry messages and returns false after MaxRetries failures
+                    Func<string, string, string, int, bool> uploadWithRetry = (url, data, section, batchIdx) =>
                     {
-                        uploadStatus = false;
-                        MessageBox.Show(temp);
+                        for (int attempt = 1; attempt <= MaxRetries; attempt++)
+                        {
+                            string resp = new MyWebRequest(url, "POST", data).GetResponse().ToString();
+                            if (resp == "New record created successfully")
+                            {
+                                if (attempt > 1)
+                                    append("  " + section + " [batch " + batchIdx + "]: OK on retry " + attempt + ".", false);
+                                return true;
+                            }
+                            if (attempt < MaxRetries)
+                            {
+                                append("  " + section + " [batch " + batchIdx + "]: " + resp + " — retrying (" + attempt + "/" + MaxRetries + ")...", true);
+                                Thread.Sleep(RetryDelay);
+                            }
+                            else
+                            {
+                                append("  " + section + " [batch " + batchIdx + "]: Failed after " + MaxRetries + " attempts — " + resp, true);
+                            }
+                        }
+                        return false;
+                    };
+
+                    int sent, failed;
+
+                    // -- Questions ----------------------------------------------------------
+                    status("Uploading Questions...");
+                    append("Uploading Questions...", false);
+                    sent = 0; failed = 0;
+                    for (int x = 0; x < questionData.Count; x++)
+                    {
+                        if (questionData[x].Length > 15)
+                        {
+                            if (uploadWithRetry(StaticClass.SERVER_URL + "/deskapi/savequestion.php", questionData[x], "Questions", x + 1))
+                                sent++;
+                            else { failed++; anyFailure = true; }
+                        }
                     }
+                    if (failed == 0) append("  Questions: " + sent + " records sent.", false);
+                    else             append("  Questions: " + sent + " sent, " + failed + " failed.", true);
+
+                    // -- Attributes ---------------------------------------------------------
+                    status("Uploading Attributes...");
+                    append("Uploading Attributes...", false);
+                    sent = 0; failed = 0;
+                    for (int x = 0; x < attributeData.Count; x++)
+                    {
+                        if (attributeData[x].Length > 15)
+                        {
+                            if (uploadWithRetry(StaticClass.SERVER_URL + "/deskapi/saveattribute.php", attributeData[x], "Attributes", x + 1))
+                                sent++;
+                            else { failed++; anyFailure = true; }
+                        }
+                    }
+                    if (failed == 0) append("  Attributes: " + sent + " records sent.", false);
+                    else             append("  Attributes: " + sent + " sent, " + failed + " failed.", true);
+
+                    // -- Attribute Filters --------------------------------------------------
+                    status("Uploading Attribute Filters...");
+                    append("Uploading Attribute Filters...", false);
+                    sent = 0; failed = 0;
+                    for (int x = 0; x < attributeFilterData.Count; x++)
+                    {
+                        if (attributeFilterData[x].Length > 15)
+                        {
+                            if (uploadWithRetry(StaticClass.SERVER_URL + "/deskapi/saveattributefilter.php", attributeFilterData[x], "Attribute Filters", x + 1))
+                                sent++;
+                            else { failed++; anyFailure = true; }
+                        }
+                    }
+                    if (failed == 0) append("  Attribute Filters: " + sent + " records sent.", false);
+                    else             append("  Attribute Filters: " + sent + " sent, " + failed + " failed.", true);
+
+                    // -- Grid Info ----------------------------------------------------------
+                    status("Uploading Grid Info...");
+                    append("Uploading Grid Info...", false);
+                    sent = 0; failed = 0;
+                    for (int x = 0; x < gridInfoData.Count; x++)
+                    {
+                        if (gridInfoData[x].Length > 15)
+                        {
+                            if (uploadWithRetry(StaticClass.SERVER_URL + "/deskapi/savegridinfo.php", gridInfoData[x], "Grid Info", x + 1))
+                                sent++;
+                            else { failed++; anyFailure = true; }
+                        }
+                    }
+                    if (failed == 0) append("  Grid Info: " + sent + " records sent.", false);
+                    else             append("  Grid Info: " + sent + " sent, " + failed + " failed.", true);
+
+                    // -- Logic Table --------------------------------------------------------
+                    status("Uploading Logic Table...");
+                    append("Uploading Logic Table...", false);
+                    sent = 0; failed = 0;
+                    for (int x = 0; x < logicTableData.Count; x++)
+                    {
+                        if (logicTableData[x].Length > 15)
+                        {
+                            if (uploadWithRetry(StaticClass.SERVER_URL + "/deskapi/savelogictable.php", logicTableData[x], "Logic Table", x + 1))
+                                sent++;
+                            else { failed++; anyFailure = true; }
+                        }
+                    }
+                    if (failed == 0) append("  Logic Table: " + sent + " records sent.", false);
+                    else             append("  Logic Table: " + sent + " sent, " + failed + " failed.", true);
+
+                    // -- Logic Auto ---------------------------------------------------------
+                    status("Uploading Logic Auto...");
+                    append("Uploading Logic Auto...", false);
+                    sent = 0; failed = 0;
+                    for (int x = 0; x < logicAutoData.Count; x++)
+                    {
+                        if (logicAutoData[x].Length > 15)
+                        {
+                            if (uploadWithRetry(StaticClass.SERVER_URL + "/deskapi/savelogicauto.php", logicAutoData[x], "Logic Auto", x + 1))
+                                sent++;
+                            else { failed++; anyFailure = true; }
+                        }
+                    }
+                    if (failed == 0) append("  Logic Auto: " + sent + " records sent.", false);
+                    else             append("  Logic Auto: " + sent + " sent, " + failed + " failed.", true);
+
+                    // -- Language -----------------------------------------------------------
+                    status("Uploading Language...");
+                    append("Uploading Language...", false);
+                    sent = 0; failed = 0;
+                    for (int x = 0; x < languageData.Count; x++)
+                    {
+                        if (languageData[x].Length > 15)
+                        {
+                            if (uploadWithRetry(StaticClass.SERVER_URL + "/deskapi/savelanguage.php", languageData[x], "Language", x + 1))
+                                sent++;
+                            else { failed++; anyFailure = true; }
+                        }
+                    }
+                    if (failed == 0) append("  Language: " + sent + " records sent.", false);
+                    else             append("  Language: " + sent + " sent, " + failed + " failed.", true);
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                });
+
+                AppendResult("-------------------------------------------", false);
+                if (!anyFailure)
+                {
+                    AppendResult("Upload complete.", false);
+                    txtStatus.Text = "Upload complete.";
+                }
+                else
+                {
+                    AppendResult("Upload completed with errors.", true);
+                    txtStatus.Text = "Upload completed with errors.";
                 }
             }
-
-            //********** Save Attribute Filter*****************************
-
-            List<string> listOfAttributeFilterData = getAttributeFilterDBData();
-
-            for (int x = 0; x < listOfAttributeFilterData.Count; x++)
+            catch (Exception err)
             {
-                if (listOfAttributeFilterData[x].Length > 15)
-                {
-                    MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/saveattributefilter.php", "POST", listOfAttributeFilterData[x]); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-
-                    string temp = myRequest.GetResponse().ToString();
-                    if (temp != "New record created successfully")
-                    {
-                        uploadStatus = false;
-                        MessageBox.Show(temp);
-                    }
-                }
+                AppendResult("Error: " + err.Message, true);
+                txtStatus.Text = "Upload failed.";
             }
-
-            //********** Save Grid Info *****************************
-
-            List<string> listOfGridInfoData = getGridInfoDBData();
-
-            for (int x = 0; x < listOfGridInfoData.Count; x++)
+            finally
             {
-                if (listOfGridInfoData[x].Length > 15)
-                {
-                    MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/savegridinfo.php", "POST", listOfGridInfoData[x]); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-
-                    string temp = myRequest.GetResponse().ToString();
-                    if (temp != "New record created successfully")
-                    {
-                        uploadStatus = false;
-                        MessageBox.Show(temp);
-                    }
-                }
+                SetUIState(false);
             }
-
-            //********** Save Logic Table *****************************
-
-            List<string> listOfLogicTableData = getLogicTableDBData();
-
-            for (int x = 0; x < listOfLogicTableData.Count; x++)
-            {
-                if (listOfLogicTableData[x].Length > 15)
-                {
-                    MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/savelogictable.php", "POST", listOfLogicTableData[x]); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-
-                    string temp = myRequest.GetResponse().ToString();
-                    if (temp != "New record created successfully")
-                    {
-                        uploadStatus = false;
-                        MessageBox.Show(temp);
-                    }
-                }
-            }
-
-            //********** Save Logic Auto *****************************
-
-            List<string> listOfLogicAutoData = getLogicAutoDBData();
-
-            for (int x = 0; x < listOfLogicAutoData.Count; x++)
-            {
-                if (listOfLogicAutoData[x].Length > 15)
-                {
-                    MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/savelogicauto.php", "POST", listOfLogicAutoData[x]); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-
-                    string temp = myRequest.GetResponse().ToString();
-                    if (temp != "New record created successfully")
-                    {
-                        uploadStatus = false;
-                        MessageBox.Show(temp);
-                    }
-                }
-            }
-
-            //********** Save Language *****************************
-
-            List<string> listOfLanguageData = getLanguageDBData();
-
-            for (int x = 0; x < listOfLanguageData.Count; x++)
-            {
-                if (listOfLanguageData[x].Length > 15)
-                {
-                    MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/savelanguage.php", "POST", listOfLanguageData[x]); //"a=Nasim&b=Rajahshi&c=01911018447&d=1");
-
-                    string temp = myRequest.GetResponse().ToString();
-                    if (temp != "New record created successfully")
-                    {
-                        uploadStatus = false;
-                        MessageBox.Show(temp);
-                    }
-                }
-            }
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            if (uploadStatus == true)
-                MessageBox.Show("Question uploaded successfully");
-            else
-                MessageBox.Show("Question not uploaded successfully");
         }
 
         private List<string> getQuestionDBData()
@@ -970,5 +1050,32 @@ namespace DBI_Scripting.Forms.Scripting
 
         //    return listOfmyData;
         //}
+
+        // ── UI helpers ────────────────────────────────────────────────────────────────────────
+
+        private void ClearOutput()
+        {
+            txtUploadResult.Document.Blocks.Clear();
+        }
+
+        private void AppendResult(string text, bool isError)
+        {
+            var para = new Paragraph(new Run(text))
+            {
+                Foreground = isError ? Brushes.Red : Brushes.DarkGreen,
+                Margin = new Thickness(0)
+            };
+            txtUploadResult.Document.Blocks.Add(para);
+            txtUploadResult.ScrollToEnd();
+        }
+
+        private void SetUIState(bool running)
+        {
+            btnUpload.IsEnabled      = !running;
+            btnUpload_Copy.IsEnabled = !running;
+            btnBrowse.IsEnabled      = !running;
+            btnExit.IsEnabled        = !running;
+            progressBar.Visibility   = running ? Visibility.Visible : Visibility.Collapsed;
+        }
     }
 }

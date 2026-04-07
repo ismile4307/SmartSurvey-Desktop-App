@@ -209,7 +209,7 @@
                     <RibbonButton x:Name="btnSettingsServer" LargeImageSource="Images/server_50.png" Label="Server" KeyTip="V" Click="btnSettingsServer_Click"/>
                     <RibbonButton x:Name="btnLogin" LargeImageSource="Images\settings_60.png" Label="Login" KeyTip="V" Click="btnLogin_Click" />
                     <RibbonButton SmallImageSource="Images\Notebook232.png" Label="Media" KeyTip="X" />
-                    <RibbonButton SmallImageSource="Images\Placeholder32.png" Label="Script" KeyTip="C" />
+                    <RibbonButton x:Name="btnSettingScriptCheck" SmallImageSource="Images\Placeholder32.png" Label="Script" KeyTip="C" Click="btnSettingScriptCheck_Click" />
                     <!--<RibbonButton SmallImageSource="Images\Placeholder32.png" Label="Others" KeyTip="FP" />-->
                 </RibbonGroup>
             </RibbonTab>
@@ -224,6 +224,6 @@
         <Image HorizontalAlignment="Left" Height="300" Margin="526,38.667,0,0" Grid.Row="1" VerticalAlignment="Top" Width="300" Source="Images/ic_surveybd2.png"/>
         <Label Content="Smart Survey Management System" HorizontalAlignment="Left" Margin="291,357.667,0,0" Grid.Row="1" VerticalAlignment="Top" Height="79" Width="757" FontSize="48"/>
         <Label x:Name="lblServerName" Content="Server URL : " HorizontalAlignment="Left" Margin="386,436.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="30" Width="741" Background="Transparent" Foreground="#FF1E0FED"/>
-        <Label x:Name="lblAppVersion" Content="App Version : v1.0.0.2" HorizontalAlignment="Left" Margin="507,485.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="26" Width="741" Background="Transparent" Foreground="DarkRed"/>
+        <Label x:Name="lblAppVersion" Content="App Version : v1.0.0.3" HorizontalAlignment="Left" Margin="507,485.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="26" Width="741" Background="Transparent" Foreground="DarkRed"/>
     </Grid>
 </RibbonWindow>

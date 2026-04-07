@@ -18,6 +18,8 @@ using DBI_Scripting.Forms;
 using DBI_Scripting.Forms.Download;
 using System.IO;
 using DBI_Scripting.Forms.Scripting;
+using DBI_Scripting.Forms.Settings;
+using DBI_Scripting.Forms.Settings;
 using DBI_Scripting.Forms.Analytics;
 using DBI_Scripting.Forms.Admin;
 using System.Net;
@@ -398,6 +400,10 @@ namespace DBI_Scripting
             //}
         }
 
-
+        private void btnSettingScriptCheck_Click(object sender, RoutedEventArgs e)
+        {
+            FrmCheckScript frmCheckScript = new FrmCheckScript();
+            frmCheckScript.ShowDialog();
+        }
     }
 }

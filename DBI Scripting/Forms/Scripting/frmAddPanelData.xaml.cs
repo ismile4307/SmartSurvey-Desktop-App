@@ -57,6 +57,36 @@ namespace DBI_Scripting.Forms.Scripting
         List<String> lstPnlData18;
         List<String> lstPnlData19;
         List<String> lstPnlData20;
+        List<String> lstPnlData21;
+        List<String> lstPnlData22;
+        List<String> lstPnlData23;
+        List<String> lstPnlData24;
+        List<String> lstPnlData25;
+        List<String> lstPnlData26;
+        List<String> lstPnlData27;
+        List<String> lstPnlData28;
+        List<String> lstPnlData29;
+        List<String> lstPnlData30;
+        List<String> lstPnlData31;
+        List<String> lstPnlData32;
+        List<String> lstPnlData33;
+        List<String> lstPnlData34;
+        List<String> lstPnlData35;
+        List<String> lstPnlData36;
+        List<String> lstPnlData37;
+        List<String> lstPnlData38;
+        List<String> lstPnlData39;
+        List<String> lstPnlData40;
+        List<String> lstPnlData41;
+        List<String> lstPnlData42;
+        List<String> lstPnlData43;
+        List<String> lstPnlData44;
+        List<String> lstPnlData45;
+        List<String> lstPnlData46;
+        List<String> lstPnlData47;
+        List<String> lstPnlData48;
+        List<String> lstPnlData49;
+        List<String> lstPnlData50;
 
 
         public FrmAddPanelData()
@@ -366,7 +396,8 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     progressBar1.Value = p;
                                     SQLiteCommand command = new SQLiteCommand(connDB.sqlite_conn);
-                                    command.CommandText = ("INSERT INTO T_PanelData (my_key,pdata1,pdata2,pdata3,pdata4,pdata5,pdata6,pdata7,pdata8,pdata9,pdata10,pdata11,pdata12,pdata13,pdata14,pdata15,pdata16,pdata17,pdata18,pdata19,pdata20) VALUES ('" + lstOutletId[x] + "','" + lstOutletName[x] + "','" + lstPnlData3[x] + "','" + lstPnlData4[x] + "','" + lstPnlData5[x] + "','" + lstPnlData6[x] + "','" + lstPnlData7[x] + "','" + lstPnlData8[x] + "','" + lstPnlData9[x] + "','" + lstPnlData10[x] + "','" + lstPnlData11[x] + "','" + lstPnlData12[x] + "','" + lstPnlData13[x] + "','" + lstPnlData14[x] + "','" + lstPnlData15[x] + "','" + lstPnlData16[x] + "','" + lstPnlData17[x] + "','" + lstPnlData18[x] + "','" + lstPnlData19[x] + "','" + lstPnlData20[x] + "','')");
+                                    command.CommandText = ("INSERT INTO T_PanelData (my_key,pdata1,pdata2,pdata3,pdata4,pdata5,pdata6,pdata7,pdata8,pdata9,pdata10,pdata11,pdata12,pdata13,pdata14,pdata15,pdata16,pdata17,pdata18,pdata19,pdata20,pdata21,pdata22,pdata23,pdata24,pdata25,pdata26,pdata27,pdata28,pdata29,pdata30,pdata31,pdata32,pdata33,pdata34,pdata35,pdata36,pdata37,pdata38,pdata39,pdata40,pdata41,pdata42,pdata43,pdata44,pdata45,pdata46,pdata47,pdata48,pdata49,pdata50) "+
+                                    "VALUES ('" + lstOutletId[x] + "','" + lstOutletName[x] + "','" + lstPnlData3[x] + "','" + lstPnlData4[x] + "','" + lstPnlData5[x] + "','" + lstPnlData6[x] + "','" + lstPnlData7[x] + "','" + lstPnlData8[x] + "','" + lstPnlData9[x] + "','" + lstPnlData10[x] + "','" + lstPnlData11[x] + "','" + lstPnlData12[x] + "','" + lstPnlData13[x] + "','" + lstPnlData14[x] + "','" + lstPnlData15[x] + "','" + lstPnlData16[x] + "','" + lstPnlData17[x] + "','" + lstPnlData18[x] + "','" + lstPnlData19[x] + "','" + lstPnlData20[x] + "','" + lstPnlData21[x] + "','" + lstPnlData22[x] + "','" + lstPnlData23[x] + "','" + lstPnlData24[x] + "','" + lstPnlData25[x] + "','" + lstPnlData26[x] + "','" + lstPnlData27[x] + "','" + lstPnlData28[x] + "','" + lstPnlData29[x] + "','" + lstPnlData30[x] + "','" + lstPnlData31[x] + "','" + lstPnlData32[x] + "','" + lstPnlData33[x] + "','" + lstPnlData34[x] + "','" + lstPnlData35[x] + "','" + lstPnlData36[x] + "','" + lstPnlData37[x] + "','" + lstPnlData38[x] + "','" + lstPnlData39[x] + "','" + lstPnlData40[x] + "','" + lstPnlData41[x] + "','" + lstPnlData42[x] + "','" + lstPnlData43[x] + "','" + lstPnlData44[x] + "','" + lstPnlData45[x] + "','" + lstPnlData46[x] + "','" + lstPnlData47[x] + "','" + lstPnlData48[x] + "','" + lstPnlData49[x] + "','" + lstPnlData50[x] + "','')");
                                     command.ExecuteNonQuery();
                                     p++;
                                     DoEvents();
@@ -425,6 +456,36 @@ namespace DBI_Scripting.Forms.Scripting
             lstPnlData18 = new List<string>();
             lstPnlData19 = new List<string>();
             lstPnlData20 = new List<string>();
+            lstPnlData21 = new List<string>();
+            lstPnlData22 = new List<string>();
+            lstPnlData23 = new List<string>();
+            lstPnlData24 = new List<string>();
+            lstPnlData25 = new List<string>();
+            lstPnlData26 = new List<string>();
+            lstPnlData27 = new List<string>();
+            lstPnlData28 = new List<string>();
+            lstPnlData29 = new List<string>();
+            lstPnlData30 = new List<string>();
+            lstPnlData31 = new List<string>();
+            lstPnlData32 = new List<string>();
+            lstPnlData33 = new List<string>();
+            lstPnlData34 = new List<string>();
+            lstPnlData35 = new List<string>();
+            lstPnlData36 = new List<string>();
+            lstPnlData37 = new List<string>();
+            lstPnlData38 = new List<string>();
+            lstPnlData39 = new List<string>();
+            lstPnlData40 = new List<string>();
+            lstPnlData41 = new List<string>();
+            lstPnlData42 = new List<string>();
+            lstPnlData43 = new List<string>();
+            lstPnlData44 = new List<string>();
+            lstPnlData45 = new List<string>();
+            lstPnlData46 = new List<string>();
+            lstPnlData47 = new List<string>();
+            lstPnlData48 = new List<string>();
+            lstPnlData49 = new List<string>();
+            lstPnlData50 = new List<string>();
 
             while (strline != null)
             {
@@ -502,10 +563,161 @@ namespace DBI_Scripting.Forms.Scripting
                     lstPnlData19.Add(word[18].Replace("'", "''").Trim());
                 else
                     lstPnlData19.Add("");
+
                 if (word.Length > 19)
                     lstPnlData20.Add(word[19].Replace("'", "''").Trim());
                 else
                     lstPnlData20.Add("");
+
+                if (word.Length > 20)
+                    lstPnlData21.Add(word[20].Replace("'", "''").Trim());
+                else
+                    lstPnlData21.Add("");
+
+                if (word.Length > 21)
+                    lstPnlData22.Add(word[21].Replace("'", "''").Trim());
+                else
+                    lstPnlData22.Add("");
+
+                if (word.Length > 22)
+                    lstPnlData23.Add(word[22].Replace("'", "''").Trim());
+                else
+                    lstPnlData23.Add("");
+
+                if (word.Length > 23)
+                    lstPnlData24.Add(word[23].Replace("'", "''").Trim());
+                else
+                    lstPnlData24.Add("");
+
+                if (word.Length > 24)
+                    lstPnlData25.Add(word[24].Replace("'", "''").Trim());
+                else
+                    lstPnlData25.Add("");
+
+                if (word.Length > 25)
+                    lstPnlData26.Add(word[25].Replace("'", "''").Trim());
+                else
+                    lstPnlData26.Add("");
+
+                if (word.Length > 26)
+                    lstPnlData27.Add(word[26].Replace("'", "''").Trim());
+                else
+                    lstPnlData27.Add("");
+
+                if (word.Length > 27)
+                    lstPnlData28.Add(word[27].Replace("'", "''").Trim());
+                else
+                    lstPnlData28.Add("");
+
+                if (word.Length > 28)
+                    lstPnlData29.Add(word[28].Replace("'", "''").Trim());
+                else
+                    lstPnlData29.Add("");
+
+                if (word.Length > 29)
+                    lstPnlData30.Add(word[29].Replace("'", "''").Trim());
+                else
+                    lstPnlData30.Add("");
+
+                if (word.Length > 30)
+                    lstPnlData31.Add(word[30].Replace("'", "''").Trim());
+                else
+                    lstPnlData31.Add("");
+
+                if (word.Length > 31)
+                    lstPnlData32.Add(word[31].Replace("'", "''").Trim());
+                else
+                    lstPnlData32.Add("");
+
+                if (word.Length > 32)
+                    lstPnlData33.Add(word[32].Replace("'", "''").Trim());
+                else
+                    lstPnlData33.Add("");
+
+                if (word.Length > 33)
+                    lstPnlData34.Add(word[33].Replace("'", "''").Trim());
+                else
+                    lstPnlData34.Add("");
+
+                if (word.Length > 34)
+                    lstPnlData35.Add(word[34].Replace("'", "''").Trim());
+                else
+                    lstPnlData35.Add("");
+
+                if (word.Length > 35)
+                    lstPnlData36.Add(word[35].Replace("'", "''").Trim());
+                else
+                    lstPnlData36.Add("");
+
+                if (word.Length > 36)
+                    lstPnlData37.Add(word[36].Replace("'", "''").Trim());
+                else
+                    lstPnlData37.Add("");
+
+                if (word.Length > 37)
+                    lstPnlData38.Add(word[37].Replace("'", "''").Trim());
+                else
+                    lstPnlData38.Add("");
+
+                if (word.Length > 38)
+                    lstPnlData39.Add(word[38].Replace("'", "''").Trim());
+                else
+                    lstPnlData39.Add("");
+
+                if (word.Length > 39)
+                    lstPnlData40.Add(word[39].Replace("'", "''").Trim());
+                else
+                    lstPnlData40.Add("");
+
+                if (word.Length > 40)
+                    lstPnlData41.Add(word[40].Replace("'", "''").Trim());
+                else
+                    lstPnlData41.Add("");
+
+                if (word.Length > 41)
+                    lstPnlData42.Add(word[41].Replace("'", "''").Trim());
+                else
+                    lstPnlData42.Add("");
+
+                if (word.Length > 42)
+                    lstPnlData43.Add(word[42].Replace("'", "''").Trim());
+                else
+                    lstPnlData43.Add("");
+
+                if (word.Length > 43)
+                    lstPnlData44.Add(word[43].Replace("'", "''").Trim());
+                else
+                    lstPnlData44.Add("");
+
+                if (word.Length > 44)
+                    lstPnlData45.Add(word[44].Replace("'", "''").Trim());
+                else
+                    lstPnlData45.Add("");
+
+                if (word.Length > 45)
+                    lstPnlData46.Add(word[45].Replace("'", "''").Trim());
+                else
+                    lstPnlData46.Add("");
+
+                if (word.Length > 46)
+                    lstPnlData47.Add(word[46].Replace("'", "''").Trim());
+                else
+                    lstPnlData47.Add("");
+
+                if (word.Length > 47)
+                    lstPnlData48.Add(word[47].Replace("'", "''").Trim());
+                else
+                    lstPnlData48.Add("");
+
+                if (word.Length > 48)
+                    lstPnlData49.Add(word[48].Replace("'", "''").Trim());
+                else
+                    lstPnlData49.Add("");
+
+                if (word.Length > 49)
+                    lstPnlData50.Add(word[49].Replace("'", "''").Trim());
+                else
+                    lstPnlData50.Add("");
 
                 strline = txtReader.ReadLine();
             }
