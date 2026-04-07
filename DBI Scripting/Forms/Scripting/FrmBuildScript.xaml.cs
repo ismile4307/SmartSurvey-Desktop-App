@@ -448,6 +448,47 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     #endregion
 
+                    #region Prepare REPEAT BLOCK
+                    if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
+                    {
+                        int bStart = strline.IndexOf('[');
+                        int bEnd   = strline.IndexOf(']');
+                        if (bStart < 0 || bEnd <= bStart)
+                        {
+                            txtWriter.WriteLine("Line : " + dicLine[i + 1] + " *REPEAT syntax invalid — missing [source]");
+                            i++;
+                            while (i < lines.Count && lines[i].Trim().Split(' ')[0].ToUpper() != "*ENDREPEAT") i++;
+                            goto next;
+                        }
+                        string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
+
+                        // collect buffer until *ENDREPEAT
+                        List<string> repeatBuffer = new List<string>();
+                        bool foundEndRepeat = false;
+                        i++;
+                        while (i < lines.Count)
+                        {
+                            if (lines[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
+                            { foundEndRepeat = true; break; }
+                            repeatBuffer.Add(lines[i]);
+                            i++;
+                        }
+                        if (!foundEndRepeat)
+                        {
+                            txtWriter.WriteLine("*REPEAT block not closed with *ENDREPEAT");
+                            goto next;
+                        }
+
+                        // build iteration list and expand
+                        List<string> iterationList = BuildRepeatIterationList(repeatSource, txtWriter, dicLine[i + 1]);
+                        if (iterationList != null && iterationList.Count > 0)
+                            ExpandRepeatBlockEnglish(repeatBuffer, iterationList,
+                                listOfQuestionIdForDupliCheck, listOfGridListForDupliCheck, txtWriter);
+
+                        strline = lines[i]; // i → *ENDREPEAT line
+                    }
+                    #endregion
+
                     #region Prepare QUESTION
                     if (strline.Split(' ')[0].ToUpper() == "*QUESTION")
                     {
@@ -620,6 +661,38 @@ namespace DBI_Scripting.Forms.Scripting
                         }
                         #endregion
 
+                        #region Prepare REPEAT BLOCK
+                        if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
+                        {
+                            int bStart = strline.IndexOf('[');
+                            int bEnd   = strline.IndexOf(']');
+                            if (bStart >= 0 && bEnd > bStart)
+                            {
+                                string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
+                                List<string> repeatBuffer = new List<string>();
+                                bool foundEnd = false;
+                                i++;
+                                while (i < linesLanguage1.Count)
+                                {
+                                    if (linesLanguage1[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
+                                    { foundEnd = true; break; }
+                                    repeatBuffer.Add(linesLanguage1[i]);
+                                    i++;
+                                }
+                                if (!foundEnd)
+                                    txtWriter.WriteLine("*REPEAT block in Language 1 not closed with *ENDREPEAT");
+                                else
+                                {
+                                    List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln1);
+                                    if (iterList != null && iterList.Count > 0)
+                                        ExpandRepeatBlockLanguage(repeatBuffer, iterList, 1, txtWriter);
+                                }
+                            }
+                            else
+                                txtWriter.WriteLine("*REPEAT syntax invalid in Language 1 — missing [source]");
+                        }
+                        #endregion
+
                     }
                     //next:
                     j++;
@@ -660,6 +733,38 @@ namespace DBI_Scripting.Forms.Scripting
                         if (strline.Split(' ')[0].ToUpper() == "*QUESTION")
                         {
                             i = this.prepareQuestionForLanguage(linesLanguage2, i, txtWriter, dicLine, ln2, 2);
+                        }
+                        #endregion
+
+                        #region Prepare REPEAT BLOCK
+                        if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
+                        {
+                            int bStart = strline.IndexOf('[');
+                            int bEnd   = strline.IndexOf(']');
+                            if (bStart >= 0 && bEnd > bStart)
+                            {
+                                string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
+                                List<string> repeatBuffer = new List<string>();
+                                bool foundEnd = false;
+                                i++;
+                                while (i < linesLanguage2.Count)
+                                {
+                                    if (linesLanguage2[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
+                                    { foundEnd = true; break; }
+                                    repeatBuffer.Add(linesLanguage2[i]);
+                                    i++;
+                                }
+                                if (!foundEnd)
+                                    txtWriter.WriteLine("*REPEAT block in Language 2 not closed with *ENDREPEAT");
+                                else
+                                {
+                                    List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln2);
+                                    if (iterList != null && iterList.Count > 0)
+                                        ExpandRepeatBlockLanguage(repeatBuffer, iterList, 2, txtWriter);
+                                }
+                            }
+                            else
+                                txtWriter.WriteLine("*REPEAT syntax invalid in Language 2 — missing [source]");
                         }
                         #endregion
 
@@ -13151,7 +13256,8 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("PICT");
             listOfKeyWords.Add("VIDEO");
 
-            listOfKeyWords.Add("REPEAT");//Pronab added for repeat
+            listOfKeyWords.Add("REPEAT");
+            listOfKeyWords.Add("ENDREPEAT");
 
 
             this.getShellDB();
@@ -13399,6 +13505,209 @@ namespace DBI_Scripting.Forms.Scripting
             }
 
             return "true";
+        }
+
+        // ── *REPEAT helpers ──────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Builds the iteration value list for a *REPEAT block.
+        /// source is either "1 TO 10" (numeric range) or a *QUESTION QId.
+        /// Returns null and writes an error if the source is invalid.
+        /// </summary>
+        private List<string> BuildRepeatIterationList(string source, TextWriter txtWriter, int lineNo)
+        {
+            List<string> result = new List<string>();
+
+            // numeric range: "X TO Y"
+            Match rangeMatch = Regex.Match(source.Trim(), @"^(\d+)\s+TO\s+(\d+)$", RegexOptions.IgnoreCase);
+            if (rangeMatch.Success)
+            {
+                int start = int.Parse(rangeMatch.Groups[1].Value);
+                int end   = int.Parse(rangeMatch.Groups[2].Value);
+                if (start >= end)
+                {
+                    txtWriter.WriteLine("Line : " + lineNo + " *REPEAT range invalid: start must be less than end [" + source + "]");
+                    return null;
+                }
+                for (int v = start; v <= end; v++)
+                    result.Add(v.ToString());
+                return result;
+            }
+
+            // *QUESTION QId source
+            string qid = source.Trim();
+            if (!dicQidVsAttributeList.ContainsKey(qid))
+            {
+                txtWriter.WriteLine("Line : " + lineNo + " *REPEAT source QId '" + qid + "' not found");
+                return null;
+            }
+            foreach (AttributeMain attr in dicQidVsAttributeList[qid])
+            {
+                if (attr.AttributeEnglish != null && attr.AttributeEnglish.Contains("None"))
+                    break;
+                if (!string.IsNullOrEmpty(attr.AttributeValue))
+                    result.Add(attr.AttributeValue);
+            }
+            if (result.Count == 0)
+            {
+                txtWriter.WriteLine("Line : " + lineNo + " *REPEAT source QId '" + qid + "' has no attributes");
+                return null;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Expands a *REPEAT buffer for the English (main) script section.
+        /// Pass 1: pre-registers all QIds that will be generated so cross-references
+        ///         inside the block (e.g. *IF [Brand?R=1]) validate correctly.
+        /// Pass 2: substitutes ?R with each iteration value and feeds lines through
+        ///         the existing parsers unchanged.
+        /// </summary>
+        private void ExpandRepeatBlockEnglish(
+            List<string> repeatBuffer,
+            List<string> iterationList,
+            List<string> listOfQuestionIdForDupliCheck,
+            List<string> listOfGridListForDupliCheck,
+            TextWriter txtWriter)
+        {
+            // Pass 1 — pre-register all generated QIds
+            foreach (string iterVal in iterationList)
+            {
+                foreach (string bufLine in repeatBuffer)
+                {
+                    if (bufLine.Trim().Split(' ')[0].ToUpper() != "*QUESTION") continue;
+                    string expandedLine = bufLine.Replace("?R", iterVal);
+                    string[] parts = expandedLine.Trim().Split(' ');
+                    if (parts.Length >= 2)
+                    {
+                        string genQId = parts[1].Trim();
+                        if (Regex.IsMatch(genQId, "^[a-zA-Z0-9]+$") &&
+                            !listOfQuestionIdForDupliCheck.Contains(genQId))
+                            listOfQuestionIdForDupliCheck.Add(genQId);
+                    }
+                }
+            }
+
+            // Pass 2 — expand and parse each iteration
+            foreach (string iterVal in iterationList)
+            {
+                List<string> expandedLines = new List<string>();
+                foreach (string bl in repeatBuffer)
+                    expandedLines.Add(bl.Replace("?R", iterVal));
+
+                // build a local dicLine for this buffer (buffer-relative line numbers)
+                Dictionary<int, int> dicLineLocal = new Dictionary<int, int>();
+                for (int x = 0; x < expandedLines.Count + 5; x++)
+                    dicLineLocal[x + 1] = x + 1;
+
+                for (int bi = 0; bi < expandedLines.Count; bi++)
+                {
+                    string bLine = expandedLines[bi];
+                    if (string.IsNullOrWhiteSpace(bLine) || bLine[0] != '*') continue;
+
+                    if (bLine.Split(' ')[0].ToUpper() == "*LIST")
+                    {
+                        bi = prepareList(expandedLines, bi, txtWriter, dicLineLocal);
+                        if (bi < expandedLines.Count) bLine = expandedLines[bi];
+                    }
+                    if (bi < expandedLines.Count && bLine.Split(' ')[0].ToUpper() == "*GRIDLIST")
+                    {
+                        bi = prepareGridList(expandedLines, bi, listOfGridListForDupliCheck, txtWriter, dicLineLocal);
+                        if (bi < expandedLines.Count) bLine = expandedLines[bi];
+                    }
+                    if (bi < expandedLines.Count && bLine.Trim().Split(' ')[0].ToUpper() == "*IF")
+                    {
+                        List<AutoResponse>   arTemp = new List<AutoResponse>();
+                        List<LogicalSyntax>  lsTemp = new List<LogicalSyntax>();
+                        bi = prepareIf(expandedLines, bi, listOfQuestionIdForDupliCheck, arTemp, lsTemp, txtWriter, dicLineLocal);
+                        if (bi < expandedLines.Count) bLine = expandedLines[bi];
+                        foreach (AutoResponse  ar in arTemp) listOfAutoResponse.Add(ar);
+                        foreach (LogicalSyntax ls in lsTemp) listOfLogicalSyntax.Add(ls);
+                    }
+                    if (bi < expandedLines.Count &&
+                        (bLine.Trim().Split(' ')[0].Trim().ToUpper() == "*INCLUDE" ||
+                         bLine.Trim().Split(' ')[0].Trim().ToUpper() == "*EXCLUDE"))
+                    {
+                        List<AutoResponse> arTemp = new List<AutoResponse>();
+                        bi = prepareIncludeExclude(expandedLines, bi, listOfQuestionIdForDupliCheck, arTemp, txtWriter, dicLineLocal);
+                        if (bi < expandedLines.Count) bLine = expandedLines[bi];
+                        foreach (AutoResponse ar in arTemp) listOfAutoResponse.Add(ar);
+                    }
+                    if (bi < expandedLines.Count && bLine.Trim().Split(' ')[0].ToUpper() == "*STARTREC")
+                    {
+                        string[] xyz = bLine.Split('"');
+                        if (xyz.Length == 3) silentRecording = xyz[1];
+                        else txtWriter.WriteLine("*REPEAT block: Invalid *STARTREC syntax");
+                    }
+                    if (bi < expandedLines.Count && bLine.Trim().Split(' ')[0].ToUpper() == "*ENDREC")
+                    {
+                        silentRecording = "";
+                    }
+                    if (bi < expandedLines.Count && bLine.Split(' ')[0].ToUpper() == "*QUESTION")
+                    {
+                        currentQuestion = new Question();
+                        List<LogicalSyntax>  lsTemp     = new List<LogicalSyntax>();
+                        List<Question>       qTemp      = new List<Question>();
+                        Question             cqTemp     = new Question();
+                        Dictionary<string, List<AttributeMain>> attrTemp   = new Dictionary<string, List<AttributeMain>>();
+                        List<AttributeFilter>                   filterTemp = new List<AttributeFilter>();
+
+                        bi = this.prepareQuestion(expandedLines, bi,
+                            listOfQuestionIdForDupliCheck, listOfGridListForDupliCheck,
+                            lsTemp, qTemp, cqTemp, attrTemp, filterTemp, txtWriter, dicLineLocal);
+
+                        foreach (LogicalSyntax ls in lsTemp) listOfLogicalSyntax.Add(ls);
+                        foreach (Question      q  in qTemp)  listOfQuestion.Add(q);
+                        if (qTemp.Count > 0) currentQuestion = qTemp[0];
+                        foreach (KeyValuePair<string, List<AttributeMain>> pair in attrTemp)
+                            dicQidVsAttributeList[pair.Key] = pair.Value;
+                        foreach (AttributeFilter f in filterTemp) listOfAttributeFilter.Add(f);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Expands a *REPEAT buffer for a language section (Lan1, Lan2).
+        /// Substitutes ?R with each iteration value and calls the language-specific parsers.
+        /// </summary>
+        private void ExpandRepeatBlockLanguage(
+            List<string> repeatBuffer,
+            List<string> iterationList,
+            int languageNo,
+            TextWriter txtWriter)
+        {
+            foreach (string iterVal in iterationList)
+            {
+                List<string> expandedLines = new List<string>();
+                foreach (string bl in repeatBuffer)
+                    expandedLines.Add(bl.Replace("?R", iterVal));
+
+                Dictionary<int, int> dicLineLocal = new Dictionary<int, int>();
+                for (int x = 0; x < expandedLines.Count + 5; x++)
+                    dicLineLocal[x + 1] = x + 1;
+
+                for (int bi = 0; bi < expandedLines.Count; bi++)
+                {
+                    string bLine = expandedLines[bi];
+                    if (string.IsNullOrWhiteSpace(bLine) || bLine[0] != '*') continue;
+
+                    if (bLine.Split(' ')[0].ToUpper() == "*LIST")
+                    {
+                        bi = prepareListForLanguage(expandedLines, bi, txtWriter, dicLineLocal, 0, languageNo);
+                        if (bi < expandedLines.Count) bLine = expandedLines[bi];
+                    }
+                    if (bi < expandedLines.Count && bLine.Split(' ')[0].ToUpper() == "*GRIDLIST")
+                    {
+                        bi = prepareGridListForLanguage(expandedLines, bi, txtWriter, dicLineLocal, 0, languageNo);
+                        if (bi < expandedLines.Count) bLine = expandedLines[bi];
+                    }
+                    if (bi < expandedLines.Count && bLine.Split(' ')[0].ToUpper() == "*QUESTION")
+                    {
+                        bi = prepareQuestionForLanguage(expandedLines, bi, txtWriter, dicLineLocal, 0, languageNo);
+                    }
+                }
+            }
         }
 
         // ── UI helpers ────────────────────────────────────────────────────────────
