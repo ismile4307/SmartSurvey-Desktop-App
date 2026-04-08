@@ -13575,10 +13575,18 @@ namespace DBI_Scripting.Forms.Scripting
             List<string> listOfGridListForDupliCheck,
             TextWriter txtWriter)
         {
-            // Pass 1 — pre-register all generated QIds into a local set so that
-            // cross-iteration *IF references (e.g. *IF [Brand?R=1]) validate correctly.
-            // We do NOT add them to listOfQuestionIdForDupliCheck here; prepareQuestion
-            // will add each one naturally in Pass 2, avoiding false duplicate errors.
+            // Pass 1 — pre-register QIds that are genuinely new to this block.
+            //
+            // Rules:
+            //  • If a generated QId is NOT yet in listOfQuestionIdForDupliCheck it is
+            //    new: add it to both the duplicate-check list (so cross-iteration *IF
+            //    references resolve immediately) and to repeatPreRegistered (so Pass 2
+            //    knows to let prepareQuestion re-add it without a false duplicate error).
+            //  • If the QId IS already in listOfQuestionIdForDupliCheck it is a real
+            //    duplicate (collision with a question outside this block, or with a
+            //    previous *REPEAT block, or from a fixed QId repeated across iterations).
+            //    Do NOT add it to repeatPreRegistered — prepareQuestion will detect and
+            //    report the collision correctly.
             HashSet<string> repeatPreRegistered = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (string iterVal in iterationList)
             {
@@ -13590,16 +13598,16 @@ namespace DBI_Scripting.Forms.Scripting
                     if (parts.Length >= 2)
                     {
                         string genQId = parts[1].Trim();
-                        if (Regex.IsMatch(genQId, "^[a-zA-Z0-9]+$"))
+                        if (Regex.IsMatch(genQId, "^[a-zA-Z0-9]+$") &&
+                            !listOfQuestionIdForDupliCheck.Contains(genQId) &&
+                            !repeatPreRegistered.Contains(genQId))
+                        {
                             repeatPreRegistered.Add(genQId);
+                            listOfQuestionIdForDupliCheck.Add(genQId);
+                        }
                     }
                 }
             }
-            // Add all pre-registered QIds to the duplicate-check list now so that *IF
-            // validators in Pass 2 can resolve cross-iteration references immediately.
-            foreach (string qid in repeatPreRegistered)
-                if (!listOfQuestionIdForDupliCheck.Contains(qid))
-                    listOfQuestionIdForDupliCheck.Add(qid);
 
             // Pass 2 — expand and parse each iteration
             foreach (string iterVal in iterationList)
