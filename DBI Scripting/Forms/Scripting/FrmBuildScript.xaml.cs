@@ -462,8 +462,9 @@ namespace DBI_Scripting.Forms.Scripting
                         }
                         string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
 
-                        // collect buffer until *ENDREPEAT
+                        // collect buffer until *ENDREPEAT (track actual file line numbers)
                         List<string> repeatBuffer = new List<string>();
+                        List<int> repeatLineNums = new List<int>();
                         bool foundEndRepeat = false;
                         i++;
                         while (i < lines.Count)
@@ -471,6 +472,7 @@ namespace DBI_Scripting.Forms.Scripting
                             if (lines[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
                             { foundEndRepeat = true; break; }
                             repeatBuffer.Add(lines[i]);
+                            repeatLineNums.Add(dicLine[i + 1]);
                             i++;
                         }
                         if (!foundEndRepeat)
@@ -482,7 +484,7 @@ namespace DBI_Scripting.Forms.Scripting
                         // build iteration list and expand
                         List<string> iterationList = BuildRepeatIterationList(repeatSource, txtWriter, dicLine[i + 1]);
                         if (iterationList != null && iterationList.Count > 0)
-                            ExpandRepeatBlockEnglish(repeatBuffer, iterationList,
+                            ExpandRepeatBlockEnglish(repeatBuffer, repeatLineNums, iterationList,
                                 listOfQuestionIdForDupliCheck, listOfGridListForDupliCheck, txtWriter);
 
                         strline = lines[i]; // i → *ENDREPEAT line
@@ -670,6 +672,7 @@ namespace DBI_Scripting.Forms.Scripting
                             {
                                 string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
                                 List<string> repeatBuffer = new List<string>();
+                                List<int> repeatLineNums = new List<int>();
                                 bool foundEnd = false;
                                 i++;
                                 while (i < linesLanguage1.Count)
@@ -677,6 +680,7 @@ namespace DBI_Scripting.Forms.Scripting
                                     if (linesLanguage1[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
                                     { foundEnd = true; break; }
                                     repeatBuffer.Add(linesLanguage1[i]);
+                                    repeatLineNums.Add(dicLine[i + ln1 + 1]);
                                     i++;
                                 }
                                 if (!foundEnd)
@@ -685,7 +689,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln1);
                                     if (iterList != null && iterList.Count > 0)
-                                        ExpandRepeatBlockLanguage(repeatBuffer, iterList, 1, txtWriter);
+                                        ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 1, txtWriter);
                                 }
                             }
                             else
@@ -745,6 +749,7 @@ namespace DBI_Scripting.Forms.Scripting
                             {
                                 string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
                                 List<string> repeatBuffer = new List<string>();
+                                List<int> repeatLineNums = new List<int>();
                                 bool foundEnd = false;
                                 i++;
                                 while (i < linesLanguage2.Count)
@@ -752,6 +757,7 @@ namespace DBI_Scripting.Forms.Scripting
                                     if (linesLanguage2[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
                                     { foundEnd = true; break; }
                                     repeatBuffer.Add(linesLanguage2[i]);
+                                    repeatLineNums.Add(dicLine[i + ln2 + 1]);
                                     i++;
                                 }
                                 if (!foundEnd)
@@ -760,7 +766,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln2);
                                     if (iterList != null && iterList.Count > 0)
-                                        ExpandRepeatBlockLanguage(repeatBuffer, iterList, 2, txtWriter);
+                                        ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 2, txtWriter);
                                 }
                             }
                             else
@@ -13570,6 +13576,7 @@ namespace DBI_Scripting.Forms.Scripting
         /// </summary>
         private void ExpandRepeatBlockEnglish(
             List<string> repeatBuffer,
+            List<int> repeatLineNums,
             List<string> iterationList,
             List<string> listOfQuestionIdForDupliCheck,
             List<string> listOfGridListForDupliCheck,
@@ -13617,10 +13624,12 @@ namespace DBI_Scripting.Forms.Scripting
                     expandedLines.Add(bl.Replace("?R", iterVal));
                 expandedLines.Add("*"); // sentinel — terminates prepareQuestion's lookahead
 
-                // build a local dicLine for this buffer (buffer-relative line numbers)
+                // Build dicLineLocal mapping buffer index+1 → actual script file line number.
+                // Entries for the sentinel and any out-of-range index fall back to last real line.
                 Dictionary<int, int> dicLineLocal = new Dictionary<int, int>();
+                int lastRealLine = repeatLineNums.Count > 0 ? repeatLineNums[repeatLineNums.Count - 1] : 1;
                 for (int x = 0; x < expandedLines.Count + 5; x++)
-                    dicLineLocal[x + 1] = x + 1;
+                    dicLineLocal[x + 1] = (x < repeatLineNums.Count) ? repeatLineNums[x] : lastRealLine;
 
                 for (int bi = 0; bi < expandedLines.Count; bi++)
                 {
@@ -13705,6 +13714,7 @@ namespace DBI_Scripting.Forms.Scripting
         /// </summary>
         private void ExpandRepeatBlockLanguage(
             List<string> repeatBuffer,
+            List<int> repeatLineNums,
             List<string> iterationList,
             int languageNo,
             TextWriter txtWriter)
@@ -13716,9 +13726,11 @@ namespace DBI_Scripting.Forms.Scripting
                     expandedLines.Add(bl.Replace("?R", iterVal));
                 expandedLines.Add("*"); // sentinel — terminates prepareQuestionForLanguage's lookahead
 
+                // Build dicLineLocal mapping buffer index+1 → actual script file line number.
                 Dictionary<int, int> dicLineLocal = new Dictionary<int, int>();
+                int lastRealLine = repeatLineNums.Count > 0 ? repeatLineNums[repeatLineNums.Count - 1] : 1;
                 for (int x = 0; x < expandedLines.Count + 5; x++)
-                    dicLineLocal[x + 1] = x + 1;
+                    dicLineLocal[x + 1] = (x < repeatLineNums.Count) ? repeatLineNums[x] : lastRealLine;
 
                 for (int bi = 0; bi < expandedLines.Count; bi++)
                 {
