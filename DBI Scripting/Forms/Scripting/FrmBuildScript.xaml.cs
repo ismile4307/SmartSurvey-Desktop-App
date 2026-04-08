@@ -96,6 +96,10 @@ namespace DBI_Scripting.Forms.Scripting
 
         String silentRecording = "";
 
+        // All QIds registered during the current build — used for {QId} / {QId.N} validation
+        List<string> _globalQIds = new List<string>();
+        private static readonly Regex _curlyRefRegex = new Regex(@"\{([^}]+)\}", RegexOptions.Compiled);
+
         CheckLogicalExp checkLogicalExp;
 
 
@@ -248,6 +252,7 @@ namespace DBI_Scripting.Forms.Scripting
             bool hasFIFS = false;
             bool hasSingleDropdown = false;
             preparedScript = false;
+            _globalQIds = new List<string>();
 
             // take all syntax in a list due to have facility to back tracking
             List<String> lines = new List<string>();
@@ -6316,6 +6321,7 @@ namespace DBI_Scripting.Forms.Scripting
                                     qIdForGridQid = xyz[1].Trim();
                                     myQuestion.QId = xyz[1].Trim();
                                     listOfQuestionIdForDupliCheck.Add(xyz[1].Trim());
+                                    _globalQIds.Add(xyz[1].Trim());
 
                                     //if (myQuestion.QId == "SQ21")
                                     //    MessageBox.Show("");
@@ -6922,6 +6928,7 @@ namespace DBI_Scripting.Forms.Scripting
             bool getquestionText = false;
             while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
             {
+                CheckCurlyReferences(strline, dicLine[i + 1], txtWriter);
                 questionText = questionText + strline + "<br>";
                 strline = lines[++i];
                 getquestionText = true;
@@ -8201,6 +8208,7 @@ namespace DBI_Scripting.Forms.Scripting
                 bool getquestionText = false;
                 while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
                 {
+                    CheckCurlyReferences(strline, dicLine[i + ln1 + 1], txtWriter);
                     questionText = questionText + strline + "<br>";
                     strline = linesLanguageX[++i];
                     getquestionText = true;
@@ -8543,6 +8551,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 qIdForGridQid = xyz[1].Trim().Replace("?R", attributeR.AttributeValue);
                                 myQuestion.QId = xyz[1].Trim().Replace("?R", attributeR.AttributeValue);
                                 listOfQuestionIdForDupliCheck.Add(xyz[1].Trim().Replace("?R", attributeR.AttributeValue));
+                                _globalQIds.Add(xyz[1].Trim().Replace("?R", attributeR.AttributeValue));
 
                                 //if (myQuestion.QId == "SQ21")
                                 //    MessageBox.Show("");
@@ -9115,6 +9124,7 @@ namespace DBI_Scripting.Forms.Scripting
             bool getquestionText = false;
             while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
             {
+                CheckCurlyReferences(strline, dicLine[i + 1], txtWriter);
                 questionText = questionText + strline + "<br>";
                 strline = lines[++i];
                 getquestionText = true;
@@ -13752,6 +13762,48 @@ namespace DBI_Scripting.Forms.Scripting
                         bi = prepareQuestionForLanguage(expandedLines, bi, txtWriter, dicLineLocal, 0, languageNo);
                     }
                 }
+            }
+        }
+
+        // ── {QId} / {QId.N} reference validator ──────────────────────────────────
+        /// <summary>
+        /// Scans one question-text line for {QId} and {QId.N} references and
+        /// validates each QId against the set of already-registered questions.
+        /// Writes an ERROR if the QId is not found, or a WARNING if it matches
+        /// only case-insensitively (case mismatch).
+        /// </summary>
+        private void CheckCurlyReferences(string textLine, int displayLineNum, TextWriter txtWriter)
+        {
+            if (!textLine.Contains("{")) return;
+
+            foreach (Match m in _curlyRefRegex.Matches(textLine))
+            {
+                string content = m.Groups[1].Value.Trim();
+
+                // Extract QId part — everything before the first '.' (if any)
+                int dotIdx = content.IndexOf('.');
+                string qid  = dotIdx >= 0 ? content.Substring(0, dotIdx).Trim() : content;
+
+                if (string.IsNullOrEmpty(qid)) continue;
+
+                // Exact match — OK
+                if (_globalQIds.Contains(qid)) continue;
+
+                // Case-insensitive search
+                string matched = null;
+                foreach (string known in _globalQIds)
+                {
+                    if (string.Compare(known, qid, StringComparison.OrdinalIgnoreCase) == 0)
+                    { matched = known; break; }
+                }
+
+                if (matched != null)
+                    txtWriter.WriteLine("Line : " + displayLineNum
+                        + " {" + content + "} — QId '" + qid
+                        + "' case mismatch, defined as '" + matched + "'");
+                else
+                    txtWriter.WriteLine("Line : " + displayLineNum
+                        + " {" + content + "} — QId '" + qid + "' is not defined");
             }
         }
 
