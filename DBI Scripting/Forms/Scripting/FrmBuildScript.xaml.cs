@@ -5094,6 +5094,11 @@ namespace DBI_Scripting.Forms.Scripting
             SetUIState(running: false);
             #endregion
             } // end try
+            catch (Exception ex)
+            {
+                AppendResult("Unexpected build error: " + ex.Message, true);
+                SetUIState(running: false);
+            }
             finally
             {
                 Mouse.OverrideCursor = null;
@@ -13594,6 +13599,7 @@ namespace DBI_Scripting.Forms.Scripting
                 List<string> expandedLines = new List<string>();
                 foreach (string bl in repeatBuffer)
                     expandedLines.Add(bl.Replace("?R", iterVal));
+                expandedLines.Add("*"); // sentinel — terminates prepareQuestion's lookahead
 
                 // build a local dicLine for this buffer (buffer-relative line numbers)
                 Dictionary<int, int> dicLineLocal = new Dictionary<int, int>();
@@ -13682,6 +13688,7 @@ namespace DBI_Scripting.Forms.Scripting
                 List<string> expandedLines = new List<string>();
                 foreach (string bl in repeatBuffer)
                     expandedLines.Add(bl.Replace("?R", iterVal));
+                expandedLines.Add("*"); // sentinel — terminates prepareQuestionForLanguage's lookahead
 
                 Dictionary<int, int> dicLineLocal = new Dictionary<int, int>();
                 for (int x = 0; x < expandedLines.Count + 5; x++)
