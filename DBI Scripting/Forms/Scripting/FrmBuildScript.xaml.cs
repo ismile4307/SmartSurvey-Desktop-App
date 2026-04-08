@@ -13575,7 +13575,11 @@ namespace DBI_Scripting.Forms.Scripting
             List<string> listOfGridListForDupliCheck,
             TextWriter txtWriter)
         {
-            // Pass 1 — pre-register all generated QIds
+            // Pass 1 — pre-register all generated QIds into a local set so that
+            // cross-iteration *IF references (e.g. *IF [Brand?R=1]) validate correctly.
+            // We do NOT add them to listOfQuestionIdForDupliCheck here; prepareQuestion
+            // will add each one naturally in Pass 2, avoiding false duplicate errors.
+            HashSet<string> repeatPreRegistered = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (string iterVal in iterationList)
             {
                 foreach (string bufLine in repeatBuffer)
@@ -13586,12 +13590,16 @@ namespace DBI_Scripting.Forms.Scripting
                     if (parts.Length >= 2)
                     {
                         string genQId = parts[1].Trim();
-                        if (Regex.IsMatch(genQId, "^[a-zA-Z0-9]+$") &&
-                            !listOfQuestionIdForDupliCheck.Contains(genQId))
-                            listOfQuestionIdForDupliCheck.Add(genQId);
+                        if (Regex.IsMatch(genQId, "^[a-zA-Z0-9]+$"))
+                            repeatPreRegistered.Add(genQId);
                     }
                 }
             }
+            // Add all pre-registered QIds to the duplicate-check list now so that *IF
+            // validators in Pass 2 can resolve cross-iteration references immediately.
+            foreach (string qid in repeatPreRegistered)
+                if (!listOfQuestionIdForDupliCheck.Contains(qid))
+                    listOfQuestionIdForDupliCheck.Add(qid);
 
             // Pass 2 — expand and parse each iteration
             foreach (string iterVal in iterationList)
@@ -13651,6 +13659,16 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     if (bi < expandedLines.Count && bLine.Split(' ')[0].ToUpper() == "*QUESTION")
                     {
+                        // Remove the pre-registered QId so prepareQuestion can add it
+                        // without triggering a false "Duplicate QId" error.
+                        string[] qparts = bLine.Trim().Split(' ');
+                        if (qparts.Length >= 2)
+                        {
+                            string thisQId = qparts[1].Trim();
+                            if (repeatPreRegistered.Contains(thisQId))
+                                listOfQuestionIdForDupliCheck.Remove(thisQId);
+                        }
+
                         currentQuestion = new Question();
                         List<LogicalSyntax>  lsTemp     = new List<LogicalSyntax>();
                         List<Question>       qTemp      = new List<Question>();
