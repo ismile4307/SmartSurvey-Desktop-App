@@ -13762,32 +13762,191 @@ namespace DBI_Scripting.Forms.Scripting
             txtBuildResult.Document.Blocks.Clear();
         }
 
+        // Fallback used by the catch block — plain coloured line.
         private void AppendResult(string text, bool isError)
         {
-            var para = new Paragraph(new Run(text))
+            var para = new Paragraph { Margin = new Thickness(0, 1, 0, 1) };
+            if (isError)
             {
-                Foreground = isError ? Brushes.Red : Brushes.DarkGreen,
-                Margin = new Thickness(0)
-            };
+                para.Inlines.Add(MakeBadgeRun(" ERROR ", errorBadgeFg, errorBadgeBg));
+                para.Inlines.Add(new Run("  " + text) { Foreground = errorMsgBrush });
+            }
+            else
+            {
+                para.Inlines.Add(new Run(text) { Foreground = successBrush });
+            }
             txtBuildResult.Document.Blocks.Add(para);
             txtBuildResult.ScrollToEnd();
         }
 
+        // ── colour constants ──────────────────────────────────────────────────────
+        private static readonly Brush errorBadgeFg  = Brushes.White;
+        private static readonly Brush errorBadgeBg  = new SolidColorBrush(Color.FromRgb(180, 0, 0));
+        private static readonly Brush errorMsgBrush = new SolidColorBrush(Color.FromRgb(139, 0, 0));
+        private static readonly Brush lineNumBrush  = new SolidColorBrush(Color.FromRgb(30, 100, 180));
+        private static readonly Brush arrowBrush    = new SolidColorBrush(Color.FromRgb(120, 120, 120));
+        private static readonly Brush infoTextBrush = new SolidColorBrush(Color.FromRgb(80, 80, 80));
+        private static readonly Brush successBrush  = new SolidColorBrush(Color.FromRgb(0, 128, 0));
+        private static readonly Brush successBadgeBg = new SolidColorBrush(Color.FromRgb(0, 140, 0));
+        private static readonly Brush headerBg      = new SolidColorBrush(Color.FromRgb(240, 244, 250));
+        private static readonly Brush separatorBrush = new SolidColorBrush(Color.FromRgb(180, 190, 205));
+        private static readonly Brush summaryFailBg  = new SolidColorBrush(Color.FromRgb(255, 235, 235));
+        private static readonly Brush summaryOkBg    = new SolidColorBrush(Color.FromRgb(235, 255, 240));
+
+        private static Run MakeBadgeRun(string text, Brush fg, Brush bg)
+        {
+            return new Run(text)
+            {
+                Foreground  = fg,
+                Background  = bg,
+                FontWeight  = FontWeights.Bold,
+                FontSize    = 11
+            };
+        }
+
+        // ── separator line ────────────────────────────────────────────────────────
+        private void AppendSeparator()
+        {
+            var para = new Paragraph(new Run(new string('\u2500', 72)))
+            {
+                Foreground = separatorBrush,
+                Margin     = new Thickness(0, 4, 0, 4)
+            };
+            txtBuildResult.Document.Blocks.Add(para);
+        }
+
+        // ── build header block ────────────────────────────────────────────────────
+        private void AppendBuildHeader()
+        {
+            AppendSeparator();
+
+            string scriptFile = System.IO.Path.GetFileName(txtScriptPath.Text);
+            string shellDb    = comShellDBType.SelectedItem != null
+                                ? comShellDBType.SelectedItem.ToString() : "(none)";
+            string builtAt    = DateTime.Now.ToString("yyyy-MM-dd   HH:mm:ss");
+
+            AppendHeaderRow("Script",   scriptFile);
+            AppendHeaderRow("Shell DB", shellDb);
+            AppendHeaderRow("Built At", builtAt);
+
+            AppendSeparator();
+        }
+
+        private void AppendHeaderRow(string label, string value)
+        {
+            var p = new Paragraph { Margin = new Thickness(0), Background = headerBg };
+            p.Inlines.Add(new Run("  " + label.PadRight(12))
+                { Foreground = arrowBrush, FontWeight = FontWeights.Bold });
+            p.Inlines.Add(new Run(":  ") { Foreground = arrowBrush });
+            p.Inlines.Add(new Run(value)
+                { Foreground = new SolidColorBrush(Color.FromRgb(30, 60, 120)), FontWeight = FontWeights.Bold });
+            txtBuildResult.Document.Blocks.Add(p);
+        }
+
+        // ── single error line ─────────────────────────────────────────────────────
+        // Expected format:  "Line : 97 Some error message here"
+        private void AppendErrorLine(string rawLine)
+        {
+            // Strip "Line : " prefix and split into number + message
+            string rest     = rawLine.Substring("Line :".Length).TrimStart();
+            int    spaceIdx = rest.IndexOf(' ');
+            string lineNum  = spaceIdx > 0 ? rest.Substring(0, spaceIdx) : rest;
+            string message  = spaceIdx > 0 ? rest.Substring(spaceIdx + 1).Trim() : string.Empty;
+
+            int lineNumInt;
+            string paddedNum = int.TryParse(lineNum.Trim(), out lineNumInt)
+                               ? lineNumInt.ToString().PadLeft(4, '0')
+                               : lineNum.Trim().PadLeft(4);
+
+            var para = new Paragraph { Margin = new Thickness(0, 2, 0, 2) };
+            para.Inlines.Add(MakeBadgeRun(" ERROR ", errorBadgeFg, errorBadgeBg));
+            para.Inlines.Add(new Run("   "));
+            para.Inlines.Add(new Run("Line " + paddedNum)
+                { Foreground = lineNumBrush, FontWeight = FontWeights.Bold });
+            para.Inlines.Add(new Run("   \u00bb   ") { Foreground = arrowBrush });
+            para.Inlines.Add(new Run(message) { Foreground = errorMsgBrush });
+
+            txtBuildResult.Document.Blocks.Add(para);
+            txtBuildResult.ScrollToEnd();
+        }
+
+        // ── info / warning line (non-error, non-success plain messages) ───────────
+        private void AppendInfoLine(string rawLine)
+        {
+            var para = new Paragraph { Margin = new Thickness(0, 1, 0, 1) };
+            para.Inlines.Add(MakeBadgeRun(" INFO  ", Brushes.White,
+                new SolidColorBrush(Color.FromRgb(80, 120, 180))));
+            para.Inlines.Add(new Run("   " + rawLine) { Foreground = infoTextBrush });
+            txtBuildResult.Document.Blocks.Add(para);
+            txtBuildResult.ScrollToEnd();
+        }
+
+        // ── summary footer ────────────────────────────────────────────────────────
+        private void AppendSummaryFooter(int errorCount, bool success)
+        {
+            AppendSeparator();
+
+            var para = new Paragraph { Margin = new Thickness(0) };
+
+            if (success)
+            {
+                para.Background = summaryOkBg;
+                para.Inlines.Add(new Run("  ") { Background = summaryOkBg });
+                para.Inlines.Add(MakeBadgeRun(" BUILD SUCCESSFUL \u2713 ", Brushes.White, successBadgeBg));
+                para.Inlines.Add(new Run("   Questions compiled without errors.")
+                    { Foreground = successBrush, FontWeight = FontWeights.SemiBold });
+            }
+            else
+            {
+                para.Background = summaryFailBg;
+                para.Inlines.Add(new Run("  ") { Background = summaryFailBg });
+                para.Inlines.Add(MakeBadgeRun(" BUILD FAILED ", errorBadgeFg, errorBadgeBg));
+                para.Inlines.Add(new Run("   Total Errors : ")
+                    { Foreground = infoTextBrush, FontWeight = FontWeights.SemiBold });
+                para.Inlines.Add(new Run(errorCount.ToString())
+                    { Foreground = errorBadgeBg, FontWeight = FontWeights.Bold, FontSize = 13 });
+                para.Inlines.Add(new Run("   — Fix all errors above and rebuild.")
+                    { Foreground = infoTextBrush });
+            }
+
+            txtBuildResult.Document.Blocks.Add(para);
+            AppendSeparator();
+            txtBuildResult.ScrollToEnd();
+        }
+
+        // ── main display entry point ──────────────────────────────────────────────
         private void DisplayBuildResult(string resultFilePath)
         {
             ClearBuildOutput();
             if (!File.Exists(resultFilePath)) return;
 
             string[] resultLines = File.ReadAllLines(resultFilePath);
-            bool hasErrors = resultLines.Any(l => !l.Contains("Build successful"));
 
+            int  errorCount  = resultLines.Count(l => l.TrimStart().StartsWith("Line :"));
+            bool buildSuccess = resultLines.Any(l => l.Contains("Build successful"));
+
+            // Header
+            AppendBuildHeader();
+
+            // Body
             foreach (string line in resultLines)
             {
-                bool lineIsError = line.Trim().Length > 0 && !line.Contains("Build successful");
-                AppendResult(line, lineIsError);
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                if (line.TrimStart().StartsWith("Line :"))
+                    AppendErrorLine(line);
+                else if (line.Contains("Build successful"))
+                    /* handled in footer */ ;
+                else
+                    AppendInfoLine(line);
             }
 
-            txtStatus.Text = hasErrors ? "Build completed with errors." : "Build successful.";
+            // Footer summary
+            AppendSummaryFooter(errorCount, buildSuccess);
+
+            txtStatus.Text     = buildSuccess
+                                 ? "Build successful."
+                                 : "Build completed — " + errorCount + " error(s) found.";
             btnUpload.IsEnabled = preparedScript;
         }
 
