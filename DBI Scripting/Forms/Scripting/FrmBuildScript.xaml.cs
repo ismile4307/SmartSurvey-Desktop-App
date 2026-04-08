@@ -6928,7 +6928,8 @@ namespace DBI_Scripting.Forms.Scripting
             bool getquestionText = false;
             while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
             {
-                CheckCurlyReferences(strline, dicLine[i + 1], txtWriter);
+                int curlyLineNum; dicLine.TryGetValue(i + 1, out curlyLineNum);
+                CheckCurlyReferences(strline, curlyLineNum, txtWriter);
                 questionText = questionText + strline + "<br>";
                 strline = lines[++i];
                 getquestionText = true;
@@ -8208,7 +8209,8 @@ namespace DBI_Scripting.Forms.Scripting
                 bool getquestionText = false;
                 while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
                 {
-                    CheckCurlyReferences(strline, dicLine[i + ln1 + 1], txtWriter);
+                    int curlyLineNum; dicLine.TryGetValue(i + ln1 + 1, out curlyLineNum);
+                    CheckCurlyReferences(strline, curlyLineNum, txtWriter);
                     questionText = questionText + strline + "<br>";
                     strline = linesLanguageX[++i];
                     getquestionText = true;
@@ -9124,7 +9126,8 @@ namespace DBI_Scripting.Forms.Scripting
             bool getquestionText = false;
             while (!isAttribute(strline) && !strline.Substring(0, 1).Contains("*"))
             {
-                CheckCurlyReferences(strline, dicLine[i + 1], txtWriter);
+                int curlyLineNum; dicLine.TryGetValue(i + 1, out curlyLineNum);
+                CheckCurlyReferences(strline, curlyLineNum, txtWriter);
                 questionText = questionText + strline + "<br>";
                 strline = lines[++i];
                 getquestionText = true;
