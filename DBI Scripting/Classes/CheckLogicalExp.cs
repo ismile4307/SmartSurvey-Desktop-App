@@ -341,8 +341,9 @@ namespace DBI_Scripting.Classes
             listOfFunctionName.Add("TIMEDIFFOF");
             listOfFunctionName.Add("TYPEOF");
             listOfFunctionName.Add("DISTANCEFROM");
-            listOfFunctionName.Add("IDOF");
+            listOfFunctionName.Add("USERIDOF");
             listOfFunctionName.Add("WRONGLOCATIONOF");
+            listOfFunctionName.Add("STRINGOF");
         }
 
     }

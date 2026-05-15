@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(\"C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v4.0.30319\\\\MSBuild.exe\" \"DBI Scripting\\\\Smart Survey.csproj\" /p:Configuration=Debug /t:Build)",
+      "Bash(\"C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v4.0.30319\\\\MSBuild.exe\" \"DBI Scripting/Smart Survey.csproj\" /p:Configuration=Debug)",
+      "Bash(powershell -Command \"& { Set-Location 'E:\\\\MR Tools\\\\SmartSurvey - ss'; & 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v4.0.30319\\\\MSBuild.exe' 'DBI Scripting\\\\Smart Survey.csproj' '/p:Configuration=Debug' 2>&1 | Select-String -Pattern 'error|warning|Error|Warning|succeeded|failed' | Select-Object -Last 40 }\")",
+      "Bash(powershell -Command \"& { Set-Location 'E:\\\\MR Tools\\\\SmartSurvey - ss'; & 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v4.0.30319\\\\MSBuild.exe' 'DBI Scripting\\\\Smart Survey.csproj' '/p:Configuration=Debug' 2>&1 | Select-String -Pattern 'error CS|error MSB|Build succeeded|Build FAILED' }\")",
+      "Bash(powershell -Command \"& { Set-Location 'E:\\\\MR Tools\\\\SmartSurvey - ss'; & 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v4.0.30319\\\\MSBuild.exe' 'DBI Scripting\\\\Smart Survey.csproj' '/p:Configuration=Debug' 2>&1 | Select-String -Pattern 'error CS|Build succeeded|Build FAILED' }\")",
+      "Bash(powershell -Command \"& { Set-Location 'E:\\\\MR Tools\\\\SmartSurvey - ss'; & 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v4.0.30319\\\\MSBuild.exe' 'DBI Scripting\\\\Smart Survey.csproj' '/p:Configuration=Debug' 2>&1 | Select-String -Pattern 'error CS' }\")",
+      "Bash(powershell -Command \"& { Set-Location 'E:\\\\MR Tools\\\\SmartSurvey - ss'; & 'C:\\\\Windows\\\\Microsoft.NET\\\\Framework\\\\v4.0.30319\\\\MSBuild.exe' 'DBI Scripting\\\\Smart Survey.csproj' '/p:Configuration=Debug' 2>&1 | Select-String -Pattern 'error|warning|FAILED' | Select-Object -First 40 }\")",
+      "Bash(powershell -Command \"[guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\); [guid]::NewGuid\\(\\)\")",
+      "Bash(sqlite3:*)",
+      "Bash(find 'E:\\\\MR Tools\\\\SmartSurvey App/SmartSurvey/app/src/main/java/com' -type f -name *.java -o -type f -name *.kt)",
+      "Bash(xargs grep:*)",
+      "Bash(find 'E:\\\\MR Tools\\\\SmartSurvey App' -name *.db -not -path */build/*)",
+      "Bash(grep -h \"INSERT INTO\" \"E:/MR Tools/SmartSurvey App/SmartSurvey/app/src/main/java/com/example/smartsurvey1/helper/\"*.java)",
+      "Bash(xargs wc:*)",
+      "Bash(ls:*)",
+      "Bash(find . -name *.db -type f)",
+      "Bash(find './DBI Scripting' -name *.txt -o -name *.md)",
+      "Bash(1 cd:*)"
+    ]
+  }
+}

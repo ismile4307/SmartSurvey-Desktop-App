@@ -149,7 +149,18 @@ namespace DBI_Scripting.Forms.Analytics
             {
                 if (createFile("Table_Cpt"))
                 {
-                    analysisType = "COLPCT.COUNT F40.1";
+
+                    analysisType = "COLPCT.COUNT F40." + txtDecimalPlace.Text;
+                    this.prepareScript();
+                    txt_writer.Close();
+                    MessageBox.Show("Write Completed");
+                }
+            }
+            else if (radioBtnPct2TableSyntax.IsChecked == true)
+            {
+                if (createFile("Table_Cpt_Pct"))
+                {
+                    analysisType = "COLPCT.COUNT PCT8.0";
                     this.prepareScript();
                     txt_writer.Close();
                     MessageBox.Show("Write Completed");
@@ -178,7 +189,7 @@ namespace DBI_Scripting.Forms.Analytics
 
             txt_writer.WriteLine("*Please specify the file get path.");
             txt_writer.WriteLine("GET ");
-            txt_writer.WriteLine(@"FILE=''.");
+            txt_writer.WriteLine(@"FILE='" + myPath.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\')) + "\\Data Preparation\\" + outputExcelFileName + "_Final.sav'.");
             txt_writer.WriteLine("DATASET NAME DataSet1 WINDOW=FRONT.");
 
             txt_writer.WriteLine("");
@@ -402,7 +413,7 @@ namespace DBI_Scripting.Forms.Analytics
             txt_writer.WriteLine("");
 
             txt_writer.WriteLine("*Please specify the file save path.");
-            txt_writer.WriteLine("SAVE OUTFILE=''");
+            txt_writer.WriteLine("SAVE OUTFILE='" + myPath + "\\" + outputExcelFileName + "_Final.sav'.");
             txt_writer.WriteLine("/COMPRESSED.");
         }
 
@@ -414,7 +425,7 @@ namespace DBI_Scripting.Forms.Analytics
 
             txt_writer.WriteLine("*Please specify the file get path.");
             txt_writer.WriteLine("GET ");
-            txt_writer.WriteLine(@"FILE=''.");
+            txt_writer.WriteLine(@"FILE='" + myPath + "\\" + outputExcelFileName + "_Final.sav'.");
             txt_writer.WriteLine("DATASET NAME DataSet1 WINDOW=FRONT.");
 
             txt_writer.WriteLine("");
@@ -475,7 +486,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
                     txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] BY " + bannerText1 + "");
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
@@ -517,7 +528,7 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine("* Custom Tables.");
                         txt_writer.WriteLine("CTABLES");
                         txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                        txt_writer.WriteLine("  /VLABELS VARIABLES=$" + lstMRUniqueVariableName[i] + " DISPLAY=NONE");
+                        txt_writer.WriteLine("  /VLABELS VARIABLES=$" + lstMRUniqueVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
                         txt_writer.WriteLine("  /TABLE $" + lstMRUniqueVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] BY " + bannerText1 + "");
                         txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                         txt_writer.WriteLine("  /CATEGORIES VARIABLES=$" + lstMRUniqueVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
@@ -559,7 +570,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=m_" + lstVariableName[i] + " DISPLAY=LABEL");
                     txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + m_" + lstVariableName[i] + " [S][MEAN F40.2] + sd_" + lstVariableName[i] + " [S][STDDEV F40.2] + se_" + lstVariableName[i] + " [S][SEMEAN F40.2] BY " + bannerText1 + "");
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
@@ -600,7 +611,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
 
                     txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([4]+[5])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat1 LABEL = \"TOP 2 BOX [5/4]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
@@ -648,14 +659,14 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
 
                     txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([4]+[5])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat1 LABEL = \"TOP 2 BOX [1/2]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
                     txt_writer.WriteLine("  /PCOMPUTE &cat2 = EXPR([1]+[2])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat2 LABEL = \"BOTTOM 2 BOX [4/5]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
 
-                    txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [COLPCT.COUNT F40.1, TOTAL[COUNT F40.0]] +  m_" + lstVariableName[i] + " [S][MEAN F40.2] + sd_" + lstVariableName[i] + " [S][STDDEV F40.2] + se_" + lstVariableName[i] + " [S][SEMEAN F40.2] BY " + bannerText1 + "");
+                    txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [COLPCT.COUNT F40." + txtDecimalPlace.Text + ", TOTAL[COUNT F40.0]] +  m_" + lstVariableName[i] + " [S][MEAN F40.2] + sd_" + lstVariableName[i] + " [S][STDDEV F40.2] + se_" + lstVariableName[i] + " [S][SEMEAN F40.2] BY " + bannerText1 + "");
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, &cat1, &cat2, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
@@ -697,7 +708,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
 
                     txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([6]+[7])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat1 LABEL = \"TOP 2 BOX [6/7]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
@@ -763,7 +774,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
 
                     txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([8]+[9])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat1 LABEL = \"TOP 2 BOX [8/9]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
@@ -813,7 +824,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
 
                     txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([9]+[10])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat1 LABEL = \"TOP 2 BOX [09/10]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
@@ -863,7 +874,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
 
                     txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([10]+[11])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat1 LABEL = \"TOP 2 BOX [10/11]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
@@ -912,7 +923,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " DISPLAY=NONE");
+                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
 
                     txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([0]+[1]+[2]+[3]+[4]+[5]+[6])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat1 LABEL = \"Detractors [0-6]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");

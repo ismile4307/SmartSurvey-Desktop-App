@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace DBI_Scripting.Classes
 {
@@ -104,6 +106,37 @@ namespace DBI_Scripting.Classes
                 String resultedValue = "" + executeLengthOfResponse(query);
 
                 bool res = compare(resultedValue);
+                return res;
+            }
+            else if (myFunction.Contains("datevalueof"))
+            {
+                query = getQueryString(qIds);
+                string resultedValue = "" + ExecuteDateValueOfResponse(query);
+
+                bool res = compare(resultedValue);
+                return res;
+            }
+            else if (myFunction.Contains("datediffof"))
+            {
+                // query = GetQueryString(qIds);
+
+                string txtInBrac = sElement.Substring(sElement.IndexOf('[') + 1).Trim();
+
+                string[] allQIds = txtInBrac
+                    .Substring(0, txtInBrac.IndexOf(']'))
+                    .Split(',');
+
+                string resultedValue = "" + ExecuteDateDifference(allQIds);
+
+                bool res = compare(resultedValue);
+                return res;
+            }
+            else if (myFunction.Contains("useridof"))
+            {
+                string resultedValue = "" + GetUserId();
+
+                bool res = resultedValue.Equals(sComparedValue.Split(',')[0]);
+
                 return res;
             }
             return false;
@@ -284,6 +317,11 @@ namespace DBI_Scripting.Classes
                     sum = sum + Convert.ToInt32(executeSumOfResponse(query));
                 }
                 return "" + sum;
+            }
+            else if (myFunction.Contains("stringof"))
+            {
+                String myValue = sElement.Substring(sElement.IndexOf('[') + 1, sElement.IndexOf(']'));
+                return "" + myValue;
             }
             else
                 return "";
@@ -532,7 +570,7 @@ namespace DBI_Scripting.Classes
             {
                 DataTable dt = myDBHelper.getAnsTableData(query, connAnsDB);
                 String sValue = "";
-                int temp = dt.Rows.Count;
+
                 foreach (DataRow dr in dt.Rows)
                 {
                     sValue = sValue + dr["Response"].ToString() + ",";
@@ -547,6 +585,133 @@ namespace DBI_Scripting.Classes
                 return "";
             }
         }
+
+        public string ExecuteDateValueOfResponse(string query)
+        {
+            try
+            {
+                DataTable dt = myDBHelper.getAnsTableData(query, connAnsDB);
+                String sValue = "";
+                
+                foreach (DataRow dr in dt.Rows)
+                {
+                    sValue = sValue + dr["Response"].ToString() + ",";
+                }
+
+                // Example input date format: dd/MM/yyyy
+                // Converts: 18/08/2022 -> 20220818
+
+                if (!string.IsNullOrEmpty(sValue))
+                {
+                    return sValue.Substring(6, 4) +   // yyyy
+                           sValue.Substring(3, 2) +   // MM
+                           sValue.Substring(0, 2);    // dd
+                }
+                else
+                {
+                    return "01012020"; // Dummy Date
+                }
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+
+private string ExecuteDateDifference(string[] allQIds)
+    {
+        string[] firstQid = allQIds[0].Split('.');
+        string[] secondQid = allQIds[1].Split('.');
+
+        string dateDiff = "";
+
+        if (firstQid.Length > 0 && secondQid.Length > 0)
+        {
+            string firstDate = GetDateFromDB(firstQid);
+            string secondDate = GetDateFromDB(secondQid);
+
+            // Expected format after formatting: MM/dd/yyyy
+            DateTime myFirstDate = DateTime.ParseExact(
+                GetMMddYYYYFormatedDate(firstDate),
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture
+            );
+
+            DateTime mySecondDate = DateTime.ParseExact(
+                GetMMddYYYYFormatedDate(secondDate),
+                "MM/dd/yyyy",
+                CultureInfo.InvariantCulture
+            );
+
+            // Difference in days
+            double diff = (myFirstDate - mySecondDate).TotalDays;
+
+            dateDiff = ((long)diff).ToString();
+        }
+
+        return dateDiff;
+    }
+
+        private string GetDateFromDB(string[] qIds)
+        {
+            string returnDate = "";
+            string query = getQueryString(qIds);
+
+            try
+            {
+                DataTable dt = myDBHelper.getAnsTableData(query, connAnsDB);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    returnDate = returnDate + dr["Response"].ToString() + ",";
+                }
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+
+            return returnDate;
+        }
+
+        private string GetMMddYYYYFormatedDate(string myDate)
+        {
+            if (string.IsNullOrEmpty(myDate))
+                return "";
+
+            string[] parts = myDate.Split('/');
+
+            if (parts.Length < 3)
+                return "";
+
+            return parts[1] + "/" + parts[0] + "/" + parts[2];
+        }
+
+        private string GetUserId()
+        {
+            try
+            {
+                string returnValue = "";
+
+                string query = "SELECT IntvInfo9 FROM T_InterviewInfo WHERE ProjectId="
+                               + sProjectId + " AND RespondentId=" + sRespondentId + ";";
+
+                DataTable dt = myDBHelper.getAnsTableData(query, connAnsDB);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    returnValue = returnValue + dr["Response"].ToString() + ",";
+                }
+
+                return returnValue;
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
         //******************************************************************************************************************************
 
 

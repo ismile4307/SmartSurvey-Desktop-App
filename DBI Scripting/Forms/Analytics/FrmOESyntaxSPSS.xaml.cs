@@ -171,7 +171,7 @@ namespace DBI_Scripting.Forms.Analytics
                         if (listOfSheetName.Count > 0)
                         {
 
-                             TextWriter txtWriter = new StreamWriter(myPath + "\\05." + txtSaveFileName.Text+ ".sps");
+                            TextWriter txtWriter = new StreamWriter(myPath + "\\05." + txtSaveFileName.Text + ".sps");
 
                             Excel.Application xlApp = new Excel.Application();
                             Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(txtExcelFileLocation.Text, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
@@ -198,17 +198,44 @@ namespace DBI_Scripting.Forms.Analytics
 
                                     List<int> listOfColNo = getOECodeColumnNumber(myWorksheet);
 
+                                    string s_temp1 = myWorksheet.Name.ToString();
+                                    string[] word = s_temp1.Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+
+                                    if (word.Length > 1)
+                                    {
+                                        if (word[word.Length - 1].ToString().Trim() == "OE")
+                                        {
+                                            if (word.Length == 2)
+                                                s_temp1 = word[0].Trim() + "_OE_1";
+                                            else if (word.Length == 3)
+                                                s_temp1 = word[0].Trim() + "_OE_" + word[1].ToString().Trim();
+                                            else if (word.Length > 3)
+                                                s_temp1 = word[0].Trim() + "_OE_" + word[1].ToString().Trim() + "_" + word[2].ToString().Trim();
+                                        }
+                                        else
+                                        {
+                                            if (word.Length == 2)
+                                                s_temp1 = word[0].Trim() + "_OE_" + word[1].ToString().Trim();
+                                            else if (word.Length == 3)
+                                                s_temp1 = word[0].Trim() + "_OE_" + word[1].ToString().Trim() + "_" + word[2].ToString().Trim();
+                                            else if (word.Length > 3)
+                                                s_temp1 = word[0].Trim() + "_OE_" + word[1].ToString().Trim() + "_" + word[2].ToString().Trim() + "_" + word[3].ToString().Trim();
+                                        }
+                                    }
+                                    else if (word.Length == 1)
+                                        s_temp1 = word[0].Trim() + "_OE";
+
+
+
                                     if (listOfColNo.Count == 1)
                                     {
-                                        string s_temp1 = myWorksheet.Name.ToString();
                                         txtWriter.WriteLine("Numeric " + s_temp1 + " (F8.0).");
                                     }
                                     else if (listOfColNo.Count > 1)
                                     {
                                         for (int i = 0; i < listOfColNo.Count; i++)
                                         {
-                                            string s_temp1 = myWorksheet.Name.ToString();
-                                            txtWriter.WriteLine("Numeric " + s_temp1 + "_" + (i+1).ToString() + " (F8.0).");
+                                            txtWriter.WriteLine("Numeric " + s_temp1 + "_" + (i + 1).ToString() + " (F8.0).");
                                         }
                                     }
 
@@ -217,7 +244,6 @@ namespace DBI_Scripting.Forms.Analytics
                                     //********************************************txtWriter.WriteLine("STRING " + s_temp1 + " (A24).");
                                     if (listOfColNo.Count == 1)
                                     {
-                                        string s_temp1 = myWorksheet.Name.ToString();
                                         int ColNo = listOfColNo[0];
 
                                         for (int i = iStartRow; i <= range.Rows.Count; i++)
@@ -225,7 +251,7 @@ namespace DBI_Scripting.Forms.Analytics
                                             if (myWorksheet.Cells[i, 1].Value2 != null && myWorksheet.Cells[i, ColNo].Value2 != null)
                                             {
                                                 string OEData = myWorksheet.Cells[i, ColNo].Value.ToString().Trim();
-                                                if(OEData!="")
+                                                if (OEData != "")
                                                     txtWriter.WriteLine("IF RespondentId='" + myWorksheet.Cells[i, 1].Value.ToString() + "' " + s_temp1 + "=" + OEData + ".");
                                             }
                                             else if (myWorksheet.Cells[i, 1].Value2 != null && myWorksheet.Cells[i, ColNo].Value2 == null)
@@ -247,7 +273,6 @@ namespace DBI_Scripting.Forms.Analytics
                                         for (int j = 0; j < listOfColNo.Count; j++)
                                         {
                                             int ColNo = listOfColNo[j];
-                                            string s_temp1 = myWorksheet.Name.ToString() + "_" + (j+1).ToString();
 
                                             for (int i = iStartRow; i <= range.Rows.Count; i++)
                                             {
@@ -255,7 +280,7 @@ namespace DBI_Scripting.Forms.Analytics
                                                 {
                                                     string OEData = myWorksheet.Cells[i, ColNo].Value.ToString().Trim();
                                                     if (OEData != "")
-                                                        txtWriter.WriteLine("IF RespondentId='" + myWorksheet.Cells[i, 1].Value.ToString() + "' " + s_temp1 + "=" + OEData + ".");
+                                                        txtWriter.WriteLine("IF RespondentId='" + myWorksheet.Cells[i, 1].Value.ToString() + "' " + s_temp1 + "_" + (j + 1).ToString() + "=" + OEData + ".");
                                                 }
                                                 else if (myWorksheet.Cells[i, 1].Value2 != null && myWorksheet.Cells[i, ColNo].Value2 == null)
                                                 {
@@ -274,12 +299,12 @@ namespace DBI_Scripting.Forms.Analytics
                                     }
                                 }
 
-                                txtWriter.WriteLine("");
+                                //txtWriter.WriteLine("");
 
                             }
                             txtWriter.WriteLine("EXECUTE.");
                             txtWriter.Close();
-                            
+
 
 
 
@@ -326,8 +351,14 @@ namespace DBI_Scripting.Forms.Analytics
             {
                 if (ws.Cells[3, i].Value2 != null)
                 {
-                    if (ws.Cells[3, i].Value.ToString().ToUpper() == "CODE")
+                    //if (ws.Cells[3, i].Value.ToString().ToUpper().Contains("CODE"))
+                    //    listOfColumnNumber.Add(i);
+                    String cellValue = ws.Cells[3, i].Value.ToString() ;
+
+                    if (cellValue.ToString().ToUpper().Contains("CODE"))
+                    {
                         listOfColumnNumber.Add(i);
+                    }
                 }
             }
 

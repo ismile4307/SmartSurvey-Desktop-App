@@ -534,6 +534,16 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     #endregion
 
+                    #region Prepare REPEAT & ENDREPEAT
+                    if (strline.Trim().Split(' ')[0].Trim().ToUpper() == "*REPEAT" || strline.Trim().Split(' ')[0].Trim().ToUpper() == "*ENDREPEAT")
+                    {
+                        //AutoResponse myAutoResponse = new AutoResponse();
+                        linesForExcel.Add(strline);
+                        strline = lines[++i];
+
+                    }
+                    #endregion
+
 
                     #region Prepare QUESTION
                     if (strline.Split(' ')[0].ToUpper() == "*QUESTION" && !strline.Contains("*DUMMY2") && !strline.Contains("*DUMMY1"))
@@ -919,6 +929,11 @@ namespace DBI_Scripting.Forms.Scripting
                     else if (linesForExcel[x].Contains("*GRIDLIST") || linesForExcel[x].Contains("*LIST"))
                     {
                         xlWorkSheet.Cells[rowno, 1] = linesForExcel[x];
+                    }
+                    else if (linesForExcel[x].Contains("*REPEAT") || linesForExcel[x].Contains("*ENDREPEAT"))
+                    {
+                        xlWorkSheet.Cells[rowno, 1] = linesForExcel[x];
+                        rowno++;
                     }
                     else if (isAttribute(linesForExcel[x]))
                     {

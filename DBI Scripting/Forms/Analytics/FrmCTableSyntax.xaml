@@ -22,6 +22,7 @@
                 <RadioButton x:Name="radioTableCountSyn" Content="Table Count Syntax" HorizontalAlignment="Left" Margin="31,90,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtDecimalPlace" HorizontalAlignment="Left" Height="23" Margin="180,57,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="120" TextAlignment="Center"/>
                 <Label Content="Decimal Place" HorizontalAlignment="Left" Margin="193,31,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="radioBtnPct2TableSyntax" Content="Table Cpt (%) Syntax" HorizontalAlignment="Left" Margin="31,119,0,0" VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>
         <Label Content="Analysis Type : " HorizontalAlignment="Left" Margin="284,128,0,0" VerticalAlignment="Top"/>
@@ -32,7 +33,7 @@
         <Label Content="Worksheet" HorizontalAlignment="Left" Margin="88,142,0,0" VerticalAlignment="Top"/>
         <Button x:Name="btnBrowseBannerFile" Content="Get Banner File" HorizontalAlignment="Left" Margin="704,93,0,0" VerticalAlignment="Top" Width="91" Height="23" Click="btnBrowseBannerFile_Click"/>
         <Button x:Name="btnBrowseGetStrucutureFile" Content="Create Structure File" HorizontalAlignment="Left" Margin="581,93,0,0" VerticalAlignment="Top" Width="118" Height="23" Click="btnBrowseGetStrucutureFile_Click"/>
-        <Button Content="Button" HorizontalAlignment="Left" Height="31" Margin="722,183,0,0" VerticalAlignment="Top" Width="101" Click="Button_Click"/>
+        <Button Content="Button" HorizontalAlignment="Left" Height="31" Margin="722,183,0,0" VerticalAlignment="Top" Width="101" Click="Button_Click" Visibility="Hidden"/>
 
     </Grid>
 </Window>

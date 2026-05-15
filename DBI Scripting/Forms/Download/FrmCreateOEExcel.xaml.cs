@@ -401,6 +401,19 @@ namespace DBI_Scripting.Forms.Download
                 }
             }
 
+
+            SQLiteDataAdapter dadpt3 = new SQLiteDataAdapter("SELECT T_OptAttribute.QId, T_OptAttribute.AttributeOrder FROM T_OptAttribute INNER JOIN T_Question ON T_OptAttribute.QId=T_Question.QId WHERE (T_Question.QType='1' OR T_Question.QType='2') AND T_OptAttribute.IsExclusive='' AND T_OptAttribute.TakeOpenended='1' Order by T_Question.OrderTag", sql.Qconnection);
+            DataSet ds3 = new DataSet();
+            dadpt3.Fill(ds3, "Table2");
+
+            if (ds3.Tables["Table2"].Rows.Count > 0)
+            {
+                foreach (DataRow dr in ds3.Tables["Table2"].Rows)
+                {
+                    lstQIdforOE.Add(dr[0].ToString() + "_" + dr[1].ToString()+"_OE");
+                }
+            }
+
         }
         private void exportToExcel()
         {

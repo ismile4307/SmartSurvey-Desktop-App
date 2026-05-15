@@ -156,13 +156,13 @@ namespace DBI_Scripting.Classes
 
             //Calculating the right part value for compare
 
-            if (Char.IsLetter(rightPart, 1) && rightPart.Contains("["))
+            if (rightPart.Length > 1 && Char.IsLetter(rightPart, 1) && rightPart.Contains("["))
             {
                 FunctionalCondition obj = new FunctionalCondition(sProjectId, sRespondentId, rightPart, connAnsDB,connQntrDB);        //This constructure didn't get any agument
                 compareValue = obj.getComparedValue();
 
             }
-            else if (Char.IsLetter(rightPart, 1) && !rightPart.Contains("["))
+            else if (rightPart.Length > 1 && Char.IsLetter(rightPart, 1) && !rightPart.Contains("["))
             {
                 //Error express
             }
