@@ -666,6 +666,9 @@ namespace DBI_Scripting.Forms.Scripting
                                                 strline = lines[++i];
                                             }
                                         }
+
+                                        if (i < lines.Count - 1)
+                                            i--;
                                     }
                                     else
                                     {
