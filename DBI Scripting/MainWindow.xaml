@@ -1,7 +1,7 @@
 ﻿<RibbonWindow x:Name="frmMainWindow" x:Class="DBI_Scripting.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Smart Survey (v1.0.0.2)" Height="876.886" Width="1528.566" WindowState="Maximized" Loaded="frmMainWindow_Loaded" Icon="Images/ic_surveybd2.png">
+        Title="Smart Survey (v1.0.0.4)" Height="876.886" Width="1528.566" WindowState="Maximized" Loaded="frmMainWindow_Loaded" Icon="Images/ic_surveybd2.png">
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -142,7 +142,7 @@
                         <RibbonMenuItem ImageSource="Images\createDEM32.png" Header="Keep Text Only" KeyTip="T"/>
                         <RibbonMenuItem ImageSource="Images\createMEM32.png" Header="Paste Special..." KeyTip="S"/>
                     </RibbonMenuButton>-->
-                    <RibbonButton x:Name="btnAnalyticsStructure" LargeImageSource="Images\Excel_17559_32.png" Label="Analysis Structure" KeyTip="V" Click="btnAnalyticsStructure_Click"/>
+                    <!--<RibbonButton x:Name="btnAnalyticsStructure" LargeImageSource="Images\Excel_17559_32.png" Label="Analysis Structure" KeyTip="V" Click="btnAnalyticsStructure_Click"/>-->
                     <RibbonButton x:Name="btnTableSyntax" LargeImageSource="Images\getBrandCode32.png" Label="Table Syntax" KeyTip="V" Click="btnTableSyntax_Click"/>
                     <RibbonButton x:Name="btnSigTest" LargeImageSource="Images\getPromoCode32.png" Label="Sig Test" KeyTip="V" Click="btnSigTest_Click"/>
                     <RibbonButton x:Name="btnCETableLink" LargeImageSource="Images\Table132.png" Label="Table Link" KeyTip="X" Click="btnCETableLink_Click"/>
@@ -224,6 +224,6 @@
         <Image HorizontalAlignment="Left" Height="300" Margin="526,38.667,0,0" Grid.Row="1" VerticalAlignment="Top" Width="300" Source="Images/ic_surveybd2.png"/>
         <Label Content="Smart Survey Management System" HorizontalAlignment="Left" Margin="291,357.667,0,0" Grid.Row="1" VerticalAlignment="Top" Height="79" Width="757" FontSize="48"/>
         <Label x:Name="lblServerName" Content="Server URL : " HorizontalAlignment="Left" Margin="386,436.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="30" Width="741" Background="Transparent" Foreground="#FF1E0FED"/>
-        <Label x:Name="lblAppVersion" Content="App Version : v1.0.0.3" HorizontalAlignment="Left" Margin="507,485.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="26" Width="741" Background="Transparent" Foreground="DarkRed"/>
+        <Label x:Name="lblAppVersion" Content="App Version : v1.0.0.4" HorizontalAlignment="Left" Margin="507,485.667,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="26" Width="741" Background="Transparent" Foreground="DarkRed"/>
     </Grid>
 </RibbonWindow>
