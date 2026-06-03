@@ -4,17 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using SpssLib.DataReader;
+using SpssLib.SpssDataset;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DBI_Scripting.Forms.Analytics
@@ -24,10 +20,10 @@ namespace DBI_Scripting.Forms.Analytics
     /// </summary>
     public partial class FrmCTableSyntax : Window
     {
-        private String myPath;
-        private String bannerText1 = "";
-        private String bannerText2 = "";
-        private String outputExcelFileName = "";
+        private string myPath;
+        private string bannerText1 = "";
+        private string bannerText2 = "";
+        private string outputExcelFileName = "";
         private string txtPath = "";
 
         private Excel.Application xlApp;
@@ -37,33 +33,50 @@ namespace DBI_Scripting.Forms.Analytics
 
         private List<string> lstWorkSheetName = new List<string>();
 
-        private List<String> lstCategory = new List<string>();
+        private List<string> lstTableType = new List<string>();
+        private List<string> lstVariableName = new List<string>();
+        private List<string> lstVariableLabel = new List<string>();
 
-        private string myTitle = "";
+        private List<string> lstMRUniqueVariableName = new List<string>();
+        private List<string> lstMRBreakPoint = new List<string>();
+        private List<string> lstMRVariableLabel = new List<string>();
 
-        private List<String> lstTableType = new List<String>();
-        private List<String> lstVariableName = new List<String>();
-        private List<String> lstVariableLabel = new List<String>();
+        private List<string> lstFilterCondition = new List<string>();
+        private List<string> lstFilterLabel = new List<string>();
 
-
-        private List<String> lstMRUniqueVariableName = new List<String>();
-        private List<String> lstMRBreakPoint = new List<String>();
-        private List<String> lstMRVariableLabel = new List<String>();
-
-        private List<String> lstFilterCondition = new List<String>();
-        private List<String> lstFilterLabel = new List<String>();
-
-        private string mrVarList;
-        private string decimalNumber = "0";
+        private string mrVarList = "";
         private string analysisType = "";
-
-        private Dictionary<String, int> dicFilterTypeVsCode;
-
-        private Dictionary<String, int> dicAnalysisTypeVsCode;
+        private string _currentSyntaxFilePath = "";
 
         public FrmCTableSyntax()
         {
             InitializeComponent();
+        }
+
+        private void btnBrowseSpss_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string sTemp = Properties.Settings.Default.StartupPath;
+
+                OpenFileDialog openFileDialog1 = new OpenFileDialog();
+                openFileDialog1.InitialDirectory = sTemp;
+                openFileDialog1.FileName = "";
+                openFileDialog1.Filter = "SPSS Dataset (*.sav)|*.sav|All Files (*.*)|*.*";
+                if (openFileDialog1.ShowDialog() == true)
+                {
+                    txtSpssDataFile.Text = openFileDialog1.FileName;
+                    myPath = txtSpssDataFile.Text.Substring(0, txtSpssDataFile.Text.LastIndexOf('\\'));
+                    Properties.Settings.Default.StartupPath = myPath;
+                    Properties.Settings.Default.Save();
+                }
+                else
+                    txtSpssDataFile.Text = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void btnBrowseExcel_Click(object sender, RoutedEventArgs e)
@@ -111,8 +124,7 @@ namespace DBI_Scripting.Forms.Analytics
                 if (openFileDialog1.ShowDialog() == true)
                 {
                     txtBannerFilePath.Text = openFileDialog1.FileName;
-                    //my_Path = txt_Excel_Location.Text.Substring(0, txt_Banner.Text.LastIndexOf('\\'));
-
+                    myPath = txtBannerFilePath.Text.Substring(0, txtBannerFilePath.Text.LastIndexOf('\\'));
                     Properties.Settings.Default.StartupPath = myPath;
                     Properties.Settings.Default.Save();
 
@@ -130,7 +142,11 @@ namespace DBI_Scripting.Forms.Analytics
 
         private void btnExecute_Click(object sender, RoutedEventArgs e)
         {
-            decimalNumber = txtDecimalPlace.Text;
+            if (string.IsNullOrEmpty(txtSpssDataFile.Text) || !File.Exists(txtSpssDataFile.Text))
+            {
+                MessageBox.Show("Please select a valid SPSS Data File (.sav) before executing.");
+                return;
+            }
 
             this.saveExcellSheetAsText();
             this.loadAllList();
@@ -140,9 +156,11 @@ namespace DBI_Scripting.Forms.Analytics
             {
                 if (createFile("Recode"))
                 {
-                    this.recodeScript();
-                    txt_writer.Close();
-                    MessageBox.Show("Write Completed");
+                    if (this.recodeScript())
+                    {
+                        txt_writer.Close();
+                        MessageBox.Show("Write Completed");
+                    }
                 }
             }
             else if (radioBtnPctTableSyntax.IsChecked == true)
@@ -182,14 +200,152 @@ namespace DBI_Scripting.Forms.Analytics
         }
 
         //***************************** Recode Script ***************************************
-        private void recodeScript()
+        private bool recodeScript()
         {
+            // ── Read SPSS variable metadata (for value labels) ──────────────
+            var dicNameVsVariable = new Dictionary<string, Variable>();
+            using (var fs = new FileStream(txtSpssDataFile.Text, FileMode.Open, FileAccess.Read, FileShare.Read, 2048 * 10, FileOptions.SequentialScan))
+            {
+                SpssReader spssReader = new SpssReader(fs);
+                foreach (Variable variable in spssReader.Variables)
+                    dicNameVsVariable[variable.Name] = variable;
+            }
+
+            // ── Read Banner Variables sheet from structure Excel (6 columns) ──
+            var bannerGroupOrder    = new List<string>();
+            var dicBannerSpssVars   = new Dictionary<string, string>();
+            var dicBannerLabel      = new Dictionary<string, string>();
+            var dicBannerCodes      = new Dictionary<string, List<string>>();
+            var dicBannerNewLabels  = new Dictionary<string, List<string>>();
+            var dicBannerConditions = new Dictionary<string, List<string>>();
+
+            Excel.Application bannerXlApp     = new Excel.Application();
+            Excel.Workbook    bannerXlWorkBook = bannerXlApp.Workbooks.Open(txtStructureExcelPath.Text, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+            try
+            {
+                foreach (Excel.Worksheet ws in bannerXlWorkBook.Worksheets)
+                {
+                    if (ws.Name != "Banner Variables") continue;
+                    Excel.Range range = ws.UsedRange;
+                    for (int bi = 2; bi <= range.Rows.Count; bi++)
+                    {
+                        object c1 = ws.Cells[bi, 1].Value2;
+                        object c2 = ws.Cells[bi, 2].Value2;
+                        object c3 = ws.Cells[bi, 3].Value2;
+                        object c4 = ws.Cells[bi, 4].Value2;
+                        object c5 = ws.Cells[bi, 5].Value2;
+                        object c6 = ws.Cells[bi, 6].Value2;
+
+                        string spssV     = c1 != null ? c1.ToString().Trim() : "";
+                        string bannerV   = c2 != null ? c2.ToString().Trim() : "";
+                        string labelV    = c3 != null ? c3.ToString().Trim() : "";
+                        string newCode   = c4 != null ? c4.ToString().Trim() : "";
+                        string newLabel  = c5 != null ? c5.ToString().Trim() : "";
+                        string condition = c6 != null ? c6.ToString().Trim() : "";
+
+                        if (string.IsNullOrWhiteSpace(spssV) || string.IsNullOrWhiteSpace(bannerV))
+                            continue;
+
+                        if (!bannerGroupOrder.Contains(bannerV))
+                        {
+                            bannerGroupOrder.Add(bannerV);
+                            dicBannerSpssVars[bannerV]   = spssV;
+                            dicBannerLabel[bannerV]      = labelV;
+                            dicBannerCodes[bannerV]      = new List<string>();
+                            dicBannerNewLabels[bannerV]  = new List<string>();
+                            dicBannerConditions[bannerV] = new List<string>();
+                        }
+                        else if (string.IsNullOrWhiteSpace(dicBannerLabel[bannerV]) && !string.IsNullOrWhiteSpace(labelV))
+                        {
+                            dicBannerLabel[bannerV] = labelV;
+                        }
+
+                        dicBannerCodes[bannerV].Add(newCode);
+                        dicBannerNewLabels[bannerV].Add(newLabel);
+                        dicBannerConditions[bannerV].Add(condition);
+                    }
+                    break;
+                }
+            }
+            finally
+            {
+                bannerXlWorkBook.Close(false);
+                bannerXlApp.Quit();
+                releaseObject(bannerXlWorkBook);
+                releaseObject(bannerXlApp);
+            }
+
+            // ── Validate Banner Variables ─────────────────────────────────────
+            var validationErrors = new List<string>();
+
+            foreach (string bannerV in bannerGroupOrder)
+            {
+                var    codes      = dicBannerCodes[bannerV];
+                var    newLabels  = dicBannerNewLabels[bannerV];
+                var    conditions = dicBannerConditions[bannerV];
+                string spssVars   = dicBannerSpssVars[bannerV];
+                bool   isMultiVar = spssVars.Trim().Contains(" ");
+
+                // Row-level: New Code / New Label / Condition must all be filled or all empty
+                for (int vi = 0; vi < codes.Count; vi++)
+                {
+                    bool hasCode  = !string.IsNullOrWhiteSpace(codes[vi]);
+                    bool hasLabel = !string.IsNullOrWhiteSpace(newLabels[vi]);
+                    bool hasCond  = !string.IsNullOrWhiteSpace(conditions[vi]);
+                    if ((hasCode || hasLabel || hasCond) && !(hasCode && hasLabel && hasCond))
+                    {
+                        validationErrors.Add("'" + bannerV + "' row " + (vi + 1) + ": New Code, New Label and Condition must all be filled or all empty.");
+                        break;
+                    }
+                }
+
+                // Group-level: cannot mix filled and empty rows
+                bool anyFilled = codes.Any(c => !string.IsNullOrWhiteSpace(c));
+                bool anyEmpty  = codes.Any(c =>  string.IsNullOrWhiteSpace(c));
+                if (anyFilled && anyEmpty)
+                    validationErrors.Add("'" + bannerV + "': cannot mix rows with and without custom grouping (New Code).");
+
+                if (anyFilled)
+                {
+                    // Duplicate New Code check
+                    var filledCodes = codes.Where(c => !string.IsNullOrWhiteSpace(c)).ToList();
+                    if (filledCodes.Count != filledCodes.Distinct().Count())
+                        validationErrors.Add("'" + bannerV + "': duplicate New Code values found.");
+
+                    // Mode 2 (single var RECODE): New Code must be numeric
+                    if (!isMultiVar)
+                    {
+                        foreach (string code in filledCodes)
+                        {
+                            if (!int.TryParse(code, out _))
+                                validationErrors.Add("'" + bannerV + "': New Code '" + code + "' must be a whole number for RECODE.");
+                        }
+                    }
+                }
+                else
+                {
+                    // Mode 1: SPSS Variables must be a single variable and exist in the dataset
+                    if (isMultiVar)
+                        validationErrors.Add("'" + bannerV + "': multiple SPSS variables listed but no custom grouping (New Code) provided.");
+                    else if (!dicNameVsVariable.ContainsKey(spssVars.Trim()))
+                        validationErrors.Add("'" + bannerV + "': SPSS variable '" + spssVars.Trim() + "' was not found in the dataset.");
+                }
+            }
+
+            if (validationErrors.Count > 0)
+            {
+                txt_writer.Close();
+                try { File.Delete(_currentSyntaxFilePath); } catch { }
+                MessageBox.Show("Banner Variables validation failed:\n\n" + string.Join("\n\n", validationErrors));
+                return false;
+            }
+
             txt_writer.WriteLine("");
             //txt_writer.WriteLine("*****************************Allah is Almighty*******************************");
 
             txt_writer.WriteLine("*Please specify the file get path.");
             txt_writer.WriteLine("GET ");
-            txt_writer.WriteLine(@"FILE='" + myPath.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\')) + "\\Data Preparation\\" + outputExcelFileName + "_Final.sav'.");
+            txt_writer.WriteLine(@"FILE='" + myPath + "\\Data Preparation\\" + outputExcelFileName + "_Final.sav'.");
             txt_writer.WriteLine("DATASET NAME DataSet1 WINDOW=FRONT.");
 
             txt_writer.WriteLine("");
@@ -203,40 +359,75 @@ namespace DBI_Scripting.Forms.Analytics
 
 
 
-            String[] word = bannerText2.Split(' ');
-
-            for (int x = 1; x < word.Length; x++)
+            // ── Generate banner syntax (mode-based) ──────────────────────────
+            foreach (string bannerV in bannerGroupOrder)
             {
-                txt_writer.WriteLine("NUMERIC " + word[x] + " (f8.0).");
-                //txt_writer.WriteLine("NUMERIC " + word[x] + " (f8.0).");
+                string spssVars  = dicBannerSpssVars[bannerV];
+                string bannerLbl = dicBannerLabel[bannerV];
+                var    codes     = dicBannerCodes[bannerV];
+                var    newLabels = dicBannerNewLabels[bannerV];
+                var    conds     = dicBannerConditions[bannerV];
+                bool   isCustom  = codes.Any(c => !string.IsNullOrWhiteSpace(c));
+                bool   isMultiVar = spssVars.Trim().Contains(" ");
+
+                txt_writer.WriteLine("NUMERIC " + bannerV + " (f8.0).");
+
+                if (!isCustom)
+                {
+                    // Mode 1: direct copy
+                    txt_writer.WriteLine("COMPUTE " + bannerV + " = " + spssVars.Trim() + ".");
+                }
+                else if (!isMultiVar)
+                {
+                    // Mode 2: RECODE (single source variable, grouped values)
+                    var sb = new System.Text.StringBuilder("RECODE " + spssVars.Trim() + " ");
+                    for (int ri = 0; ri < codes.Count; ri++)
+                    {
+                        string cond = conds[ri].Trim();
+                        if (cond.ToUpper().Contains("THRU"))
+                            sb.Append("(" + cond + "=" + codes[ri] + ")");
+                        else
+                        {
+                            string joined = string.Join(",", cond.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+                            sb.Append("(" + joined + "=" + codes[ri] + ")");
+                        }
+                    }
+                    sb.Append("(ELSE=SYSMIS) INTO " + bannerV + ".");
+                    txt_writer.WriteLine(sb.ToString());
+                }
+                else
+                {
+                    // Mode 3: IF statements (multiple source variables)
+                    for (int ri = 0; ri < codes.Count; ri++)
+                        txt_writer.WriteLine("IF (" + conds[ri] + ") " + bannerV + "=" + codes[ri] + ".");
+                }
+
+                if (!string.IsNullOrWhiteSpace(bannerLbl))
+                    txt_writer.WriteLine("VARIABLE LABELS " + bannerV + " \"" + bannerLbl + "\".");
+
+                if (!isCustom)
+                {
+                    // Value labels from SPSS dataset
+                    if (dicNameVsVariable.TryGetValue(spssVars.Trim(), out Variable spssVar)
+                        && spssVar.ValueLabels != null && spssVar.ValueLabels.Count > 0)
+                    {
+                        txt_writer.WriteLine("VALUE LABELS " + bannerV);
+                        foreach (var kv in spssVar.ValueLabels.OrderBy(k => k.Key))
+                            txt_writer.WriteLine("  " + (int)kv.Key + " \"" + kv.Value + "\"");
+                        txt_writer.WriteLine(".");
+                    }
+                }
+                else
+                {
+                    // Value labels from New Label column
+                    txt_writer.WriteLine("VALUE LABELS " + bannerV);
+                    for (int ri = 0; ri < codes.Count; ri++)
+                        txt_writer.WriteLine("  " + codes[ri] + " \"" + newLabels[ri] + "\"");
+                    txt_writer.WriteLine(".");
+                }
+
                 txt_writer.WriteLine("");
             }
-            txt_writer.WriteLine("");
-
-            for (int x = 1; x < word.Length; x++)
-            {
-                txt_writer.WriteLine("COMPUTE " + word[x] + "=.");
-                //txt_writer.WriteLine("COMPUTE " + word[x] + "=.");
-                txt_writer.WriteLine("");
-            }
-
-            txt_writer.WriteLine("VARIABLE LABELS");
-            for (int x = 1; x < word.Length; x++)
-            {
-                txt_writer.WriteLine(word[x] + "  \"\"");
-                //txt_writer.WriteLine("COMPUTE " + word[x] + "=.");
-            }
-            txt_writer.WriteLine(".");
-            txt_writer.WriteLine("");
-
-            txt_writer.WriteLine("VALUE LABELS");
-            for (int x = 1; x < word.Length; x++)
-            {
-                txt_writer.WriteLine(word[x]);
-                //txt_writer.WriteLine("COMPUTE " + word[x] + "=.");
-            }
-            txt_writer.WriteLine(".");
-            txt_writer.WriteLine("");
 
             //txt_writer.WriteLine("COMPUTE nBlank=1.");
             //txt_writer.WriteLine("RECODE nBlank (1=SYSMIS).");
@@ -415,13 +606,16 @@ namespace DBI_Scripting.Forms.Analytics
             txt_writer.WriteLine("*Please specify the file save path.");
             txt_writer.WriteLine("SAVE OUTFILE='" + myPath + "\\" + outputExcelFileName + "_Final.sav'.");
             txt_writer.WriteLine("/COMPRESSED.");
+
+            return true;
         }
 
         //***************************** Column Percentage Script ***************************************
         private void prepareScript()
         {
+            mrVarList = "";
+
             txt_writer.WriteLine("");
-            //txt_writer.WriteLine("*****************************Allah is Almighty*******************************");
 
             txt_writer.WriteLine("*Please specify the file get path.");
             txt_writer.WriteLine("GET ");
@@ -464,7 +658,6 @@ namespace DBI_Scripting.Forms.Analytics
             txt_writer.WriteLine("");
 
             int i_TableNo = 1;
-            int i_varCount = 0;
 
             String nestedVairables = GetBannerNestedVariable(bannerText1);
             String bannerVariablesForLabel = GetBannerVariablesForLabel(bannerText1);
@@ -506,7 +699,6 @@ namespace DBI_Scripting.Forms.Analytics
 
 
                     mrVarList = mrVarList + lstVariableName[i] + " ";
-                    i_varCount++;
 
                     if (lstMRBreakPoint[i] == "XXX")
                     {
@@ -541,9 +733,7 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine("");
 
                         mrVarList = "";
-
                         i_TableNo = i_TableNo + 1;
-                        i_varCount = 0;
                     }
                 }
                 else if (lstTableType[i] == "3")
@@ -964,8 +1154,8 @@ namespace DBI_Scripting.Forms.Analytics
 
         private void saveExcellSheetAsText()
         {
-            //try
-            //{
+            try
+            {
             if (txtStructureExcelPath.Text != "")
             {
                 if (File.Exists(txtStructureExcelPath.Text) == true)
@@ -1021,23 +1211,17 @@ namespace DBI_Scripting.Forms.Analytics
             else
                 MessageBox.Show("Excel File location should not be blank");
 
-            //this.quitProcess();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void loadAllList()
         {
             if (txtPath != "")
             {
-                TextReader txtReader = new StreamReader(txtPath);
-                String strline;
-                strline = txtReader.ReadLine();         //Leave the first line of the text file
-                strline = txtReader.ReadLine();
-
                 lstTableType.Clear();
                 lstVariableName.Clear();
                 lstVariableLabel.Clear();
@@ -1047,26 +1231,30 @@ namespace DBI_Scripting.Forms.Analytics
                 lstFilterCondition.Clear();
                 lstFilterLabel.Clear();
 
-                while (strline != null)
+                using (TextReader txtReader = new StreamReader(txtPath))
                 {
-                    string[] word = strline.Split('\t');
+                    txtReader.ReadLine();   // skip first header row
+                    string strline = txtReader.ReadLine();  // skip second header row, read first data row
 
-                    lstTableType.Add(word[0]);
-                    lstVariableName.Add(word[1]);
-                    lstVariableLabel.Add(removeDoubleCot(word[3]));
-                    lstMRUniqueVariableName.Add(word[4]);
-                    lstMRBreakPoint.Add(word[5]);
-                    lstMRVariableLabel.Add(removeDoubleCot(word[6]));
-                    lstFilterCondition.Add(word[7]);
-                    if (word[8].ToString() == "")
-                        lstFilterLabel.Add("All Respondents");
-                    else
-                        lstFilterLabel.Add(word[8]);
+                    while (strline != null)
+                    {
+                        string[] word = strline.Split('\t');
 
-                    strline = txtReader.ReadLine();
+                        if (word.Length >= 9)
+                        {
+                            lstTableType.Add(word[0]);
+                            lstVariableName.Add(word[1]);
+                            lstVariableLabel.Add(removeDoubleQuote(word[3]));
+                            lstMRUniqueVariableName.Add(word[4]);
+                            lstMRBreakPoint.Add(word[5]);
+                            lstMRVariableLabel.Add(removeDoubleQuote(word[6]));
+                            lstFilterCondition.Add(word[7]);
+                            lstFilterLabel.Add(word[8] == "" ? "All Respondents" : word[8]);
+                        }
+
+                        strline = txtReader.ReadLine();
+                    }
                 }
-
-                txtReader.Close();
             }
             else
             {
@@ -1076,37 +1264,22 @@ namespace DBI_Scripting.Forms.Analytics
 
         private bool createFile(string syntaxType)
         {
-            if (syntaxType == "Table_Cpt")
+            string basePath = txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\'));
+            string prefix   = syntaxType == "Table_Cpt" ? "01" : syntaxType == "Table_Count" ? "02" : "00";
+            string filePath = basePath + "\\" + prefix + "." + txtOutputFileName.Text + "_" + syntaxType + ".SPS";
+
+            if (File.Exists(filePath))
             {
-                if (File.Exists(txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\')) + "\\01." + txtOutputFileName.Text + "_" + syntaxType + ".SPS"))
-                {
-                    MessageBox.Show("SPSS file with same name [01." + txtOutputFileName.Text + "_" + syntaxType + ".SPS] exist\nPlease check it first and rename the file name..");
-                    return false;
-                }
-                txt_writer = new StreamWriter(txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\')) + "\\01." + txtOutputFileName.Text + "_" + syntaxType + ".SPS");
+                MessageBox.Show("SPSS file with same name [" + prefix + "." + txtOutputFileName.Text + "_" + syntaxType + ".SPS] exist\nPlease check it first and rename the file name..");
+                return false;
             }
-            else if (syntaxType == "Table_Count")
-            {
-                if (File.Exists(txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\')) + "\\02." + txtOutputFileName.Text + "_" + syntaxType + ".SPS"))
-                {
-                    MessageBox.Show("SPSS file with same name [02." + txtOutputFileName.Text + "_" + syntaxType + ".SPS] exist\nPlease check it first and rename the file name..");
-                    return false;
-                }
-                txt_writer = new StreamWriter(txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\')) + "\\02." + txtOutputFileName.Text + "_" + syntaxType + ".SPS");
-            }
-            else
-            {
-                if (File.Exists(txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\')) + "\\00." + txtOutputFileName.Text + "_" + syntaxType + ".SPS"))
-                {
-                    MessageBox.Show("SPSS file with same name [00." + txtOutputFileName.Text + "_" + syntaxType + ".SPS] exist\nPlease check it first and rename the file name..");
-                    return false;
-                }
-                txt_writer = new StreamWriter(txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\')) + "\\00." + txtOutputFileName.Text + "_" + syntaxType + ".SPS");
-            }
+
+            _currentSyntaxFilePath = filePath;
+            txt_writer = new StreamWriter(filePath);
             return true;
         }
 
-        private string removeDoubleCot(string myString)
+        private string removeDoubleQuote(string myString)
         {
             string returnString = "";
             for (int i = 0; i < myString.Length; i++)
@@ -1132,19 +1305,17 @@ namespace DBI_Scripting.Forms.Analytics
             {
                 if (File.Exists(txtStructureExcelPath.Text) == true)
                 {
-                    Excel.Application xlApp = new Excel.Application();
-                    Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(txtStructureExcelPath.Text, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
-
+                    Excel.Application localXlApp = new Excel.Application();
+                    Excel.Workbook localXlWorkBook = localXlApp.Workbooks.Open(txtStructureExcelPath.Text, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
 
                     chkListBoxWorksheet.Items.Clear();
-                    for (int i = 1; i <= xlWorkBook.Worksheets.Count; i++)
+                    for (int i = 1; i <= localXlWorkBook.Worksheets.Count; i++)
                     {
-                        chkListBoxWorksheet.Items.Add(xlWorkBook.Worksheets[i].Name.ToString());
+                        chkListBoxWorksheet.Items.Add(localXlWorkBook.Worksheets[i].Name.ToString());
                     }
 
-                    releaseObject(xlWorkBook);
-                    releaseObject(xlApp);
-                    //xlApp.Quit();
+                    releaseObject(localXlWorkBook);
+                    releaseObject(localXlApp);
                 }
             }
             catch (Exception ex)
@@ -1158,28 +1329,30 @@ namespace DBI_Scripting.Forms.Analytics
             bannerText1 = "";
             bannerText2 = "";
             outputExcelFileName = "";
-            TextReader txtReader = new StreamReader(txtBannerFilePath.Text);
-            string strline = txtReader.ReadLine();
 
-            while (strline != null)
+            using (TextReader txtReader = new StreamReader(txtBannerFilePath.Text))
             {
-                if (strline.Trim() != "")
-                {
-                    if (strline.Substring(0, 1) != "*")
-                    {
-                        if (bannerText1 == "")
-                            bannerText1 = strline;
-                        else if (bannerText2 == "")
-                            bannerText2 = strline;
-                        else if (outputExcelFileName == "")
-                            outputExcelFileName = strline;
-                    }
-                }
-                strline = txtReader.ReadLine();
-            }
-            txtOutputFileName.Text = outputExcelFileName;
+                string strline = txtReader.ReadLine();
 
-            //MessageBox.Show("");
+                while (strline != null)
+                {
+                    if (strline.Trim() != "")
+                    {
+                        if (strline.Substring(0, 1) != "*")
+                        {
+                            if (bannerText1 == "")
+                                bannerText1 = strline;
+                            else if (bannerText2 == "")
+                                bannerText2 = strline;
+                            else if (outputExcelFileName == "")
+                                outputExcelFileName = strline;
+                        }
+                    }
+                    strline = txtReader.ReadLine();
+                }
+            }
+
+            txtOutputFileName.Text = outputExcelFileName;
         }
 
         private void releaseObject(object obj)
@@ -1200,6 +1373,15 @@ namespace DBI_Scripting.Forms.Analytics
             }
         }
 
+        private void btnHelp_Click(object sender, RoutedEventArgs e)
+        {
+            string helpPath = System.AppDomain.CurrentDomain.BaseDirectory + "CTableSyntax_Help.html";
+            if (File.Exists(helpPath))
+                Process.Start(helpPath);
+            else
+                MessageBox.Show("Help file not found:\n" + helpPath);
+        }
+
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -1207,30 +1389,10 @@ namespace DBI_Scripting.Forms.Analytics
 
         private void populateCombo()
         {
-            comBaseType.Items.Clear();
-            comBaseType.Items.Add("Use Filter All Base");
-            comBaseType.Items.Add("No Filter Answer Base");
-
-            dicFilterTypeVsCode = new Dictionary<string, int>();
-
-            dicFilterTypeVsCode.Add("Use Filter All Base", 1);
-            dicFilterTypeVsCode.Add("No Filter Answer Base", 2);
-
-            comBaseType.Text = "No Filter Answer Base";
-
-
-
             comAnalysisType.Items.Clear();
             comAnalysisType.Items.Add("UnWeighted Analysis");
             comAnalysisType.Items.Add("Weighted Analysis");
-
-            dicAnalysisTypeVsCode = new Dictionary<string, int>();
-
-            dicAnalysisTypeVsCode.Add("UnWeighted Analysis", 1);
-            dicAnalysisTypeVsCode.Add("Weighted Analysis", 2);
-
             comAnalysisType.Text = "UnWeighted Analysis";
-
         }
 
         private void frmCTableSyntax_Loaded(object sender, RoutedEventArgs e)
@@ -1240,27 +1402,16 @@ namespace DBI_Scripting.Forms.Analytics
 
         private void chkListBoxWorksheet_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
         {
-            //foreach (var item in chkListBoxWorksheet.Items)
-            //{
-            //    for (int i = 0; i < chkListBoxWorksheet.SelectedItems.Count; i++)
-            //    {
-            //        if (chkListBoxWorksheet.SelectedItems[i].ToString() == item.ToString())
-            //        {
-            //            lstWorkSheetName.Add(item.ToString());
-
-            //        }
-            //    }
-            //}
+            if (chkListBoxWorksheet.SelectedItems.Count == 0) return;
 
             if (chkListBoxWorksheet.SelectedItems.Count > 1)
             {
                 string selecteditem = chkListBoxWorksheet.SelectedItems[0].ToString();
-                //string item = e.Item as string;
                 chkListBoxWorksheet.SelectedItems.Remove(selecteditem);
             }
 
+            lstWorkSheetName.Clear();
             lstWorkSheetName.Add(chkListBoxWorksheet.SelectedItems[0].ToString());
-
         }
 
         private void btnBrowseBannerFile_Click(object sender, RoutedEventArgs e)
@@ -1293,36 +1444,249 @@ namespace DBI_Scripting.Forms.Analytics
             Process.Start(System.AppDomain.CurrentDomain.BaseDirectory + "\\banner_help.txt");
         }
 
-        private void btnBrowseGetStrucutureFile_Click(object sender, RoutedEventArgs e)
+        private async void btnBrowseGetStrucutureFile_Click(object sender, RoutedEventArgs e)
         {
+            if (txtSpssDataFile.Text == "" || !File.Exists(txtSpssDataFile.Text))
+            {
+                MessageBox.Show("Please select a valid SPSS Data File (.sav) first.");
+                return;
+            }
 
-            FrmGetStructureFile frmGetStructureFile = new FrmGetStructureFile();
-            frmGetStructureFile.ShowDialog();
+            // Capture before going async — myPath must not be read from background thread
+            string spssPath    = txtSpssDataFile.Text;
+            string outputFolder = myPath;
 
-            //string sTemp;
+            btnBrowseGetStrucutureFile.IsEnabled = false;
+            btnBrowseGetStrucutureFile.Content   = "Creating...";
+            Mouse.OverrideCursor = Cursors.Wait;
 
-            //sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
-            //string[] arrayPath = sTemp.Split('\\');
+            try
+            {
+                await RunOnStaThread(() =>
+                {
+                    var dicNameVsVariable = new Dictionary<string, Variable>();
+                    using (var fs = new FileStream(spssPath, FileMode.Open, FileAccess.Read, FileShare.Read, 2048 * 10, FileOptions.SequentialScan))
+                    {
+                        SpssReader spssDataset = new SpssReader(fs);
+                        foreach (Variable variable in spssDataset.Variables)
+                            dicNameVsVariable[variable.Name] = variable;
+                    }
 
-            //FileInfo fi = new FileInfo(sTemp + "\\SPSS Analysis strcture.xlsx");
-            //if (fi.Exists)
-            //{
-            //    System.Diagnostics.Process.Start(sTemp + "\\SPSS Analysis strcture.xlsx");
-            //}
-            //else
-            //{
-            //    //file doesn't exist
-            //}
+                    createStructureExportToExcel(dicNameVsVariable, outputFolder);
+                    createStructurePrepareAnalysisCode(outputFolder);
+                });
+
+                MessageBox.Show("Structure file created successfully.\n\n" + outputFolder + "\\SPSS Analysis strcture.xlsx");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+                btnBrowseGetStrucutureFile.IsEnabled = true;
+                btnBrowseGetStrucutureFile.Content   = "Create Structure File";
+            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private static Task RunOnStaThread(Action action)
         {
+            var tcs = new TaskCompletionSource<bool>();
+            var thread = new Thread(() =>
+            {
+                try   { action(); tcs.SetResult(true); }
+                catch (Exception ex) { tcs.SetException(ex); }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.IsBackground = true;
+            thread.Start();
+            return tcs.Task;
+        }
+
+        private void createStructureExportToExcel(Dictionary<string, Variable> dicNameVsVariable, string outputFolder)
+        {
+            object misValue = System.Reflection.Missing.Value;
+
+            Excel.Application xlApp2 = new Excel.Application();
+            Excel.Workbook xlWorkBook2 = xlApp2.Workbooks.Add(misValue);
+            Excel.Worksheet xlWorkSheet2 = new Excel.Worksheet();
+            Excel.Sheets worksheets = xlWorkBook2.Worksheets;
+
+            // ── Code Mapping sheet ──────────────────────────────────────
+            var xlCodeSheet = (Excel.Worksheet)worksheets.Add(worksheets[1], Type.Missing, Type.Missing, Type.Missing);
+            xlCodeSheet.Name = "Code Mapping";
+
+            xlCodeSheet.Cells[1,  1] = "0";  xlCodeSheet.Cells[1,  2] = "Don't use";
+            xlCodeSheet.Cells[2,  1] = "1";  xlCodeSheet.Cells[2,  2] = "Single Response";              xlCodeSheet.Cells[2,  3] = "Column Pct";
+            xlCodeSheet.Cells[3,  1] = "2";  xlCodeSheet.Cells[3,  2] = "Multiple Response";            xlCodeSheet.Cells[3,  3] = "Column Pct";
+            xlCodeSheet.Cells[4,  1] = "3";  xlCodeSheet.Cells[4,  2] = "Single Response With Mean";    xlCodeSheet.Cells[4,  3] = "Column Pct with Mean";
+            xlCodeSheet.Cells[5,  1] = "4";  xlCodeSheet.Cells[5,  2] = "Rank Response";               xlCodeSheet.Cells[5,  3] = "";
+            xlCodeSheet.Cells[6,  1] = "5";  xlCodeSheet.Cells[6,  2] = "Scaled Question (5)";         xlCodeSheet.Cells[6,  3] = "T2B Cpct B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[7,  1] = "6";  xlCodeSheet.Cells[7,  2] = "Scaled Question - Reverse (5)"; xlCodeSheet.Cells[7, 3] = "T2B Cpct B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[8,  1] = "7";  xlCodeSheet.Cells[8,  2] = "Scaled Question (7)";         xlCodeSheet.Cells[8,  3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[9,  1] = "8";  xlCodeSheet.Cells[9,  2] = "";                            xlCodeSheet.Cells[9,  3] = "";
+            xlCodeSheet.Cells[10, 1] = "9";  xlCodeSheet.Cells[10, 2] = "Scaled Question (9)";         xlCodeSheet.Cells[10, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[11, 1] = "10"; xlCodeSheet.Cells[11, 2] = "Scaled Question (10)";        xlCodeSheet.Cells[11, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[12, 1] = "11"; xlCodeSheet.Cells[12, 2] = "Scaled Question (11)";        xlCodeSheet.Cells[12, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[13, 1] = "12"; xlCodeSheet.Cells[13, 2] = "NPS Question (11)";           xlCodeSheet.Cells[13, 3] = "CPT Promoter [9-10] Passive [7-8] Detractor [0-6]";
+
+            xlCodeSheet.Columns.AutoFit();
+            xlCodeSheet.Columns[1].ColumnWidth = 10;
+
+            // ── Banner Variables sheet ──────────────────────────────────
+            var xlBannerSheet = (Excel.Worksheet)worksheets.Add(worksheets[1], Type.Missing, Type.Missing, Type.Missing);
+            xlBannerSheet.Name = "Banner Variables";
+
+            xlBannerSheet.Cells[1, 1] = "SPSS Variables";
+            xlBannerSheet.Cells[1, 2] = "Banner Variables";
+            xlBannerSheet.Cells[1, 3] = "Banner Labels";
+            xlBannerSheet.Cells[1, 4] = "New Code";
+            xlBannerSheet.Cells[1, 5] = "New Label";
+            xlBannerSheet.Cells[1, 6] = "Condition";
+
+            xlBannerSheet.Columns[1].ColumnWidth = 22;
+            xlBannerSheet.Columns[2].ColumnWidth = 20;
+            xlBannerSheet.Columns[3].ColumnWidth = 25;
+            xlBannerSheet.Columns[4].ColumnWidth = 12;
+            xlBannerSheet.Columns[5].ColumnWidth = 25;
+            xlBannerSheet.Columns[6].ColumnWidth = 50;
+            xlBannerSheet.Rows[1].Font.Bold = true;
+
+            // ── Table Structure sheet ───────────────────────────────────
+            var xlStructSheet = (Excel.Worksheet)worksheets.Add(worksheets[1], Type.Missing, Type.Missing, Type.Missing);
+            xlStructSheet.Name = "Table Structure";
+
+            xlStructSheet.Cells[1, 1] = "Analysis Type";
+            xlStructSheet.Cells[1, 2] = "Variable Name";
+            xlStructSheet.Cells[1, 3] = "Variable Type";
+            xlStructSheet.Cells[1, 4] = "Variable Label";
+            xlStructSheet.Cells[1, 5] = "MR Variable Name";
+            xlStructSheet.Cells[1, 6] = "Break Point";
+            xlStructSheet.Cells[1, 7] = "MR Label";
+            xlStructSheet.Cells[1, 8] = "Filter Condition";
+            xlStructSheet.Cells[1, 9] = "Filter Label";
+
+            int i = 1;
+            foreach (KeyValuePair<string, Variable> pair in dicNameVsVariable)
+            {
+                if (!pair.Key.Contains("_OE"))
+                {
+                    xlStructSheet.Cells[i + 1, 1] = "";
+                    xlStructSheet.Cells[i + 1, 2] = pair.Key;
+                    xlStructSheet.Cells[i + 1, 3] = pair.Value.Type.ToString();
+                    xlStructSheet.Cells[i + 1, 4] = pair.Value.Label == null ? "" : pair.Value.Label.ToString();
+                    xlStructSheet.Cells[i + 1, 5] = "";
+                    xlStructSheet.Cells[i + 1, 6] = "";
+                    xlStructSheet.Cells[i + 1, 7] = "";
+                    xlStructSheet.Cells[i + 1, 8] = "";
+                    xlStructSheet.Cells[i + 1, 9] = "";
+                    i++;
+                }
+            }
+
+            xlStructSheet.Columns[1].ColumnWidth = 11;
+            xlStructSheet.Columns[2].ColumnWidth = 20;
+            xlStructSheet.Columns[3].ColumnWidth = 12;
+            xlStructSheet.Columns[4].ColumnWidth = 70;
+            xlStructSheet.Columns[5].ColumnWidth = 15;
+            xlStructSheet.Columns[6].ColumnWidth = 15;
+            xlStructSheet.Columns[7].ColumnWidth = 15;
+            xlStructSheet.Columns[8].ColumnWidth = 15;
+            xlStructSheet.Columns[9].ColumnWidth = 15;
+            xlStructSheet.Rows[1].Font.Bold = true;
+
+            // Remove the default blank sheet Excel adds (sheet 4 at this point)
+            ((Excel.Worksheet)xlWorkBook2.Sheets[4]).Delete();
+
+            xlWorkBook2.SaveAs(outputFolder + "\\SPSS Analysis strcture.xlsx", Excel.XlFileFormat.xlWorkbookDefault);
+            xlWorkBook2.Close(true, misValue, misValue);
+            xlApp2.Quit();
+
+            releaseObject(xlWorkSheet2);
+            releaseObject(xlWorkBook2);
+            releaseObject(xlApp2);
+        }
+
+        private void createStructurePrepareAnalysisCode(string outputFolder)
+        {
+            string structurePath = outputFolder + "\\SPSS Analysis strcture.xlsx";
+            if (!File.Exists(structurePath)) return;
+
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(structurePath, 0, false, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
 
 
+            foreach (Excel.Worksheet myWorksheet in xlApp.Worksheets)
+            {
+                if (myWorksheet.Name != "Table Structure") continue;
 
-            string finalResult = GetBannerNestedVariable("ATotal+Circle+Region21>QB1+(QB2+QB4)>QB3+QB2>QB17>QB12>QB8");
+                Excel.Range range = myWorksheet.UsedRange;
+                bool firstTime = true;
+                string priorQid = "";
+                string currentQid = "";
 
-            MessageBox.Show(finalResult);
+                for (int i = 2; i <= range.Rows.Count; i++)
+                {
+                    string temp1   = myWorksheet.Cells[i, 2].Value.ToString();
+                    string varType = myWorksheet.Cells[i, 3].Value.ToString();
+
+                    if (!varType.ToUpper().Contains("TEXT"))
+                    {
+                        if (!temp1.Contains("_"))
+                        {
+                            myWorksheet.Cells[i, 1] = 1;
+                            if (!firstTime)
+                            {
+                                myWorksheet.Cells[i - 1, 1] = 2;
+                                myWorksheet.Cells[i - 1, 5] = priorQid;
+                                myWorksheet.Cells[i - 1, 6] = "XXX";
+                                myWorksheet.Cells[i - 1, 7] = myWorksheet.Cells[i - 1, 4];
+                            }
+                            firstTime = true;
+                        }
+                        else
+                        {
+                            string[] qId = temp1.Split('_');
+                            currentQid = qId.Length >= 3 ? qId[0] + "_" + qId[1] : qId[0];
+
+                            if (priorQid != currentQid && !firstTime)
+                            {
+                                myWorksheet.Cells[i, 1] = 2;
+                                myWorksheet.Cells[i - 1, 5] = priorQid;
+                                myWorksheet.Cells[i - 1, 6] = "XXX";
+                                myWorksheet.Cells[i - 1, 7] = myWorksheet.Cells[i - 1, 4];
+                            }
+                            else
+                            {
+                                myWorksheet.Cells[i, 1] = 2;
+                            }
+
+                            firstTime = false;
+                            priorQid = currentQid;
+                        }
+                    }
+                    else
+                    {
+                        myWorksheet.Cells[i, 1] = 0;
+                        if (!firstTime)
+                        {
+                            myWorksheet.Cells[i - 1, 1] = 2;
+                            myWorksheet.Cells[i - 1, 5] = priorQid;
+                            myWorksheet.Cells[i - 1, 6] = "XXX";
+                            myWorksheet.Cells[i - 1, 7] = myWorksheet.Cells[i - 1, 4];
+                        }
+                        firstTime = true;
+                    }
+                }
+            }
+
+            xlWorkBook.Save();
+            xlWorkBook.Close();
+            xlApp.Quit();
+
+            releaseObject(xlWorkBook);
+            releaseObject(xlApp);
         }
 
         string GetBannerNestedVariable(string input)

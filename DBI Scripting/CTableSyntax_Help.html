@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create CTable Syntax — Help Guide</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    background: #f0f2f5;
+    color: #1f2937;
+    display: flex;
+}
+
+/* ── Sidebar ─────────────────────────────────────── */
+.sidebar {
+    width: 230px;
+    min-width: 230px;
+    background: #1e293b;
+    color: #e2e8f0;
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 24px 0;
+    z-index: 10;
+}
+
+.sidebar .logo {
+    font-size: 13px;
+    font-weight: 700;
+    color: #f1f5f9;
+    padding: 0 20px 16px;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.sidebar .logo span { color: #60a5fa; display: block; font-size: 11px; font-weight: 400; margin-top: 2px; }
+
+.sidebar a {
+    display: block;
+    padding: 7px 20px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    background: #334155;
+    color: #f1f5f9;
+    border-left-color: #3b82f6;
+}
+
+.sidebar .nav-group {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #475569;
+    padding: 14px 20px 4px;
+}
+
+/* ── Main Content ────────────────────────────────── */
+.content {
+    margin-left: 230px;
+    flex: 1;
+    padding: 40px 52px 60px;
+    max-width: 980px;
+}
+
+.page-header {
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.page-header p { color: #64748b; font-size: 14px; }
+
+/* ── Sections ─────────────────────────────────────── */
+section { margin-bottom: 52px; scroll-margin-top: 24px; }
+
+h2.section-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #0f172a;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3b82f6;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+h2.section-title .num {
+    background: #3b82f6;
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+h3 { font-size: 14px; font-weight: 600; color: #1e293b; margin: 22px 0 8px; }
+
+p { margin-bottom: 10px; color: #374151; }
+
+ul, ol { padding-left: 22px; margin-bottom: 12px; }
+li { margin-bottom: 5px; color: #374151; }
+
+code {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 12.5px;
+    color: #0f172a;
+}
+
+/* ── Cards ────────────────────────────────────────── */
+.card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+}
+
+/* ── Tables ───────────────────────────────────────── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+
+thead tr { background: #1e293b; }
+thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    color: white;
+    letter-spacing: .3px;
+}
+
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:hover { background: #eff6ff; }
+td { padding: 9px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: top; color: #374151; }
+
+/* ── Code blocks ─────────────────────────────────── */
+.code-block {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    white-space: pre;
+    border: 1px solid #1e293b;
+}
+
+.kw  { color: #7dd3fc; font-weight: 600; }  /* keyword */
+.val { color: #86efac; }                     /* value   */
+.lbl { color: #fcd34d; }                     /* label   */
+.cmt { color: #475569; font-style: italic; } /* comment */
+
+/* ── Badges ───────────────────────────────────────── */
+.badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.b-blue   { background: #dbeafe; color: #1d4ed8; }
+.b-green  { background: #dcfce7; color: #15803d; }
+.b-purple { background: #f3e8ff; color: #7e22ce; }
+.b-orange { background: #ffedd5; color: #c2410c; }
+.b-gray   { background: #f1f5f9; color: #475569; }
+.b-red    { background: #fee2e2; color: #b91c1c; }
+
+/* ── Mode boxes ───────────────────────────────────── */
+.mode-box {
+    border-left: 4px solid;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-left-width: 4px;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+}
+.mode1 { border-left-color: #3b82f6; }
+.mode2 { border-left-color: #10b981; }
+.mode3 { border-left-color: #8b5cf6; }
+
+.mode-box h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.mode1 h4 { color: #1d4ed8; }
+.mode2 h4 { color: #047857; }
+.mode3 h4 { color: #6d28d9; }
+
+/* ── Steps ────────────────────────────────────────── */
+.steps { display: flex; flex-direction: column; gap: 12px; }
+
+.step {
+    display: flex;
+    gap: 16px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.03);
+}
+
+.step-num {
+    min-width: 30px; height: 30px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-body { flex: 1; }
+.step-body strong { color: #0f172a; display: block; margin-bottom: 3px; }
+.step-body p { margin: 0; font-size: 13px; }
+
+/* ── Alert boxes ─────────────────────────────────── */
+.note {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    padding: 11px 15px;
+    font-size: 13px;
+    color: #92400e;
+    margin-bottom: 14px;
+}
+
+.tip {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 11px 15px;
+    font-size: 13px;
+    color: #1e40af;
+    margin-bottom: 14px;
+}
+
+.req { color: #dc2626; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ SIDEBAR ══════════════════════════ -->
+<nav class="sidebar">
+    <div class="logo">
+        Create CTable Syntax
+        <span>Smart Survey Tools — Help Guide</span>
+    </div>
+
+    <div class="nav-group">Getting Started</div>
+    <a href="#overview">Overview</a>
+    <a href="#workflow">Step-by-Step Workflow</a>
+
+    <div class="nav-group">Input Files</div>
+    <a href="#input-files">Form Fields & Buttons</a>
+    <a href="#banner-file">Banner File Format</a>
+
+    <div class="nav-group">Excel Structure File</div>
+    <a href="#table-structure">Table Structure Sheet</a>
+    <a href="#banner-variables">Banner Variables Sheet</a>
+
+    <div class="nav-group">Syntax Generation</div>
+    <a href="#syntax-types">Syntax Types</a>
+    <a href="#analysis-codes">Analysis Type Codes</a>
+</nav>
+
+<!-- ═══════════════════════ CONTENT ══════════════════════════ -->
+<div class="content">
+
+    <div class="page-header">
+        <h1>Create CTable Syntax</h1>
+        <p>Complete reference guide for generating SPSS recode and CTABLES syntax from the structure Excel file.</p>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         1. OVERVIEW
+    ══════════════════════════════════════════════════════ -->
+    <section id="overview">
+        <h2 class="section-title"><span class="num">1</span> Overview</h2>
+
+        <p>The <strong>Create CTable Syntax</strong> form generates ready-to-run SPSS <code>.SPS</code> files for data preparation (Recode) and custom table production (CTABLES). All analysis specifications are driven by a structured Excel file so you only need to fill the spreadsheet — the tool writes the syntax for you.</p>
+
+        <div class="card">
+            <strong>Four types of syntax can be generated:</strong>
+            <ul style="margin-top:8px">
+                <li><strong>Recode Syntax</strong> — Declares banner variables (NUMERIC / COMPUTE / RECODE / IF), adds mean/SD/SE variables for scaled questions, and saves the recoded dataset.</li>
+                <li><strong>Table Cpt Syntax</strong> — CTABLES with column percentage (<code>COLPCT</code>) format.</li>
+                <li><strong>Table Cpt (%) Syntax</strong> — CTABLES with column percentage using <code>PCT8.0</code> display format.</li>
+                <li><strong>Table Count Syntax</strong> — CTABLES with raw frequency counts.</li>
+            </ul>
+        </div>
+
+        <div class="tip">&#128161; Always run <strong>Recode Syntax first</strong> in SPSS before running any table syntax, since the table syntax reads the recoded dataset.</div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         2. WORKFLOW
+    ══════════════════════════════════════════════════════ -->
+    <section id="workflow">
+        <h2 class="section-title"><span class="num">2</span> Step-by-Step Workflow</h2>
+
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-body">
+                    <strong>Browse SPSS Data File</strong>
+                    <p>Select the cleaned SPSS <code>.sav</code> dataset. This is used to read variable value labels when generating banner syntax.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-body">
+                    <strong>Create Structure File</strong>
+                    <p>Click <em>Create Structure File</em>. The tool reads the <code>.sav</code> and generates <code>SPSS Analysis strcture.xlsx</code> in the same folder, pre-populated with all variables from the dataset.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-body">
+                    <strong>Complete the Structure Excel</strong>
+                    <p>Open the generated Excel file and fill in the <em>Table Structure</em> sheet (Analysis Type codes, MR groups, filters) and the <em>Banner Variables</em> sheet (define banner variables). See Sections 4 and 5 for full details.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-body">
+                    <strong>Browse Structure Excel</strong>
+                    <p>Select the completed structure Excel file. The worksheet list on the left will populate automatically. Select the worksheet to process.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">5</div>
+                <div class="step-body">
+                    <strong>Set Up the Banner File</strong>
+                    <p>Click <em>Get Banner File</em> to open an example banner file for reference. Create your own banner <code>.txt</code> file following the format in Section 6, then browse and select it. The Output File Name is auto-filled from line 3 of the banner file.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">6</div>
+                <div class="step-body">
+                    <strong>Select Analysis Type &amp; Syntax Type</strong>
+                    <p>Choose <em>Unweighted</em> or <em>Weighted Analysis</em>. Select a syntax type radio button. Adjust Decimal Place if needed (applies to Table Cpt only).</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-num">7</div>
+                <div class="step-body">
+                    <strong>Execute</strong>
+                    <p>Click <em>Execute</em> to generate the <code>.SPS</code> file. It is saved in the same folder as the Structure Excel. Open it in SPSS Statistics and run.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         3. INPUT FILES
+    ══════════════════════════════════════════════════════ -->
+    <section id="input-files">
+        <h2 class="section-title"><span class="num">3</span> Form Fields &amp; Buttons</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:185px">Field / Button</th>
+                    <th>Description</th>
+                    <th style="width:90px">Required</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>SPSS Data File</strong></td>
+                    <td>The cleaned SPSS dataset (<code>.sav</code>). Used to read variable metadata and value labels for banner syntax generation. Required for all execution types.</td>
+                    <td><span class="req">Required</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Structure Excel</strong></td>
+                    <td>The Excel file (<code>.xlsx</code>) containing the <em>Table Structure</em> and <em>Banner Variables</em> sheets. Use <em>Create Structure File</em> to generate it, then fill it in manually.</td>
+                    <td><span class="req">Required</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Banner File</strong></td>
+                    <td>A plain text (<code>.txt</code>) file defining the CTABLES banner column variable strings and the output project name. See Section 6 for the exact format.</td>
+                    <td><span class="req">Required</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Output File Name</strong></td>
+                    <td>The project name used in generated file names and SPSS <code>GET FILE</code> / <code>SAVE OUTFILE</code> paths. Auto-filled when a Banner File is selected.</td>
+                    <td><span class="req">Required</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Create Structure File</strong></td>
+                    <td>Reads the selected <code>.sav</code> and generates <code>SPSS Analysis strcture.xlsx</code> with three sheets: <em>Table Structure</em>, <em>Banner Variables</em>, and <em>Code Mapping</em>. A busy cursor is shown while processing.</td>
+                    <td>Button</td>
+                </tr>
+                <tr>
+                    <td><strong>Get Banner File</strong></td>
+                    <td>Generates an example <code>banner_help.txt</code> in the application folder and opens it in Notepad as a formatting reference.</td>
+                    <td>Button</td>
+                </tr>
+                <tr>
+                    <td><strong>Worksheet (list)</strong></td>
+                    <td>Populated after selecting a Structure Excel. Select one worksheet — its contents will be used for syntax generation.</td>
+                    <td><span class="req">Required</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Analysis Type</strong></td>
+                    <td>Choose <em>UnWeighted Analysis</em> (default) or <em>Weighted Analysis</em>. Weighted mode adds <code>WEIGHT BY Weight.</code> before tables and <code>WEIGHT OFF.</code> after.</td>
+                    <td><span class="req">Required</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Decimal Place</strong></td>
+                    <td>Number of decimal places for column percentage format (e.g. <code>1</code> → <code>COLPCT.COUNT F40.1</code>). Default is <strong>1</strong>. Applies to <em>Table Cpt Syntax</em> only.</td>
+                    <td>Optional</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         4. TABLE STRUCTURE SHEET
+    ══════════════════════════════════════════════════════ -->
+    <section id="table-structure">
+        <h2 class="section-title"><span class="num">4</span> Table Structure Sheet</h2>
+
+        <p>Each row defines one SPSS variable and how it appears in the generated syntax. The sheet is auto-populated by <em>Create Structure File</em> — review and adjust each row before running Execute.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:38px">Col</th>
+                    <th style="width:170px">Column Name</th>
+                    <th>Description</th>
+                    <th style="width:80px">Fill</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>A</strong></td>
+                    <td><strong>Analysis Type</strong></td>
+                    <td>Numeric code (0–12) that determines how the variable is tabulated. Auto-filled based on variable name patterns — always review. See <a href="#analysis-codes">Section 8</a> for the full code reference.</td>
+                    <td><span class="req">Required</span></td>
+                </tr>
+                <tr>
+                    <td><strong>B</strong></td>
+                    <td><strong>Variable Name</strong></td>
+                    <td>SPSS variable name. Auto-filled from the dataset. Do not change.</td>
+                    <td>Auto</td>
+                </tr>
+                <tr>
+                    <td><strong>C</strong></td>
+                    <td><strong>Variable Type</strong></td>
+                    <td>SPSS variable type (e.g. <em>Numeric</em>, <em>String</em>). Auto-filled. String/Text variables are automatically excluded (set to code 0).</td>
+                    <td>Auto</td>
+                </tr>
+                <tr>
+                    <td><strong>D</strong></td>
+                    <td><strong>Variable Label</strong></td>
+                    <td>The variable label from SPSS. Auto-filled. Used as the table title in CTABLES output.</td>
+                    <td>Auto</td>
+                </tr>
+                <tr>
+                    <td><strong>E</strong></td>
+                    <td><strong>MR Variable Name</strong></td>
+                    <td>For Multiple Response (code 2): the MRSETS group name (without the <code>$</code> prefix), e.g. <code>Q3Brands</code>. Fill on the <strong>last</strong> variable of the MR group only. Auto-filled by <em>Create Structure File</em>.</td>
+                    <td>MR only</td>
+                </tr>
+                <tr>
+                    <td><strong>F</strong></td>
+                    <td><strong>Break Point</strong></td>
+                    <td>For Multiple Response: enter <strong>XXX</strong> on the last variable of each MR group. This triggers the MRSETS definition and the CTABLES table output for that group.</td>
+                    <td>MR only</td>
+                </tr>
+                <tr>
+                    <td><strong>G</strong></td>
+                    <td><strong>MR Label</strong></td>
+                    <td>The label for the Multiple Response set, used as the CTABLES table title. Auto-filled from the Variable Label of the last MR variable.</td>
+                    <td>MR only</td>
+                </tr>
+                <tr>
+                    <td><strong>H</strong></td>
+                    <td><strong>Filter Condition</strong></td>
+                    <td>An SPSS <code>SELECT IF</code> expression applied before this table only (e.g. <code>DEM_GENDER = 1</code>). Leave blank for no filter — the table runs on all respondents.</td>
+                    <td>Optional</td>
+                </tr>
+                <tr>
+                    <td><strong>I</strong></td>
+                    <td><strong>Filter Label</strong></td>
+                    <td>Text description of the filter shown in the CTABLES corner cell (e.g. <em>Males Only</em>). Defaults to <em>All Respondents</em> if left blank.</td>
+                    <td>Optional</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Setting Up a Multiple Response (MR) Group</h3>
+        <p>For a multiple-select question (e.g. variables <code>Q3_1</code>, <code>Q3_2</code>, <code>Q3_3</code>):</p>
+        <ol>
+            <li>Set Analysis Type = <strong>2</strong> for <em>every</em> variable in the group.</li>
+            <li>On the <strong>last variable only</strong> (e.g. <code>Q3_3</code>):
+                <ul>
+                    <li>Column E &rarr; the group name, e.g. <code>Q3Brands</code></li>
+                    <li>Column F &rarr; <code>XXX</code></li>
+                    <li>Column G &rarr; the MR set label, e.g. <em>Brand Awareness</em></li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>Applying a Filter to a Specific Table</h3>
+        <p>Enter a valid SPSS logical expression in Column H. The filter is applied with <code>TEMPORARY. SELECT IF ...</code> so it only affects that one table.</p>
+        <div class="code-block"><span class="cmt">Column H example:</span>   DEM_GENDER = 1
+<span class="cmt">Column I example:</span>   Males Only
+
+<span class="cmt">Generated syntax:</span>
+<span class="kw">TEMPORARY</span>.
+<span class="kw">SELECT IF</span> DEM_GENDER = 1.
+
+<span class="kw">CTABLES</span>
+  ...
+  /TITLES CORNER=<span class="lbl">'Base : Males Only'</span>.</div>
+
+        <div class="note">&#9888; <em>Create Structure File</em> auto-fills Analysis Type codes based on variable name patterns. Always review them — especially Multiple Response groups and scaled questions which may need manual correction.</div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         5. BANNER VARIABLES SHEET
+    ══════════════════════════════════════════════════════ -->
+    <section id="banner-variables">
+        <h2 class="section-title"><span class="num">5</span> Banner Variables Sheet</h2>
+
+        <p>This sheet defines the banner (column) variables used across all CTABLES output. It supports three modes depending on how each banner variable is derived.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:38px">Col</th>
+                    <th style="width:170px">Column Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>A</strong></td>
+                    <td><strong>SPSS Variables</strong></td>
+                    <td>Source SPSS variable name(s). A single name for Mode 1 &amp; 2 (e.g. <code>DEM_CENTRE</code>). Space-separated list for Mode 3 (e.g. <code>DEM_GENDER DEM_AGE</code>).</td>
+                </tr>
+                <tr>
+                    <td><strong>B</strong></td>
+                    <td><strong>Banner Variables</strong></td>
+                    <td>The new derived banner variable name that will appear in CTABLES (e.g. <code>b1Centre</code>). Must be a valid SPSS variable name.</td>
+                </tr>
+                <tr>
+                    <td><strong>C</strong></td>
+                    <td><strong>Banner Labels</strong></td>
+                    <td>The VARIABLE LABEL for the banner variable (e.g. <em>Centre</em>). If left blank, no <code>VARIABLE LABELS</code> statement is generated for this variable.</td>
+                </tr>
+                <tr>
+                    <td><strong>D</strong></td>
+                    <td><strong>New Code</strong></td>
+                    <td>The new numeric value for this group (e.g. <code>1</code>). Must be a whole number. Leave blank for Mode 1 (direct copy).</td>
+                </tr>
+                <tr>
+                    <td><strong>E</strong></td>
+                    <td><strong>New Label</strong></td>
+                    <td>The VALUE LABEL for the new code (e.g. <em>18-34</em>). Required when New Code is filled.</td>
+                </tr>
+                <tr>
+                    <td><strong>F</strong></td>
+                    <td><strong>Condition</strong></td>
+                    <td>
+                        <strong>Mode 2:</strong> Source values as a space-separated list (<code>1 2 3</code>) or SPSS range notation (<code>18 THRU 34</code>).<br>
+                        <strong>Mode 3:</strong> Full SPSS IF expression (<code>DEM_GENDER=1 AND DEM_AGE&gt;=18 AND DEM_AGE&lt;=34</code>).
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note">&#9888; New Code, New Label and Condition must <strong>all be filled</strong> or <strong>all be blank</strong> in any given row. Partial fills will trigger a validation error and abort execution.</div>
+
+        <!-- ── Mode 1 ─────────────── -->
+        <div class="mode-box mode1">
+            <h4>Mode 1 — Direct Copy &nbsp;<span class="badge b-blue">Columns A–C only, D–F empty</span></h4>
+            <p>Copies the source SPSS variable directly into the new banner variable using <code>COMPUTE</code>. Value labels are pulled automatically from the SPSS dataset — no manual entry needed.</p>
+
+            <table style="margin:10px 0">
+                <thead><tr><th>SPSS Variables</th><th>Banner Variables</th><th>Banner Labels</th><th>New Code</th><th>New Label</th><th>Condition</th></tr></thead>
+                <tbody><tr><td>DEM_CENTRE</td><td>b1Centre</td><td>Centre</td><td></td><td></td><td></td></tr></tbody>
+            </table>
+
+            <div class="code-block"><span class="kw">NUMERIC</span> b1Centre (f8.0).
+<span class="kw">COMPUTE</span> b1Centre = DEM_CENTRE.
+<span class="kw">VARIABLE LABELS</span> b1Centre <span class="lbl">"Centre"</span>.
+<span class="kw">VALUE LABELS</span> b1Centre
+  1 <span class="lbl">"Dhaka"</span>
+  2 <span class="lbl">"Chattogram"</span>
+  3 <span class="lbl">"Sylhet"</span>.   <span class="cmt">← pulled from SPSS dataset</span></div>
+        </div>
+
+        <!-- ── Mode 2 ─────────────── -->
+        <div class="mode-box mode2">
+            <h4>Mode 2 — RECODE &nbsp;<span class="badge b-green">Single SPSS variable + custom grouping</span></h4>
+            <p>Groups values from a single SPSS variable into new categories using <code>RECODE ... INTO</code>. Each row in the sheet represents one target group. Unmatched values are set to SYSMIS automatically.</p>
+
+            <p><strong>Condition column options:</strong></p>
+            <ul>
+                <li>Individual values: <code>1 2 3</code> &rarr; generates <code>(1,2,3=NewCode)</code></li>
+                <li>Range: <code>18 THRU 34</code> &rarr; generates <code>(18 THRU 34=NewCode)</code></li>
+            </ul>
+
+            <table style="margin:10px 0">
+                <thead><tr><th>SPSS Variables</th><th>Banner Variables</th><th>Banner Labels</th><th>New Code</th><th>New Label</th><th>Condition</th></tr></thead>
+                <tbody>
+                    <tr><td>DEM_AGE</td><td>b1Age</td><td>Age Group</td><td>1</td><td>18-34</td><td>18 THRU 34</td></tr>
+                    <tr><td>DEM_AGE</td><td>b1Age</td><td></td><td>2</td><td>35-49</td><td>35 THRU 49</td></tr>
+                    <tr><td>DEM_AGE</td><td>b1Age</td><td></td><td>3</td><td>50+</td><td>50 THRU 99</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block"><span class="kw">NUMERIC</span> b1Age (f8.0).
+<span class="kw">RECODE</span> DEM_AGE (18 THRU 34=1)(35 THRU 49=2)(50 THRU 99=3)(ELSE=SYSMIS) <span class="kw">INTO</span> b1Age.
+<span class="kw">VARIABLE LABELS</span> b1Age <span class="lbl">"Age Group"</span>.
+<span class="kw">VALUE LABELS</span> b1Age
+  1 <span class="lbl">"18-34"</span>
+  2 <span class="lbl">"35-49"</span>
+  3 <span class="lbl">"50+"</span>.</div>
+
+            <div class="tip">&#128161; Banner Labels only needs to be filled on the first row of a group. Leave it blank on subsequent rows of the same banner variable.</div>
+        </div>
+
+        <!-- ── Mode 3 ─────────────── -->
+        <div class="mode-box mode3">
+            <h4>Mode 3 — IF Statements &nbsp;<span class="badge b-purple">Multiple SPSS variables</span></h4>
+            <p>Derives a banner variable from conditions across two or more SPSS variables using <code>IF</code> statements. Each row = one IF condition. List all source variable names space-separated in Column A.</p>
+
+            <table style="margin:10px 0">
+                <thead><tr><th>SPSS Variables</th><th>Banner Variables</th><th>Banner Labels</th><th>New Code</th><th>New Label</th><th>Condition</th></tr></thead>
+                <tbody>
+                    <tr><td>DEM_GENDER DEM_AGE</td><td>b1Profile</td><td>Profile</td><td>1</td><td>Male 18-34</td><td>DEM_GENDER=1 AND DEM_AGE&gt;=18 AND DEM_AGE&lt;=34</td></tr>
+                    <tr><td>DEM_GENDER DEM_AGE</td><td>b1Profile</td><td></td><td>2</td><td>Male 35+</td><td>DEM_GENDER=1 AND DEM_AGE&gt;=35</td></tr>
+                    <tr><td>DEM_GENDER DEM_AGE</td><td>b1Profile</td><td></td><td>3</td><td>Female 18-34</td><td>DEM_GENDER=2 AND DEM_AGE&gt;=18 AND DEM_AGE&lt;=34</td></tr>
+                    <tr><td>DEM_GENDER DEM_AGE</td><td>b1Profile</td><td></td><td>4</td><td>Female 35+</td><td>DEM_GENDER=2 AND DEM_AGE&gt;=35</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block"><span class="kw">NUMERIC</span> b1Profile (f8.0).
+<span class="kw">IF</span> (DEM_GENDER=1 AND DEM_AGE&gt;=18 AND DEM_AGE&lt;=34) b1Profile=1.
+<span class="kw">IF</span> (DEM_GENDER=1 AND DEM_AGE&gt;=35) b1Profile=2.
+<span class="kw">IF</span> (DEM_GENDER=2 AND DEM_AGE&gt;=18 AND DEM_AGE&lt;=34) b1Profile=3.
+<span class="kw">IF</span> (DEM_GENDER=2 AND DEM_AGE&gt;=35) b1Profile=4.
+<span class="kw">VARIABLE LABELS</span> b1Profile <span class="lbl">"Profile"</span>.
+<span class="kw">VALUE LABELS</span> b1Profile
+  1 <span class="lbl">"Male 18-34"</span>
+  2 <span class="lbl">"Male 35+"</span>
+  3 <span class="lbl">"Female 18-34"</span>
+  4 <span class="lbl">"Female 35+"</span>.</div>
+        </div>
+
+        <h3>Validation Rules</h3>
+        <ul>
+            <li>New Code, New Label and Condition must <strong>all be filled</strong> or <strong>all be blank</strong> in each row.</li>
+            <li>Rows for the same Banner Variable cannot mix filled and blank New Code rows.</li>
+            <li>New Code values must be <strong>unique</strong> within each Banner Variable group.</li>
+            <li>For Mode 2 (RECODE), New Code must be a <strong>whole number</strong>.</li>
+            <li>If no custom grouping is used (Mode 1), the SPSS variable must <strong>exist in the selected dataset</strong>.</li>
+            <li>Multiple SPSS variables in Column A require at least one custom grouping row (Mode 3 only).</li>
+        </ul>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         6. BANNER FILE FORMAT
+    ══════════════════════════════════════════════════════ -->
+    <section id="banner-file">
+        <h2 class="section-title"><span class="num">6</span> Banner File Format</h2>
+
+        <p>The Banner File is a plain <code>.txt</code> file with exactly three data lines. Lines beginning with <code>*</code> are treated as comments and ignored.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:70px">Line</th>
+                    <th style="width:200px">Content</th>
+                    <th>Purpose in Generated Syntax</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Line 1</strong></td>
+                    <td>Banner <strong>ColVar</strong></td>
+                    <td>Used in CTABLES <code>TABLE ... BY &lt;ColVar&gt;</code> clause. Combines variables with <code>+</code> and supports nesting with <code>&gt;</code>.</td>
+                    <td><code>ATotal+b1Centre+b1Age</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Line 2</strong></td>
+                    <td>Banner <strong>ColVarPct</strong></td>
+                    <td>Used in CTABLES <code>CATEGORIES VARIABLES=&lt;ColVarPct&gt;</code> clause. Space-separated list of all banner variable names.</td>
+                    <td><code>ATotal b1Centre b1Age</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Line 3</strong></td>
+                    <td><strong>Output File Name</strong></td>
+                    <td>Project name used in the output <code>.xlsx</code> file path inside the syntax and in SPSS <code>GET FILE</code> / <code>SAVE OUTFILE</code> paths.</td>
+                    <td><code>ProjectName</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Example Banner File</h3>
+        <div class="code-block"><span class="cmt">* Banner (ColVar)</span>
+ATotal+b1Centre+b1Age+b1SEC
+
+<span class="cmt">* Banner (ColVarPct)</span>
+ATotal b1Centre b1Age b1SEC
+
+<span class="cmt">* Output File Name</span>
+MyProject_Wave1</div>
+
+        <h3>Nested Banner Example</h3>
+        <p>Use <code>&gt;</code> to create nested (hierarchical) banners in CTABLES:</p>
+        <div class="code-block"><span class="cmt">* Line 1 — nested banner:</span>
+ATotal+b1Gender+(b1AgeM+b1AgeF)&gt;b1Gender
+
+<span class="cmt">* Line 2 — all variables space-separated:</span>
+ATotal b1Gender b1AgeM b1AgeF</div>
+
+        <div class="tip">&#128161; Click <strong>Get Banner File</strong> on the form to generate a ready-to-use example file that opens directly in Notepad.</div>
+        <div class="note">&#9888; The banner variable names in Lines 1 and 2 must exactly match the names defined in the <em>Banner Variables</em> sheet (Column B).</div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         7. SYNTAX TYPES
+    ══════════════════════════════════════════════════════ -->
+    <section id="syntax-types">
+        <h2 class="section-title"><span class="num">7</span> Syntax Types</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:190px">Syntax Type</th>
+                    <th>What it generates</th>
+                    <th style="width:130px">Output File Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Recode Syntax</strong></td>
+                    <td>
+                        Data preparation file. Includes:
+                        <ul style="margin-top:5px">
+                            <li>GET FILE from Data Preparation folder</li>
+                            <li><code>COMPUTE ATotal=1</code></li>
+                            <li>Banner variable declarations (NUMERIC / COMPUTE / RECODE / IF) from <em>Banner Variables</em> sheet</li>
+                            <li>Mean, S.D., S.E. variable recodes for scaled questions (codes 3, 5–12)</li>
+                            <li>SAVE OUTFILE to produce the final recoded dataset</li>
+                        </ul>
+                        Run this <strong>first</strong> before any table syntax.
+                    </td>
+                    <td><code>00.Name_Recode.SPS</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Table Cpt Syntax</strong></td>
+                    <td>CTABLES with column percentage format <code>COLPCT.COUNT F40.x</code> (x = Decimal Place). Includes OMS to export directly to <code>.xlsx</code>. Produces a table per row in the Table Structure sheet.</td>
+                    <td><code>01.Name_Table_Cpt.SPS</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Table Cpt (%) Syntax</strong></td>
+                    <td>Same as Table Cpt but uses <code>COLPCT.COUNT PCT8.0</code> format, which displays a <code>%</code> symbol in the SPSS output.</td>
+                    <td><code>01.Name_Table_Cpt_Pct.SPS</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Table Count Syntax</strong></td>
+                    <td>CTABLES with raw count format <code>COUNT F40.0</code>. Produces frequency tables.</td>
+                    <td><code>02.Name_Table_Count.SPS</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note">&#9888; If an <code>.SPS</code> file with the same name already exists in the output folder, execution is blocked. Rename or delete the existing file before running again.</div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         8. ANALYSIS TYPE CODE REFERENCE
+    ══════════════════════════════════════════════════════ -->
+    <section id="analysis-codes">
+        <h2 class="section-title"><span class="num">8</span> Analysis Type Code Reference</h2>
+
+        <p>Set these codes in <strong>Column A</strong> of the <em>Table Structure</em> sheet. The <em>Code Mapping</em> sheet in the structure Excel is also a quick reference.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:58px">Code</th>
+                    <th style="width:250px">Question Type</th>
+                    <th>Table Output / Statistics</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge b-gray">0</span></td>
+                    <td>Do Not Use</td>
+                    <td>Variable excluded from syntax. Automatically assigned to open-end and string variables.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-blue">1</span></td>
+                    <td>Single Response</td>
+                    <td>Standard CTABLES — column percentage + total count. Categories sorted by value.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-blue">2</span></td>
+                    <td>Multiple Response</td>
+                    <td>MRSETS group definition + CTABLES — column percentage + total count. Set Column F = <code>XXX</code> on the last variable of the group.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-blue">3</span></td>
+                    <td>Single Response With Mean</td>
+                    <td>Column percentage + <strong>Mean</strong> + <strong>S.D.</strong> + <strong>S.E.</strong> rows appended.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-gray">4</span></td>
+                    <td>Rank Response</td>
+                    <td>Reserved — not yet implemented in this version.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-green">5</span></td>
+                    <td>Scaled Question (5-point)</td>
+                    <td>Categories 1–5 &nbsp;|&nbsp; <strong>TOP 2 BOX [5/4]</strong> &nbsp;|&nbsp; <strong>BOTTOM 2 BOX [1/2]</strong> &nbsp;|&nbsp; Mean + S.D. + S.E.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-green">6</span></td>
+                    <td>Scaled Question – Reverse (5-point)</td>
+                    <td>Same as code 5 but Mean is reverse-recoded (1=5, 2=4, 3=3, 4=2, 5=1).</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-green">7</span></td>
+                    <td>Scaled Question (7-point)</td>
+                    <td>Categories 1–7 &nbsp;|&nbsp; <strong>TOP 2 [6/7]</strong> &nbsp;|&nbsp; <strong>TOP 3 [5/6/7]</strong> &nbsp;|&nbsp; <strong>BOTTOM 2 [1/2]</strong> &nbsp;|&nbsp; <strong>BOTTOM 3 [1/2/3]</strong> &nbsp;|&nbsp; Mean + S.D. + S.E.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-gray">8</span></td>
+                    <td>(Reserved)</td>
+                    <td>Not in use — placeholder.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-green">9</span></td>
+                    <td>Scaled Question (9-point)</td>
+                    <td>Categories 1–9 &nbsp;|&nbsp; <strong>TOP 2 [8/9]</strong> &nbsp;|&nbsp; <strong>TOP 3 [7/8/9]</strong> &nbsp;|&nbsp; <strong>BOTTOM 2 [1/2]</strong> &nbsp;|&nbsp; <strong>BOTTOM 3 [1/2/3]</strong> &nbsp;|&nbsp; Mean + S.D. + S.E.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-green">10</span></td>
+                    <td>Scaled Question (10-point)</td>
+                    <td>Categories 1–10 &nbsp;|&nbsp; <strong>TOP 2 [09/10]</strong> &nbsp;|&nbsp; <strong>TOP 3 [08/09/10]</strong> &nbsp;|&nbsp; <strong>BOTTOM 2 [01/02]</strong> &nbsp;|&nbsp; <strong>BOTTOM 3 [01/02/03]</strong> &nbsp;|&nbsp; Mean + S.D. + S.E.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-green">11</span></td>
+                    <td>Scaled Question (11-point)</td>
+                    <td>Categories 1–11 &nbsp;|&nbsp; <strong>TOP 2 [10/11]</strong> &nbsp;|&nbsp; <strong>TOP 3 [09/10/11]</strong> &nbsp;|&nbsp; <strong>BOTTOM 2 [01/02]</strong> &nbsp;|&nbsp; <strong>BOTTOM 3 [01/02/03]</strong> &nbsp;|&nbsp; Mean + S.D. + S.E.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge b-orange">12</span></td>
+                    <td>NPS Question (0–10 scale)</td>
+                    <td>Categories 0–10 &nbsp;|&nbsp; <strong>Detractors [0–6]</strong> &nbsp;|&nbsp; <strong>Passives [7–8]</strong> &nbsp;|&nbsp; <strong>Promoters [9–10]</strong> &nbsp;|&nbsp; NPS Score (computed Mean).</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+</div><!-- /content -->
+</body>
+</html>

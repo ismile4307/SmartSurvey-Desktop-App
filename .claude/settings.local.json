@@ -19,7 +19,9 @@
       "Bash(ls:*)",
       "Bash(find . -name *.db -type f)",
       "Bash(find './DBI Scripting' -name *.txt -o -name *.md)",
-      "Bash(1 cd:*)"
+      "Bash(1 cd:*)",
+      "Bash(gh auth:*)",
+      "Bash(python:*)"
     ]
   }
 }

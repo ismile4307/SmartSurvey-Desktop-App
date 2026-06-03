@@ -43,15 +43,17 @@ Dummy data is generated in the C# WPF application (`FrmDummyData`) to test surve
 | ResponseDateTime | System datetime |
 | qElapsedTime | Random 2 – 25 seconds |
 | qOrderTag | `OrderTag1` of the question |
-| rOrderTag | Position index: 1 for single answers; 1,2,3… for multi/rank/grid |
+| rOrderTag | `AttributeOrder` from `T_OptAttribute` for the saved attribute; falls back to `1` when no attribute exists for the question |
 
-#### `T_RespOpenended` — only for OE text responses
+#### `T_RespOpenended` — only when selected attribute has `TakeOpenended = '1'`
+A row is written here **only** when the attribute that was selected and saved to `T_RespAnswer` has `TakeOpenended = '1'` in `T_OptAttribute`. If the attribute has any other value (0, null, blank), nothing is written to this table — the answer stays in `T_RespAnswer` only.
+
 | Column | Description |
 |---|---|
 | ProjectId | Project identifier |
 | RespondentId | Links to T_InterviewInfo |
 | QId | Question ID |
-| AttributeValue | Attribute code that triggered the OE (usually `"1"`) |
+| AttributeValue | `AttributeValue` of the attribute that has `TakeOpenended = '1'` |
 | OpenendedResp | Generated text: `"Sample OE response for {QId}"` |
 | OEResponseType | `"1"` (verbatim) |
 
@@ -167,10 +169,11 @@ Multiple rows in `T_RespAnswer`, one per selected option, `rOrderTag = 1, 2, 3�
 ### Group 5 — Open-Ended Text
 
 #### QType 3 — Openended String
-- Attributes: `'1'` = OE text field (non-exclusive), `'999'` = Don't Know (IsExclusive = '1').
-- **30% chance** → pick DK: write `Response = '999'` to `T_RespAnswer`.
-- **70% chance** → pick OE: write `Response = '1'` to `T_RespAnswer` **AND** write `"Sample OE response for {QId}"` to `T_RespOpenended` with `AttributeValue = '1'`, `OEResponseType = '1'`.
-- If no attributes exist: default to OE path with `AttributeValue = '1'`.
+- **30% chance** → pick the exclusive attribute (DK/CS): write `Response = AttributeValue` to `T_RespAnswer` with `rOrderTag = AttributeOrder` of that attribute.
+- **70% chance** → pick the non-exclusive (OE) attribute: write `Response = AttributeValue` to `T_RespAnswer` with `rOrderTag = AttributeOrder` of that attribute.
+  - If the selected attribute has `TakeOpenended = '1'`: also write `"Sample OE response for {QId}"` to `T_RespOpenended`.
+  - Otherwise: nothing written to `T_RespOpenended`.
+- If no attributes exist: write `Response = '1'` to `T_RespAnswer` with `rOrderTag = 1`. Nothing written to `T_RespOpenended`.
 
 #### QType 18 — Openended String With DKCS
 - Same logic as QType 3.
@@ -383,7 +386,7 @@ Each run creates a new timestamped file — **previous runs are never overwritte
 |---|---|---|---|
 | 1 | Single Response | 1 | — |
 | 2 | Multiple Response | min–max | — |
-| 3 | OE String | 0 or 1 (DK code) | 0 or 1 (text) |
+| 3 | OE String | 1 | 0 or 1 (only if selected attr has `TakeOpenended='1'`) |
 | 4 | OE Number | 1 | — |
 | 5 | Rank | N (ranked) | — |
 | 6 | Image | **SKIP** | — |
@@ -398,7 +401,7 @@ Each run creates a new timestamped file — **previous runs are never overwritte
 | 15 | TimeControl | 1 (HH:MM) | — |
 | 16 | CaptureImage | **SKIP** | — |
 | 17 | List OE Number With Total | 1 per attr + 1 total | — |
-| 18 | OE String With DKCS | 0 or 1 (DK code) | 0 or 1 (text) |
+| 18 | OE String With DKCS | 1 | 0 or 1 (only if selected attr has `TakeOpenended='1'`) |
 | 19 | OE Number With DKCS | 1 | — |
 | 20 | Member Information | 1 per sub-field | — |
 | 21 | Kids Information | 1 per sub-field | — |

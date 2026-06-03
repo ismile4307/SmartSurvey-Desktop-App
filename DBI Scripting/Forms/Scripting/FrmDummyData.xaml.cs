@@ -477,7 +477,8 @@ namespace DBI_Scripting.Forms.Scripting
         {
             if (attrs.Count == 0) return 0;
             var pick = attrs[rng.Next(attrs.Count)];
-            WriteAnswer(rId, qId, pick["AttributeValue"].ToString(), dt, order, 1);
+            WriteAnswer(rId, qId, pick["AttributeValue"].ToString(), dt, order,
+                ParseInt(pick["AttributeOrder"], 1));
             return 1;
         }
 
@@ -505,7 +506,8 @@ namespace DBI_Scripting.Forms.Scripting
                 selected = attrs.OrderBy(_ => rng.Next()).Take(pickCount).ToList();
 
             for (int i = 0; i < selected.Count; i++)
-                WriteAnswer(rId, qId, selected[i]["AttributeValue"].ToString(), dt, order, i + 1);
+                WriteAnswer(rId, qId, selected[i]["AttributeValue"].ToString(), dt, order,
+                    ParseInt(selected[i]["AttributeOrder"], i + 1));
 
             return selected.Count;
         }
@@ -520,13 +522,17 @@ namespace DBI_Scripting.Forms.Scripting
             // 30 % chance to choose DK when available
             if (dkAttr != null && rng.Next(10) < 3)
             {
-                WriteAnswer(rId, qId, dkAttr["AttributeValue"].ToString(), dt, order, 1);
+                WriteAnswer(rId, qId, dkAttr["AttributeValue"].ToString(), dt, order,
+                    ParseInt(dkAttr["AttributeOrder"], 1));
                 return 1;
             }
 
             string attrVal = oeAttr != null ? oeAttr["AttributeValue"].ToString() : "1";
-            WriteAnswer(rId, qId, attrVal, dt, order, 1);
-            WriteOpenEnded(rId, qId, attrVal, $"Sample OE response for {qId}", "1");
+            int rOrd = oeAttr != null ? ParseInt(oeAttr["AttributeOrder"], 1) : 1;
+            WriteAnswer(rId, qId, attrVal, dt, order, rOrd);
+            // Only write OE verbatim when the selected attribute has TakeOpenended = '1'
+            if (oeAttr != null && oeAttr["TakeOpenended"].ToString() == "1")
+                WriteOpenEnded(rId, qId, attrVal, $"Sample OE response for {qId}", "1");
             return 1;
         }
 
@@ -540,7 +546,8 @@ namespace DBI_Scripting.Forms.Scripting
             // 20 % DK
             if (dkAttr != null && rng.Next(10) < 2)
             {
-                WriteAnswer(rId, qId, dkAttr["AttributeValue"].ToString(), dt, order, 1);
+                WriteAnswer(rId, qId, dkAttr["AttributeValue"].ToString(), dt, order,
+                    ParseInt(dkAttr["AttributeOrder"], 1));
                 return 1;
             }
 
@@ -557,7 +564,8 @@ namespace DBI_Scripting.Forms.Scripting
             }
             if (maxVal < minVal) maxVal = minVal + 10;
 
-            WriteAnswer(rId, qId, rng.Next(minVal, maxVal + 1).ToString(), dt, order, 1);
+            int numROrd = numAttr != null ? ParseInt(numAttr["AttributeOrder"], 1) : 1;
+            WriteAnswer(rId, qId, rng.Next(minVal, maxVal + 1).ToString(), dt, order, numROrd);
             return 1;
         }
 
@@ -572,7 +580,8 @@ namespace DBI_Scripting.Forms.Scripting
 
             var shuffled = attrs.OrderBy(_ => rng.Next()).Take(maxRank).ToList();
             for (int i = 0; i < shuffled.Count; i++)
-                WriteAnswer(rId, qId, shuffled[i]["AttributeValue"].ToString(), dt, order, i + 1);
+                WriteAnswer(rId, qId, shuffled[i]["AttributeValue"].ToString(), dt, order,
+                    ParseInt(shuffled[i]["AttributeOrder"], i + 1));
 
             return shuffled.Count;
         }
@@ -1189,12 +1198,18 @@ namespace DBI_Scripting.Forms.Scripting
         }
 
         // ── Step 4: Write workbook via COM Interop ────────────────────────────
+        private const int ExcelMaxCols = 16384;   // xlsx column limit
+
         private void WriteToExcel(string xlsxPath,
             List<string> columns,
             List<List<string>> tableData,
             DataTable oeData)
         {
             object misValue = System.Reflection.Missing.Value;
+
+            // Cap at Excel's 16 384-column limit to prevent 0x800A03EC
+            int totalCols = Math.Min(columns.Count, ExcelMaxCols);
+            bool truncated = columns.Count > ExcelMaxCols;
 
             var xlApp      = new Microsoft.Office.Interop.Excel.Application();
             var xlWorkBook = xlApp.Workbooks.Add(misValue);
@@ -1206,13 +1221,25 @@ namespace DBI_Scripting.Forms.Scripting
                     xlWorkBook.Worksheets.get_Item(1);
                 xlData.Name = "Data";
 
-                for (int c = 1; c <= columns.Count; c++)
+                // Format all data columns as text BEFORE writing so that
+                // numeric-looking values (RespondentId, codes) are stored as-is.
+                var textRange = (Microsoft.Office.Interop.Excel.Range)
+                    xlData.Range[xlData.Cells[1, 1], xlData.Cells[1048576, totalCols]];
+                textRange.NumberFormat = "@";
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(textRange);
+
+                // Write headers
+                for (int c = 1; c <= totalCols; c++)
                     xlData.Cells[1, c] = columns[c - 1];
 
+                if (truncated)
+                    Log($"  WARNING: column count ({columns.Count}) exceeds Excel limit " +
+                        $"({ExcelMaxCols}). Output truncated to {ExcelMaxCols} columns.");
+
+                // Write data rows in batches
                 if (tableData.Count > 0)
                 {
                     int totalRows = tableData.Count;
-                    int totalCols = columns.Count;
                     int batchSize = 500;
 
                     for (int rowStart = 0; rowStart < totalRows; rowStart += batchSize)
@@ -1222,7 +1249,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                         for (int i = 0; i < batchRows; i++)
                             for (int j = 0; j < totalCols; j++)
-                                batch[i, j] = "'" + ReplaceNewlines(
+                                batch[i, j] = ReplaceNewlines(
                                     tableData[rowStart + i][j], " ");
 
                         var startCell = (Microsoft.Office.Interop.Excel.Range)
@@ -1247,6 +1274,12 @@ namespace DBI_Scripting.Forms.Scripting
                         System.Reflection.Missing.Value,
                         System.Reflection.Missing.Value);
                 xlOE.Name = "Openended";
+
+                // Format OE columns as text
+                var oeTextRange = (Microsoft.Office.Interop.Excel.Range)
+                    xlOE.Range[xlOE.Cells[1, 1], xlOE.Cells[1048576, 4]];
+                oeTextRange.NumberFormat = "@";
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(oeTextRange);
 
                 xlOE.Cells[1, 1] = "RespondentId";
                 xlOE.Cells[1, 2] = "QId";
