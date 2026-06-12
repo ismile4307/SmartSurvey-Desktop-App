@@ -2972,6 +2972,8 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.DisplayJumpButton = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*ADDRESS4"))
                 { myQuestion.DisplayJumpButton = "4"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*TBC"))
+                { myQuestion.DisplayJumpButton = "TBC"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*SHOWASFORM"))
                 {
                     myQuestion.NumberOfColumn = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -5220,6 +5222,8 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.DisplayJumpButton = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*ADDRESS4"))
                 { myQuestion.DisplayJumpButton = "4"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*TBC"))
+                { myQuestion.DisplayJumpButton = "TBC"; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*SHOWASFORM"))
                 {
                     myQuestion.NumberOfColumn = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -7563,7 +7567,7 @@ namespace DBI_Scripting.Forms.Scripting
                     SQLiteCommand sqlite_cmd8 = new SQLiteCommand(connectionDB.sqlite_conn);
                     foreach (KeyValuePair<string, string> pair in dicQidvsEnglishLabelQuestion)
                     {
-                        sqlite_cmd8.CommandText = "UPDATE T_Question SET QuestionBengali='" + pair.Value + "' WHERE QId='" + pair.Key + "'";
+                        sqlite_cmd8.CommandText = "UPDATE T_Question SET QuestionBengali='" + pair.Value.Replace("'", "''") + "' WHERE QId='" + pair.Key + "'";
                         sqlite_cmd8.ExecuteNonQuery();
                     }
 
@@ -7602,7 +7606,7 @@ namespace DBI_Scripting.Forms.Scripting
                     SQLiteCommand sqlite_cmd10 = new SQLiteCommand(connectionDB.sqlite_conn);
                     foreach (KeyValuePair<string, string> pair in dicQidvsEnglishLabelGridAttribute)
                     {
-                        sqlite_cmd10.CommandText = "UPDATE T_GridInfo SET AttributeBengali='" + pair.Value + "' WHERE QId='" + pair.Key.Split('*')[0] + "' AND AttributeOrder=" + pair.Key.Split('*')[1];
+                        sqlite_cmd10.CommandText = "UPDATE T_GridInfo SET AttributeBengali='" + pair.Value.Replace("'", "''") + "' WHERE QId='" + pair.Key.Split('*')[0] + "' AND AttributeOrder=" + pair.Key.Split('*')[1];
                         sqlite_cmd10.ExecuteNonQuery();
                     }
 
@@ -9548,6 +9552,7 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("INRLD");
             listOfKeyWords.Add("QLABEL");
             listOfKeyWords.Add("USERIDOF");
+            listOfKeyWords.Add("TBC");
 
 
             listOfKeyWords.Add("IF");

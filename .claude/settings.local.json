@@ -21,7 +21,8 @@
       "Bash(find './DBI Scripting' -name *.txt -o -name *.md)",
       "Bash(1 cd:*)",
       "Bash(gh auth:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(awk 'NR>=16953 && NR<=23993' \"D:\\\\Others Projects\\\\Agent_v2.q\")"
     ]
   }
 }

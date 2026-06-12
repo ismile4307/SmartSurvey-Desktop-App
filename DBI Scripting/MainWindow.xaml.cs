@@ -139,11 +139,11 @@ namespace DBI_Scripting
             frmUploadScript.ShowDialog();
         }
 
-        private void btnAnalyticsStructure_Click(object sender, RoutedEventArgs e)
-        {
-            FrmAnalysisStructure frmAnalysisStructure = new FrmAnalysisStructure();
-            frmAnalysisStructure.ShowDialog();
-        }
+        //private void btnAnalyticsStructure_Click(object sender, RoutedEventArgs e)
+        //{
+        //    FrmAnalysisStructure frmAnalysisStructure = new FrmAnalysisStructure();
+        //    frmAnalysisStructure.ShowDialog();
+        //}
 
         private void btnCreateSPSSSyntax_Click(object sender, RoutedEventArgs e)
         {
