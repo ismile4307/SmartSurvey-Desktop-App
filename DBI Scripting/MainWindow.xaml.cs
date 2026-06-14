@@ -286,6 +286,12 @@ namespace DBI_Scripting
             frmCTableLink2.ShowDialog();
         }
 
+        private void btnCTableSigTest_Click(object sender, RoutedEventArgs e)
+        {
+            FrmCTableSigTest frmCTableSigTest = new FrmCTableSigTest();
+            frmCTableSigTest.ShowDialog();
+        }
+
         private void btnSRTable_Click(object sender, RoutedEventArgs e)
         {
             FrmSRSyntaxPrep frmSRSyntaxPrep = new FrmSRSyntaxPrep();

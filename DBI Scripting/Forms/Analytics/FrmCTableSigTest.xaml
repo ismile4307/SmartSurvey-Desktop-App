@@ -1,0 +1,366 @@
+<Window xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        x:Name="frmCTableSigTest"
+        x:Class="DBI_Scripting.Forms.Analytics.FrmCTableSigTest"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CTable Significance Test"
+        Height="620" Width="920"
+        MinHeight="560" MinWidth="850"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        Loaded="frmCTableSigTest_Loaded"
+        Background="#EEF0F4">
+
+    <Window.Resources>
+
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="#2563AE"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#1A4F8C"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#153E70"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#93B4D4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="#E5E7EB"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#D1D5DB"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#C0C5CC"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#F3F4F6"/>
+                                <Setter TargetName="bd" Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="Padding" Value="0,0,8,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#374151"/>
+        </Style>
+
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="14,10"/>
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#1E3A5F"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="PanelBorder" TargetType="Border">
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Background" Value="#FAFAFA"/>
+        </Style>
+
+        <Style x:Key="PanelCaption" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Margin" Value="8,4,0,0"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="14,10,14,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Section 1 -->
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="*"/>     <!-- Section 2 -->
+        </Grid.RowDefinitions>
+
+        <!-- ══════════════════════════════════════════
+             SECTION 1 — Prepare Table for Sig Test
+        ══════════════════════════════════════════ -->
+        <Border Grid.Row="0" Style="{StaticResource Card}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <TextBlock Grid.Row="0" Text="Prepare Table for Sig Test" Style="{StaticResource SectionTitle}"/>
+                <Separator Grid.Row="1" Background="#D1D5DB" Margin="0,0,0,10"/>
+
+                <!-- Excel path -->
+                <Grid Grid.Row="2" Height="28">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="78"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Table Excel File :" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Column="1" x:Name="txtExcelPathS1"
+                             VerticalContentAlignment="Center" Padding="5,0" IsReadOnly="True"/>
+                    <Button Grid.Column="3" x:Name="btnBrowseExcelS1" Content="Browse"
+                            Height="28" Click="btnBrowseExcelS1_Click"/>
+                </Grid>
+
+                <!-- Worksheet + right panel -->
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Worksheet list -->
+                    <Border Grid.Column="0" Style="{StaticResource PanelBorder}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="22"/>
+                                <RowDefinition Height="80"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Worksheet" Style="{StaticResource PanelCaption}"/>
+                            <xctk:CheckListBox Grid.Row="1" x:Name="chkListBoxWorksheetS1"
+                                               BorderThickness="0" Background="Transparent"
+                                               ItemSelectionChanged="chkListBoxWorksheetS1_ItemSelectionChanged"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Progress + Status + Buttons -->
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="14"/>
+                            <RowDefinition Height="6"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="32"/>
+                        </Grid.RowDefinitions>
+
+                        <ProgressBar Grid.Row="0" x:Name="progressBarS1" Minimum="0" Maximum="100" Value="0"/>
+                        <TextBlock Grid.Row="2" x:Name="lblStatusS1"
+                                   FontSize="11" Foreground="#555" TextTrimming="CharacterEllipsis"/>
+
+                        <!-- Buttons -->
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="btnHelpS1" Content="Help"
+                                    Width="78" Height="32" Margin="0,0,8,0"
+                                    Style="{StaticResource SecondaryBtn}"
+                                    Click="btnHelp_Click"/>
+                            <Button x:Name="btnClearDummyRows" Content="Clear Dummy Rows"
+                                    Width="130" Height="32" Margin="0,0,8,0"
+                                    Style="{StaticResource SecondaryBtn}"
+                                    Click="btnClearDummyRows_Click"/>
+                            <Button x:Name="btnKillProcessS1" Content="Kill Process"
+                                    Width="100" Height="32" Margin="0,0,8,0"
+                                    Style="{StaticResource SecondaryBtn}"
+                                    Click="btnKillProcessS1_Click"/>
+                            <Button x:Name="btnRunS1" Content="Run"
+                                    Width="88" Height="32" Margin="0,0,8,0"
+                                    Style="{StaticResource PrimaryBtn}"
+                                    Click="btnRunS1_Click"/>
+                            <Button x:Name="btnCloseS1" Content="Close"
+                                    Width="78" Height="32"
+                                    Click="btnCloseS1_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- ══════════════════════════════════════════
+             SECTION 2 — Set Sig Test Value
+        ══════════════════════════════════════════ -->
+        <Border Grid.Row="2" Style="{StaticResource Card}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="14"/>
+                    <RowDefinition Height="6"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <TextBlock Grid.Row="0" Text="Set Sig Test Value" Style="{StaticResource SectionTitle}"/>
+                <Separator Grid.Row="1" Background="#D1D5DB" Margin="0,0,0,10"/>
+
+                <!-- Table Excel path -->
+                <Grid Grid.Row="2" Height="28">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="78"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Table Excel File :" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Column="1" x:Name="txtExcelPathS2"
+                             VerticalContentAlignment="Center" Padding="5,0" IsReadOnly="True"/>
+                    <Button Grid.Column="3" x:Name="btnBrowseExcelS2" Content="Browse"
+                            Height="28" Click="btnBrowseExcelS2_Click"/>
+                </Grid>
+
+                <!-- Group Def File path -->
+                <Grid Grid.Row="4" Height="28">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="78"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Group Def File :" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Column="1" x:Name="txtGroupDefPath"
+                             VerticalContentAlignment="Center" Padding="5,0" IsReadOnly="True"/>
+                    <Button Grid.Column="3" x:Name="btnBrowseGroupDef" Content="Browse"
+                            Height="28" Click="btnBrowseGroupDef_Click"/>
+                </Grid>
+
+                <!-- Test method selector -->
+                <StackPanel Grid.Row="6" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="Test Method :" Style="{StaticResource FieldLabel}" Width="130"/>
+                    <RadioButton x:Name="rdoZTest" Content="Z-Test  (Standard Normal)"
+                                 IsChecked="True" VerticalAlignment="Center"
+                                 Margin="0,0,32,0" FontSize="12"/>
+                    <RadioButton x:Name="rdoTTest" Content="T-Table  (t-distribution)"
+                                 VerticalAlignment="Center" FontSize="12"/>
+                </StackPanel>
+
+                <!-- Main 3-column content area -->
+                <Grid Grid.Row="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="210"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Worksheet list -->
+                    <Border Grid.Column="0" Style="{StaticResource PanelBorder}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Worksheet" Style="{StaticResource PanelCaption}"/>
+                            <xctk:CheckListBox Grid.Row="1" x:Name="chkListBoxWorksheetS2"
+                                               BorderThickness="0" Background="Transparent"
+                                               ItemSelectionChanged="chkListBoxWorksheetS2_ItemSelectionChanged"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Group Definition viewer -->
+                    <Border Grid.Column="2" Style="{StaticResource PanelBorder}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Group Definition" Style="{StaticResource PanelCaption}"/>
+                            <TextBox Grid.Row="1" x:Name="txtViewGroup"
+                                     IsReadOnly="True" AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     FontFamily="Consolas" FontSize="12"
+                                     Background="Transparent" BorderThickness="0"
+                                     Padding="8,4"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Level of Confidence -->
+                    <Border Grid.Column="4" Style="{StaticResource PanelBorder}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Level of Confidence" Style="{StaticResource PanelCaption}"/>
+                            <xctk:CheckListBox Grid.Row="1" x:Name="chkListBoxConfidence"
+                                               BorderThickness="0" Background="Transparent"
+                                               ItemSelectionChanged="chkListBoxConfidence_ItemSelectionChanged"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Progress bar -->
+                <ProgressBar Grid.Row="10" x:Name="progressBarS2"
+                             Minimum="0" Maximum="100" Value="0"/>
+
+                <!-- Status + Buttons -->
+                <Grid Grid.Row="12">
+                    <TextBlock x:Name="lblStatusS2"
+                               VerticalAlignment="Center"
+                               FontSize="11" Foreground="#555"
+                               TextTrimming="CharacterEllipsis"
+                               Margin="0,0,230,0"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="btnHelpS2" Content="Help"
+                                Width="78" Height="34" Margin="0,0,8,0"
+                                Style="{StaticResource SecondaryBtn}"
+                                Click="btnHelp_Click"/>
+                        <Button x:Name="btnRunSigTest" Content="Run Sig Test"
+                                Width="115" Height="34" Margin="0,0,8,0"
+                                Style="{StaticResource PrimaryBtn}"
+                                Click="btnRunSigTest_Click"/>
+                        <Button x:Name="btnCloseS2" Content="Close"
+                                Width="88" Height="34"
+                                Click="btnCloseS2_Click"/>
+                    </StackPanel>
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

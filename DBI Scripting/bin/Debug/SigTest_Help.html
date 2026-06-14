@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Significance Test — Help Guide</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    background: #f0f2f5;
+    color: #1f2937;
+    display: flex;
+}
+
+/* ── Sidebar ──────────────────────────────────────── */
+.sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: #1e293b;
+    color: #e2e8f0;
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 24px 0;
+    z-index: 10;
+}
+.sidebar .logo {
+    font-size: 13px;
+    font-weight: 700;
+    color: #f1f5f9;
+    padding: 0 20px 16px;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+.sidebar .logo span { color: #60a5fa; display: block; font-size: 11px; font-weight: 400; margin-top: 2px; }
+.sidebar a {
+    display: block;
+    padding: 7px 20px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+}
+.sidebar a:hover, .sidebar a.active { background: #334155; color: #f1f5f9; border-left-color: #3b82f6; }
+.sidebar .section-head {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    padding: 14px 20px 4px;
+    font-weight: 600;
+}
+
+/* ── Main content ─────────────────────────────────── */
+.main {
+    margin-left: 240px;
+    padding: 40px 48px 60px;
+    max-width: 900px;
+    width: 100%;
+}
+
+h1 { font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+h2 { font-size: 18px; font-weight: 700; color: #1e3a5f; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e2e8f0; }
+h3 { font-size: 15px; font-weight: 600; color: #1e3a5f; margin: 22px 0 8px; }
+h4 { font-size: 14px; font-weight: 600; color: #374151; margin: 16px 0 6px; }
+
+p { margin-bottom: 10px; }
+ul, ol { margin: 8px 0 12px 22px; }
+li { margin-bottom: 5px; }
+
+.subtitle { color: #6b7280; font-size: 14px; margin-bottom: 28px; }
+
+/* ── Cards ────────────────────────────────────────── */
+.card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+.card-blue  { border-left: 4px solid #2563ae; }
+.card-green { border-left: 4px solid #059669; }
+.card-amber { border-left: 4px solid #d97706; }
+.card-gray  { border-left: 4px solid #6b7280; }
+
+/* ── Formula box ──────────────────────────────────── */
+.formula-box {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 12px 0 16px;
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 15px;
+    color: #0f172a;
+    text-align: center;
+}
+.formula-box .label {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 6px;
+    text-align: left;
+    font-style: italic;
+}
+
+/* ── Table ────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+th { background: #1e293b; color: #f1f5f9; padding: 9px 14px; text-align: left; font-weight: 600; }
+td { padding: 8px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+tr:nth-child(even) td { background: #f9fafb; }
+tr:hover td { background: #eff6ff; }
+td.center, th.center { text-align: center; }
+td strong { color: #1e3a5f; }
+
+/* ── Badges ───────────────────────────────────────── */
+.badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+.badge-blue  { background: #dbeafe; color: #1d4ed8; }
+.badge-green { background: #d1fae5; color: #065f46; }
+.badge-red   { background: #fee2e2; color: #991b1b; }
+.badge-gray  { background: #f3f4f6; color: #374151; }
+
+/* ── Info / note box ──────────────────────────────── */
+.note {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #1e40af;
+    margin: 12px 0;
+}
+.note.warn { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+.note.success { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
+
+/* ── Example row ──────────────────────────────────── */
+.excel-row {
+    display: flex;
+    gap: 0;
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
+    margin: 4px 0;
+}
+.cell {
+    border: 1px solid #cbd5e1;
+    padding: 4px 10px;
+    min-width: 90px;
+    background: #fff;
+}
+.cell.header { background: #e2e8f0; font-weight: 600; font-size: 11px; color: #374151; }
+.cell.sig    { background: #fef9c3; color: #92400e; font-weight: 700; }
+.cell.label  { background: #f1f5f9; color: #374151; min-width: 130px; }
+.cell.letter { background: #dbeafe; color: #1d4ed8; font-weight: 700; }
+
+/* ── Step list ────────────────────────────────────── */
+.step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+}
+.step-num {
+    background: #2563ae;
+    color: #fff;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    margin-top: 1px;
+}
+.step-body { flex: 1; }
+
+/* ── Top hero bar ─────────────────────────────────── */
+.hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563ae 100%);
+    border-radius: 8px;
+    padding: 24px 28px;
+    color: #fff;
+    margin-bottom: 28px;
+}
+.hero h1 { color: #fff; margin-bottom: 4px; }
+.hero p  { color: #bfdbfe; font-size: 13px; margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════════════ -->
+<nav class="sidebar">
+    <div class="logo">
+        SmartSurvey<br>
+        <span>Significance Test Guide</span>
+    </div>
+
+    <div class="section-head">Overview</div>
+    <a href="#what-is">What is a Sig Test?</a>
+    <a href="#when-applied">When is it Applied?</a>
+    <a href="#output">Reading the Output</a>
+
+    <div class="section-head">Test Types</div>
+    <a href="#prop-test">Proportion Z-Test</a>
+    <a href="#mean-test">Mean Z-Test</a>
+
+    <div class="section-head">Method Choice</div>
+    <a href="#z-vs-t">Z-Test vs T-Table</a>
+    <a href="#critical-values">Critical Values</a>
+
+    <div class="section-head">In Practice</div>
+    <a href="#workflow">Step-by-Step Workflow</a>
+    <a href="#group-def">Group Definition File</a>
+    <a href="#example">Worked Example</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════════ -->
+<main class="main">
+
+    <div class="hero">
+        <h1>Significance Test — Complete Guide</h1>
+        <p>Proportion Z-Test &nbsp;·&nbsp; Mean Z-Test &nbsp;·&nbsp; Z vs T-Table &nbsp;·&nbsp; SmartSurvey CTable</p>
+    </div>
+
+    <!-- ──────────────────────────────────────────────
+         WHAT IS
+    ────────────────────────────────────────────── -->
+    <h2 id="what-is">What is a Significance Test?</h2>
+
+    <p>A <strong>significance test</strong> (also called a hypothesis test) answers the question:</p>
+
+    <div class="card card-blue">
+        <em>"Is the difference between two numbers large enough to be real — or could it be due to random chance?"</em>
+    </div>
+
+    <p>In survey research, we compare values between column groups (e.g. <em>Product A vs Product B</em>, <em>Dhaka vs Rajshahi</em>). Even when two percentages look different on paper, the difference might simply be due to sampling variation. The sig test quantifies how confident we are that the observed difference is genuine.</p>
+
+    <ul>
+        <li>If the difference <strong>is statistically significant</strong> → the result is written as an <strong>UPPERCASE letter</strong> in the sig test row (e.g. <code>B</code> means this column is significantly higher than column B).</li>
+        <li>If significant at the <strong>lower confidence level only</strong> (when two levels are selected) → written as a <strong>lowercase letter</strong> (e.g. <code>b</code>).</li>
+        <li>If the difference <strong>is not significant</strong> → the cell is left blank.</li>
+    </ul>
+
+    <!-- ──────────────────────────────────────────────
+         WHEN APPLIED
+    ────────────────────────────────────────────── -->
+    <h2 id="when-applied">When is it Applied?</h2>
+
+    <p>Two different row types in the CTable Excel output each trigger a different formula:</p>
+
+    <table>
+        <tr>
+            <th>Row Label (C1)</th>
+            <th>Data in that Row</th>
+            <th>Sig Test Row Inserted</th>
+            <th>Formula Used</th>
+        </tr>
+        <tr>
+            <td>Regular data rows<br><small>Yes / No / TOP 2 BOX / BOTTOM 2 BOX / etc.</small></td>
+            <td>Percentages (%)</td>
+            <td><strong>S.TEST</strong> inserted between every two consecutive data rows</td>
+            <td>Proportion Z-Test</td>
+        </tr>
+        <tr>
+            <td><strong>MEAN</strong></td>
+            <td>Mean (average) score</td>
+            <td><strong>SIG. TEST</strong> inserted immediately after the MEAN row</td>
+            <td>Mean Z-Test (uses S.E. row)</td>
+        </tr>
+    </table>
+
+    <div class="note">
+        <strong>Rows that are skipped</strong> (no S.TEST inserted before or after them):<br>
+        <code>S.D.</code> &nbsp;·&nbsp; <code>S.E.</code> &nbsp;·&nbsp; <code>DUMMY ROW</code> — these are derived metric rows, not base data.
+    </div>
+
+    <!-- ──────────────────────────────────────────────
+         OUTPUT
+    ────────────────────────────────────────────── -->
+    <h2 id="output">Reading the Output</h2>
+
+    <p>After running the sig test, letters appear in the <strong>S.TEST</strong> or <strong>SIG. TEST</strong> rows:</p>
+
+    <div class="excel-row">
+        <div class="cell header">Row label</div>
+        <div class="cell header center">Total</div>
+        <div class="cell header center">Col A</div>
+        <div class="cell header center">Col B</div>
+        <div class="cell header center">Col C</div>
+        <div class="cell header center">Col D</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell letter">Letters</div>
+        <div class="cell center">—</div>
+        <div class="cell letter center">A</div>
+        <div class="cell letter center">B</div>
+        <div class="cell letter center">C</div>
+        <div class="cell letter center">D</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">Total (N)</div>
+        <div class="cell center">509</div>
+        <div class="cell center">63</div>
+        <div class="cell center">64</div>
+        <div class="cell center">64</div>
+        <div class="cell center">64</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">Yes</div>
+        <div class="cell center">72%</div>
+        <div class="cell center">55%</div>
+        <div class="cell center">78%</div>
+        <div class="cell center">80%</div>
+        <div class="cell center">74%</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">S.TEST</div>
+        <div class="cell center"></div>
+        <div class="cell center"></div>
+        <div class="cell sig center">A</div>
+        <div class="cell sig center">A</div>
+        <div class="cell center"></div>
+    </div>
+
+    <br>
+    <p><strong>How to read this:</strong></p>
+    <ul>
+        <li>Column B (78%) has <strong>A</strong> → Column B is significantly higher than Column A (55%) at the upper confidence level.</li>
+        <li>Column C (80%) has <strong>A</strong> → Column C is significantly higher than Column A.</li>
+        <li>Column D (74%) is blank → not significantly different from A, B, or C.</li>
+    </ul>
+
+    <div class="note success">
+        <strong>Rule:</strong> A letter written in a column's S.TEST cell means that column's value is significantly <em>higher</em> than the column identified by that letter.
+    </div>
+
+    <!-- ──────────────────────────────────────────────
+         PROPORTION Z-TEST
+    ────────────────────────────────────────────── -->
+    <h2 id="prop-test">Test 1 — Proportion Z-Test</h2>
+    <p><span class="badge badge-blue">Used for</span> &nbsp; Percentage rows: Yes/No, Agree/Disagree, TOP 2 BOX, BOTTOM 2 BOX, and all other % data rows.</p>
+
+    <h3>The Formula</h3>
+
+    <div class="formula-box">
+        <div class="label">Proportion Z-Test:</div>
+        z &nbsp;=&nbsp; |p₁ &minus; p₂| &nbsp;/&nbsp; &radic;( p₁(1&minus;p₁)/n₁ &nbsp;+&nbsp; p₂(1&minus;p₂)/n₂ )
+    </div>
+
+    <h3>Variable Definitions</h3>
+    <table>
+        <tr><th>Variable</th><th>Meaning</th><th>Where it comes from</th></tr>
+        <tr><td><strong>p₁, p₂</strong></td><td>Proportions for column 1 and column 2 (percentage ÷ 100)</td><td>Data row (e.g. "Yes" row), divided by 100</td></tr>
+        <tr><td><strong>n₁, n₂</strong></td><td>Base sample sizes for each column</td><td><strong>Total</strong> row (the row labelled "Total" just below the letter row)</td></tr>
+        <tr><td><strong>z</strong></td><td>Computed test statistic</td><td>Compared against the critical value to decide significance</td></tr>
+    </table>
+
+    <h3>Step-by-Step Calculation</h3>
+    <div class="card card-blue">
+        <h4>Example: Column A (55%, n=63) vs Column B (78%, n=64)</h4>
+        <ol>
+            <li>Convert percentages to proportions: &nbsp; p₁ = 55/100 = 0.55 &nbsp;·&nbsp; p₂ = 78/100 = 0.78</li>
+            <li>Compute variance for each: &nbsp; p₁(1&minus;p₁)/n₁ = 0.55 × 0.45 / 63 = 0.003929 &nbsp;·&nbsp; p₂(1&minus;p₂)/n₂ = 0.78 × 0.22 / 64 = 0.002681</li>
+            <li>Sum the variances: &nbsp; 0.003929 + 0.002681 = 0.006610</li>
+            <li>Take the square root: &nbsp; &radic;0.006610 = 0.08131</li>
+            <li>Compute z: &nbsp; |0.55 &minus; 0.78| / 0.08131 = 0.23 / 0.08131 = <strong>2.829</strong></li>
+            <li>Compare: 2.829 &gt; 1.960 (95% critical value) → <strong>Significant at 95%</strong> → write uppercase <strong>A</strong> in Column B's S.TEST cell.</li>
+        </ol>
+    </div>
+
+    <h3>When the Formula Returns Zero</h3>
+    <ul>
+        <li>If either <strong>n = 0</strong> → no comparison possible, result = 0.</li>
+        <li>If the denominator = 0 (both proportions are exactly 0% or 100%) → no variance to measure, result = 0.</li>
+    </ul>
+
+    <!-- ──────────────────────────────────────────────
+         MEAN Z-TEST
+    ────────────────────────────────────────────── -->
+    <h2 id="mean-test">Test 2 — Mean Z-Test</h2>
+    <p><span class="badge badge-green">Used for</span> &nbsp; The <strong>MEAN</strong> row only. The mean z-test uses Standard Error (S.E.) values instead of sample proportions.</p>
+
+    <h3>Why a Different Formula?</h3>
+    <p>The proportion z-test only works for data that is either 0 or 1 (yes/no, agree/disagree). A <em>mean score</em> (e.g. 4.2 on a 5-point scale) is a continuous value — the proportion formula would produce nonsensical results. Instead we use the <strong>standard error</strong> of the mean to quantify uncertainty.</p>
+
+    <h3>The Formula</h3>
+    <div class="formula-box">
+        <div class="label">Mean Z-Test using Standard Error:</div>
+        z &nbsp;=&nbsp; |mean₁ &minus; mean₂| &nbsp;/&nbsp; &radic;( SE₁² &nbsp;+&nbsp; SE₂² )
+    </div>
+
+    <h3>Variable Definitions</h3>
+    <table>
+        <tr><th>Variable</th><th>Meaning</th><th>Where it comes from</th></tr>
+        <tr><td><strong>mean₁, mean₂</strong></td><td>Mean scores for column 1 and column 2</td><td><strong>MEAN</strong> row (directly above SIG. TEST)</td></tr>
+        <tr><td><strong>SE₁, SE₂</strong></td><td>Standard Error of the mean for each column</td><td><strong>S.E.</strong> row (2 rows below SIG. TEST)</td></tr>
+        <tr><td><strong>z</strong></td><td>Computed test statistic</td><td>Compared against critical value</td></tr>
+    </table>
+
+    <h3>Row Layout in Excel</h3>
+    <div class="excel-row">
+        <div class="cell label">MEAN</div>
+        <div class="cell center">4.37</div>
+        <div class="cell center">4.38</div>
+        <div class="cell center">4.53</div>
+        <div class="cell center">4.49</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">SIG. TEST</div>
+        <div class="cell center"></div>
+        <div class="cell sig center">&nbsp;</div>
+        <div class="cell center"></div>
+        <div class="cell center"></div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">S. D.</div>
+        <div class="cell center">0.671</div>
+        <div class="cell center">0.658</div>
+        <div class="cell center">0.590</div>
+        <div class="cell center">0.644</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">S. E.</div>
+        <div class="cell center">0.0297</div>
+        <div class="cell center">0.0829</div>
+        <div class="cell center">0.0738</div>
+        <div class="cell center">0.0812</div>
+    </div>
+
+    <br>
+    <h3>Step-by-Step Calculation</h3>
+    <div class="card card-green">
+        <h4>Example: Column A (mean=4.38, SE=0.0829) vs Column B (mean=4.53, SE=0.0738)</h4>
+        <ol>
+            <li>Difference of means: &nbsp; |4.38 &minus; 4.53| = 0.15</li>
+            <li>Square each SE: &nbsp; SE₁² = 0.0829² = 0.006872 &nbsp;·&nbsp; SE₂² = 0.0738² = 0.005446</li>
+            <li>Sum of squares: &nbsp; 0.006872 + 0.005446 = 0.012318</li>
+            <li>Square root: &nbsp; &radic;0.012318 = 0.11098</li>
+            <li>Compute z: &nbsp; 0.15 / 0.11098 = <strong>1.351</strong></li>
+            <li>Compare: 1.351 &lt; 1.645 (90%) → <strong>Not significant at 90%</strong> → cell left blank.</li>
+        </ol>
+    </div>
+
+    <div class="note">
+        <strong>Why use SE and not SD?</strong><br>
+        Standard Deviation (S.D.) measures spread within a single group. Standard Error (SE = SD / &radic;n) measures the precision of the <em>mean estimate</em> — it accounts for sample size. Comparing means using SE directly is mathematically equivalent to using SD/&radic;n, but simpler since SE values are already present in the table.
+    </div>
+
+    <!-- ──────────────────────────────────────────────
+         Z vs T
+    ────────────────────────────────────────────── -->
+    <h2 id="z-vs-t">Z-Test vs T-Table</h2>
+
+    <p>Both the proportion test and the mean test compute a <strong>z-score</strong>. The question is: what critical value do we compare it against?</p>
+
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Critical Value Source</th>
+            <th>Accounts for Sample Size?</th>
+            <th>Best For</th>
+        </tr>
+        <tr>
+            <td><strong>Z-Test</strong></td>
+            <td>Standard Normal distribution (fixed values: 1.96, 1.645…)</td>
+            <td class="center">No — same threshold for n=30 or n=3000</td>
+            <td>Large samples (n &gt; 30 per column)</td>
+        </tr>
+        <tr>
+            <td><strong>T-Table</strong></td>
+            <td>t-distribution with df = n₁ + n₂ − 2 (adjusts per pair)</td>
+            <td class="center">Yes — threshold is higher when samples are small</td>
+            <td>Small or moderate samples; more conservative</td>
+        </tr>
+    </table>
+
+    <h3>How the T Critical Value is Calculated</h3>
+    <p>The t critical value is derived from the z critical value using the <strong>Cornish-Fisher series expansion</strong>:</p>
+
+    <div class="formula-box">
+        <div class="label">Cornish-Fisher expansion (df = n₁ + n₂ − 2):</div>
+        t &nbsp;=&nbsp; z &nbsp;+&nbsp; (z³ + z) / (4·df)
+        &nbsp;+&nbsp; (5z⁵ + 16z³ + 3z) / (96·df²)
+        &nbsp;+&nbsp; (3z⁷ + 19z⁵ + 17z³ &minus; 15z) / (384·df³)
+    </div>
+
+    <p>This converges to z as df → ∞ (large samples). Examples at 95% confidence (z = 1.960):</p>
+
+    <table>
+        <tr>
+            <th class="center">df (n₁+n₂−2)</th>
+            <th class="center">Z critical (fixed)</th>
+            <th class="center">T critical (adjusted)</th>
+            <th>Practical difference</th>
+        </tr>
+        <tr><td class="center">10</td><td class="center">1.960</td><td class="center">2.219</td><td>Large — z is too lenient for small samples</td></tr>
+        <tr><td class="center">20</td><td class="center">1.960</td><td class="center">2.093</td><td>Moderate</td></tr>
+        <tr><td class="center">30</td><td class="center">1.960</td><td class="center">2.042</td><td>Small</td></tr>
+        <tr><td class="center">60</td><td class="center">1.960</td><td class="center">2.000</td><td>Very small</td></tr>
+        <tr><td class="center">120</td><td class="center">1.960</td><td class="center">1.980</td><td>Negligible</td></tr>
+        <tr><td class="center">≥1000</td><td class="center">1.960</td><td class="center">1.960</td><td>Identical</td></tr>
+    </table>
+
+    <div class="note warn">
+        <strong>Important:</strong> With T-Table selected, the threshold is computed <em>per column pair</em> because each pair has its own n₁ and n₂. A pair of small-n columns gets a higher (stricter) threshold than a pair of large-n columns in the same table.
+    </div>
+
+    <!-- ──────────────────────────────────────────────
+         CRITICAL VALUES
+    ────────────────────────────────────────────── -->
+    <h2 id="critical-values">Critical Values Reference</h2>
+
+    <p>These are the z critical values (standard normal) used in the application. When T-Table is selected, these values are adjusted upward using the Cornish-Fisher formula above.</p>
+
+    <table>
+        <tr>
+            <th>Confidence Level</th>
+            <th class="center">α (significance)</th>
+            <th class="center">α/2 (two-tailed)</th>
+            <th class="center">Z Critical Value</th>
+            <th>Meaning</th>
+        </tr>
+        <tr><td>80%</td><td class="center">0.20</td><td class="center">0.10</td><td class="center"><strong>1.282</strong></td><td>1 in 5 chance of false positive</td></tr>
+        <tr><td>85%</td><td class="center">0.15</td><td class="center">0.075</td><td class="center"><strong>1.440</strong></td><td></td></tr>
+        <tr><td>90%</td><td class="center">0.10</td><td class="center">0.05</td><td class="center"><strong>1.645</strong></td><td>1 in 10 chance of false positive</td></tr>
+        <tr><td>95%</td><td class="center">0.05</td><td class="center">0.025</td><td class="center"><strong>1.960</strong></td><td>Industry standard — 1 in 20</td></tr>
+        <tr><td>98%</td><td class="center">0.02</td><td class="center">0.010</td><td class="center"><strong>2.326</strong></td><td></td></tr>
+        <tr><td>99%</td><td class="center">0.01</td><td class="center">0.005</td><td class="center"><strong>2.576</strong></td><td>1 in 100 chance of false positive</td></tr>
+    </table>
+
+    <p>When <strong>two confidence levels</strong> are selected (e.g. 95% + 90%):</p>
+    <ul>
+        <li>z ≥ 1.960 (upper level) → <strong>UPPERCASE letter</strong></li>
+        <li>1.645 ≤ z &lt; 1.960 (lower level) → <strong>lowercase letter</strong></li>
+        <li>z &lt; 1.645 → blank</li>
+    </ul>
+
+    <!-- ──────────────────────────────────────────────
+         WORKFLOW
+    ────────────────────────────────────────────── -->
+    <h2 id="workflow">Step-by-Step Workflow</h2>
+
+    <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+            <strong>Section 1 — Prepare Table</strong><br>
+            Browse to the CTable Excel file. Select the worksheet. Click <em>Run</em>.<br>
+            The system will:
+            <ul>
+                <li>Clear all DUMMY ROW data</li>
+                <li>Detect banner variable groups and attribute sub-groups</li>
+                <li>Insert a <strong>letter row</strong> just above each Total row (A, B, C… or P, Q, R… per group)</li>
+                <li>Insert <strong>S.TEST</strong> rows between consecutive data rows and <strong>SIG. TEST</strong> after each MEAN row</li>
+                <li>Generate and save the <strong>Group Definition file</strong> automatically</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+            <strong>Review the prepared Excel</strong><br>
+            Open the Excel file and verify the letter assignments in the letter row. Adjust the Group Definition file if needed before running the sig test.
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+            <strong>Section 2 — Run Sig Test</strong><br>
+            Browse to the prepared Excel file. The Group Definition file path is pre-filled from Section 1. Select:
+            <ul>
+                <li>The worksheet to test</li>
+                <li>Level(s) of confidence (one level = UPPERCASE only; two levels = UPPERCASE + lowercase)</li>
+                <li>Test method: <em>Z-Test</em> or <em>T-Table</em></li>
+            </ul>
+            Click <em>Run Sig Test</em>.
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+            <strong>Interpret results</strong><br>
+            Letters in S.TEST and SIG. TEST rows indicate which columns are significantly higher. Uppercase = significant at the higher threshold; lowercase = significant only at the lower threshold.
+        </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────────
+         GROUP DEF FILE
+    ────────────────────────────────────────────── -->
+    <h2 id="group-def">Group Definition File</h2>
+
+    <p>The Group Definition file tells the sig test which columns should be compared against each other. Only columns within the <em>same group line</em> are compared — columns in different lines are never compared, avoiding meaningless cross-group comparisons.</p>
+
+    <h3>File Format</h3>
+    <div class="card card-gray">
+        <pre style="font-family:Consolas,monospace; font-size:13px; line-height:1.8; color:#1f2937;">
+3,4,5,6,7,8,9          ← Group 1 column numbers  (Product: C3–C9)
+10,11                   ← Group 2 column numbers  (Panel 1: C10–C11)
+12,13                   ← Group 3 column numbers  (Panel 2: C12–C13)
+14,15                   ← Group 4 column numbers  (Panel 3: C14–C15)
+...
+26,27,28,29             ← Group N column numbers  (Centre – Dhaka)
+30,31,32,33             ← Group N+1 column numbers (Centre – Rajshahi)
+############################
+ABCDEFG                 ← Maximum Set 1 letters used (A–O range)
+PQRSTUV                 ← Maximum Set 2 letters used (P–Z range)
+        </pre>
+    </div>
+
+    <ul>
+        <li><strong>Above ####</strong>: Each line is one comparison group. Column numbers are absolute Excel column indices (C3 = 3, C10 = 10, etc.).</li>
+        <li><strong>Below ####</strong>: Reference showing the maximum letters assigned from each letter set. Used for documentation only — the sig test uses the column numbers above.</li>
+    </ul>
+
+    <h3>Why Column Numbers, Not Letters?</h3>
+    <p>Letters repeat across groups (e.g. both Column 3 and Column 12 may have letter <strong>A</strong> in the letter row — Product-A and Panel2-A respectively). If the sig test compared by letter, it would incorrectly cross-compare Product columns with Panel columns. Column numbers are always unique and unambiguous.</p>
+
+    <!-- ──────────────────────────────────────────────
+         WORKED EXAMPLE
+    ────────────────────────────────────────────── -->
+    <h2 id="example">Worked Example — Full Table</h2>
+
+    <h3>Setup</h3>
+    <p>Consider a simple table comparing two products (A and B) across two panels (Panel 1: P, Q and Panel 2: A, B).</p>
+
+    <p><strong>Group Definition file:</strong></p>
+    <div class="card card-gray">
+        <pre style="font-family:Consolas,monospace; font-size:13px;">3,4
+5,6
+############################
+AB
+PQ</pre>
+    </div>
+
+    <p><strong>Prepared Excel structure:</strong></p>
+    <div class="excel-row">
+        <div class="cell header">C1</div>
+        <div class="cell header center">C2 (Total)</div>
+        <div class="cell header center">C3</div>
+        <div class="cell header center">C4</div>
+        <div class="cell header center">C5</div>
+        <div class="cell header center">C6</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">Letter row</div>
+        <div class="cell center">—</div>
+        <div class="cell letter center">A</div>
+        <div class="cell letter center">B</div>
+        <div class="cell letter center">P</div>
+        <div class="cell letter center">Q</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">Total (N)</div>
+        <div class="cell center">200</div>
+        <div class="cell center">50</div>
+        <div class="cell center">50</div>
+        <div class="cell center">50</div>
+        <div class="cell center">50</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">Agree</div>
+        <div class="cell center">60%</div>
+        <div class="cell center">40%</div>
+        <div class="cell center">70%</div>
+        <div class="cell center">55%</div>
+        <div class="cell center">65%</div>
+    </div>
+    <div class="excel-row">
+        <div class="cell label">S.TEST</div>
+        <div class="cell center"></div>
+        <div class="cell center"></div>
+        <div class="cell sig center">A</div>
+        <div class="cell center"></div>
+        <div class="cell center"></div>
+    </div>
+
+    <br>
+    <h3>Calculations</h3>
+
+    <div class="card card-blue">
+        <h4>Group 1: C3 (A=40%, n=50) vs C4 (B=70%, n=50)</h4>
+        <p>p₁ = 0.40, p₂ = 0.70</p>
+        <p>z = |0.40 − 0.70| / &radic;(0.40×0.60/50 + 0.70×0.30/50)</p>
+        <p>z = 0.30 / &radic;(0.0048 + 0.0042) = 0.30 / &radic;0.0090 = 0.30 / 0.0949 = <strong>3.16</strong></p>
+        <p>3.16 &gt; 1.960 → <strong>Significant at 95%</strong> → write uppercase <strong>A</strong> in Column B's S.TEST cell.</p>
+    </div>
+
+    <div class="card card-gray">
+        <h4>Group 2: C5 (P=55%, n=50) vs C6 (Q=65%, n=50)</h4>
+        <p>p₁ = 0.55, p₂ = 0.65</p>
+        <p>z = |0.55 − 0.65| / &radic;(0.55×0.45/50 + 0.65×0.35/50)</p>
+        <p>z = 0.10 / &radic;(0.00495 + 0.00455) = 0.10 / &radic;0.0095 = 0.10 / 0.09747 = <strong>1.026</strong></p>
+        <p>1.026 &lt; 1.645 → <strong>Not significant at 90% or above</strong> → cell left blank.</p>
+    </div>
+
+    <div class="note warn">
+        <strong>Cross-group comparison is blocked:</strong><br>
+        C3 (Group 1) and C5 (Group 2) are in different group definition lines. Even though both have value 40% and 55%, they are <em>never</em> compared against each other. This is correct — Product A and Panel 1 are completely different categories.
+    </div>
+
+    <br>
+    <p style="color:#6b7280; font-size:12px; text-align:center; border-top:1px solid #e5e7eb; padding-top:20px; margin-top:20px;">
+        SmartSurvey Desktop — Significance Test Help Guide &nbsp;·&nbsp; CTable Analytics Module
+    </p>
+
+</main>
+
+</body>
+</html>

@@ -212,15 +212,15 @@ namespace DBI_Scripting.Forms.Analytics
             }
 
             // ── Read Banner Variables sheet from structure Excel (6 columns) ──
-            var bannerGroupOrder    = new List<string>();
-            var dicBannerSpssVars   = new Dictionary<string, string>();
-            var dicBannerLabel      = new Dictionary<string, string>();
-            var dicBannerCodes      = new Dictionary<string, List<string>>();
-            var dicBannerNewLabels  = new Dictionary<string, List<string>>();
+            var bannerGroupOrder = new List<string>();
+            var dicBannerSpssVars = new Dictionary<string, string>();
+            var dicBannerLabel = new Dictionary<string, string>();
+            var dicBannerCodes = new Dictionary<string, List<string>>();
+            var dicBannerNewLabels = new Dictionary<string, List<string>>();
             var dicBannerConditions = new Dictionary<string, List<string>>();
 
-            Excel.Application bannerXlApp     = new Excel.Application();
-            Excel.Workbook    bannerXlWorkBook = bannerXlApp.Workbooks.Open(txtStructureExcelPath.Text, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+            Excel.Application bannerXlApp = new Excel.Application();
+            Excel.Workbook bannerXlWorkBook = bannerXlApp.Workbooks.Open(txtStructureExcelPath.Text, 0, true, 5, "", "", true, Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
             try
             {
                 foreach (Excel.Worksheet ws in bannerXlWorkBook.Worksheets)
@@ -236,11 +236,11 @@ namespace DBI_Scripting.Forms.Analytics
                         object c5 = ws.Cells[bi, 5].Value2;
                         object c6 = ws.Cells[bi, 6].Value2;
 
-                        string spssV     = c1 != null ? c1.ToString().Trim() : "";
-                        string bannerV   = c2 != null ? c2.ToString().Trim() : "";
-                        string labelV    = c3 != null ? c3.ToString().Trim() : "";
-                        string newCode   = c4 != null ? c4.ToString().Trim() : "";
-                        string newLabel  = c5 != null ? c5.ToString().Trim() : "";
+                        string spssV = c1 != null ? c1.ToString().Trim() : "";
+                        string bannerV = c2 != null ? c2.ToString().Trim() : "";
+                        string labelV = c3 != null ? c3.ToString().Trim() : "";
+                        string newCode = c4 != null ? c4.ToString().Trim() : "";
+                        string newLabel = c5 != null ? c5.ToString().Trim() : "";
                         string condition = c6 != null ? c6.ToString().Trim() : "";
 
                         if (string.IsNullOrWhiteSpace(spssV) || string.IsNullOrWhiteSpace(bannerV))
@@ -249,10 +249,10 @@ namespace DBI_Scripting.Forms.Analytics
                         if (!bannerGroupOrder.Contains(bannerV))
                         {
                             bannerGroupOrder.Add(bannerV);
-                            dicBannerSpssVars[bannerV]   = spssV;
-                            dicBannerLabel[bannerV]      = labelV;
-                            dicBannerCodes[bannerV]      = new List<string>();
-                            dicBannerNewLabels[bannerV]  = new List<string>();
+                            dicBannerSpssVars[bannerV] = spssV;
+                            dicBannerLabel[bannerV] = labelV;
+                            dicBannerCodes[bannerV] = new List<string>();
+                            dicBannerNewLabels[bannerV] = new List<string>();
                             dicBannerConditions[bannerV] = new List<string>();
                         }
                         else if (string.IsNullOrWhiteSpace(dicBannerLabel[bannerV]) && !string.IsNullOrWhiteSpace(labelV))
@@ -280,18 +280,18 @@ namespace DBI_Scripting.Forms.Analytics
 
             foreach (string bannerV in bannerGroupOrder)
             {
-                var    codes      = dicBannerCodes[bannerV];
-                var    newLabels  = dicBannerNewLabels[bannerV];
-                var    conditions = dicBannerConditions[bannerV];
-                string spssVars   = dicBannerSpssVars[bannerV];
-                bool   isMultiVar = spssVars.Trim().Contains(" ");
+                var codes = dicBannerCodes[bannerV];
+                var newLabels = dicBannerNewLabels[bannerV];
+                var conditions = dicBannerConditions[bannerV];
+                string spssVars = dicBannerSpssVars[bannerV];
+                bool isMultiVar = spssVars.Trim().Contains(" ");
 
                 // Row-level: New Code / New Label / Condition must all be filled or all empty
                 for (int vi = 0; vi < codes.Count; vi++)
                 {
-                    bool hasCode  = !string.IsNullOrWhiteSpace(codes[vi]);
+                    bool hasCode = !string.IsNullOrWhiteSpace(codes[vi]);
                     bool hasLabel = !string.IsNullOrWhiteSpace(newLabels[vi]);
-                    bool hasCond  = !string.IsNullOrWhiteSpace(conditions[vi]);
+                    bool hasCond = !string.IsNullOrWhiteSpace(conditions[vi]);
                     if ((hasCode || hasLabel || hasCond) && !(hasCode && hasLabel && hasCond))
                     {
                         validationErrors.Add("'" + bannerV + "' row " + (vi + 1) + ": New Code, New Label and Condition must all be filled or all empty.");
@@ -301,7 +301,7 @@ namespace DBI_Scripting.Forms.Analytics
 
                 // Group-level: cannot mix filled and empty rows
                 bool anyFilled = codes.Any(c => !string.IsNullOrWhiteSpace(c));
-                bool anyEmpty  = codes.Any(c =>  string.IsNullOrWhiteSpace(c));
+                bool anyEmpty = codes.Any(c => string.IsNullOrWhiteSpace(c));
                 if (anyFilled && anyEmpty)
                     validationErrors.Add("'" + bannerV + "': cannot mix rows with and without custom grouping (New Code).");
 
@@ -353,22 +353,27 @@ namespace DBI_Scripting.Forms.Analytics
             txt_writer.WriteLine("*************************************Banner************************************");
             txt_writer.WriteLine("");
             txt_writer.WriteLine("COMPUTE ATotal=1.");
-            //txt_writer.WriteLine(@"VARIABLE LABELS ATotal ""Total"".");
+            txt_writer.WriteLine(@"VARIABLE LABELS ATotal ""Total"".");
             txt_writer.WriteLine(@"VALUE LABELS ATotal 1 ""Total"".");
             txt_writer.WriteLine("");
+            txt_writer.WriteLine("NUMERIC nBlank (f8.0).");
+            txt_writer.WriteLine("COMPUTE nBlank=99.");
+            txt_writer.WriteLine(@"VALUE LABELS nBlank 99 ""DUMMY ROW"".");
+            txt_writer.WriteLine("");
+
 
 
 
             // ── Generate banner syntax (mode-based) ──────────────────────────
             foreach (string bannerV in bannerGroupOrder)
             {
-                string spssVars  = dicBannerSpssVars[bannerV];
+                string spssVars = dicBannerSpssVars[bannerV];
                 string bannerLbl = dicBannerLabel[bannerV];
-                var    codes     = dicBannerCodes[bannerV];
-                var    newLabels = dicBannerNewLabels[bannerV];
-                var    conds     = dicBannerConditions[bannerV];
-                bool   isCustom  = codes.Any(c => !string.IsNullOrWhiteSpace(c));
-                bool   isMultiVar = spssVars.Trim().Contains(" ");
+                var codes = dicBannerCodes[bannerV];
+                var newLabels = dicBannerNewLabels[bannerV];
+                var conds = dicBannerConditions[bannerV];
+                bool isCustom = codes.Any(c => !string.IsNullOrWhiteSpace(c));
+                bool isMultiVar = spssVars.Trim().Contains(" ");
 
                 txt_writer.WriteLine("NUMERIC " + bannerV + " (f8.0).");
 
@@ -494,50 +499,50 @@ namespace DBI_Scripting.Forms.Analytics
                 else if (lstTableType[i] == "3")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"Mean\".");
+                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN\".");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S.D.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S.E.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
                     txt_writer.WriteLine("");
                 }
                 else if (lstTableType[i] == "5")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"Mean\".");
+                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN\".");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S.D.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S.E.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
                     txt_writer.WriteLine("");
                 }
                 else if (lstTableType[i] == "6")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"Mean (Rev)\".");
+                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN (Rev)\".");
                     txt_writer.WriteLine("RECODE m_" + lstVariableName[i] + " (1=5)(2=4)(3=3)(4=2)(5=1).");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S.D.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S.E.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
                     txt_writer.WriteLine("");
                 }
                 else if (lstTableType[i] == "7")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"Mean\".");
+                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN\".");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S.D.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S.E.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
                     txt_writer.WriteLine("");
 
                 }
@@ -549,46 +554,46 @@ namespace DBI_Scripting.Forms.Analytics
                 else if (lstTableType[i] == "9")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"Mean\".");
+                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN\".");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S.D.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S.E.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
                     txt_writer.WriteLine("");
 
                 }
                 else if (lstTableType[i] == "10")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"Mean\".");
+                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN\".");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S.D.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S.E.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
                     txt_writer.WriteLine("");
 
                 }
                 else if (lstTableType[i] == "11")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"Mean\".");
+                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN\".");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S.D.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S.E.\".");
+                    txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
                     txt_writer.WriteLine("");
 
                 }
                 else if (lstTableType[i] == "12")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
-                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"Mean\".");
+                    txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN\".");
                     txt_writer.WriteLine("");
 
                     txt_writer.WriteLine("COMPUTE X_" + lstVariableName[i] + " = (" + lstVariableName[i] + " >= 9).");
@@ -604,7 +609,7 @@ namespace DBI_Scripting.Forms.Analytics
             txt_writer.WriteLine("");
 
             txt_writer.WriteLine("*Please specify the file save path.");
-            txt_writer.WriteLine("SAVE OUTFILE='" + myPath + "\\" + outputExcelFileName + "_Final.sav'.");
+            txt_writer.WriteLine("SAVE OUTFILE='" + myPath + "\\" + outputExcelFileName + "_Final.sav'");
             txt_writer.WriteLine("/COMPRESSED.");
 
             return true;
@@ -679,11 +684,22 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("* Custom Tables.");
                     txt_writer.WriteLine("CTABLES");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                    txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
-                    txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] BY " + bannerText1 + "");
+
+                    if (chkIncludeBlankRow.IsChecked == true)
+                    {
+                        txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " nBlank DISPLAY=NONE");
+                        txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + nBlank [COUNT F40.0] BY " + bannerText1 + "");
+                    }
+                    else
+                    {
+                        txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
+                        txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] BY " + bannerText1 + "");
+                    }
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    if (chkIncludeBlankRow.IsChecked == true)
+                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=nBlank ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -720,11 +736,22 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine("* Custom Tables.");
                         txt_writer.WriteLine("CTABLES");
                         txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
-                        txt_writer.WriteLine("  /VLABELS VARIABLES=$" + lstMRUniqueVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
-                        txt_writer.WriteLine("  /TABLE $" + lstMRUniqueVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] BY " + bannerText1 + "");
+
+                        if (chkIncludeBlankRow.IsChecked == true)
+                        {
+                            txt_writer.WriteLine("  /VLABELS VARIABLES=$" + lstMRUniqueVariableName[i] + " " + nestedVairables + " nBlank DISPLAY=NONE");
+                            txt_writer.WriteLine("  /TABLE $" + lstMRUniqueVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + nBlank [COUNT F40.0] BY " + bannerText1 + "");
+                        }
+                        else
+                        {
+                            txt_writer.WriteLine("  /VLABELS VARIABLES=$" + lstMRUniqueVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
+                            txt_writer.WriteLine("  /TABLE $" + lstMRUniqueVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] BY " + bannerText1 + "");
+                        }
                         txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                         txt_writer.WriteLine("  /CATEGORIES VARIABLES=$" + lstMRUniqueVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                        if (chkIncludeBlankRow.IsChecked == true)
+                            txt_writer.WriteLine("  /CATEGORIES VARIABLES=nBlank ORDER=A KEY=VALUE EMPTY=INCLUDE");
                         txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                         txt_writer.WriteLine("  /TITLES");
                         txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", "") + "'");
@@ -765,7 +792,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + m_" + lstVariableName[i] + " [S][MEAN F40.2] + sd_" + lstVariableName[i] + " [S][STDDEV F40.2] + se_" + lstVariableName[i] + " [S][SEMEAN F40.2] BY " + bannerText1 + "");
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -813,7 +840,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, &cat1, &cat2, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -861,7 +888,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, &cat1, &cat2, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -914,7 +941,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -980,7 +1007,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1030,7 +1057,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1080,7 +1107,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1127,7 +1154,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, &cat1, &cat2, &cat3, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1156,60 +1183,60 @@ namespace DBI_Scripting.Forms.Analytics
         {
             try
             {
-            if (txtStructureExcelPath.Text != "")
-            {
-                if (File.Exists(txtStructureExcelPath.Text) == true)
+                if (txtStructureExcelPath.Text != "")
                 {
-                    if (txtOutputFileName.Text != "")
+                    if (File.Exists(txtStructureExcelPath.Text) == true)
                     {
-                        List<String> lstTextFile = new List<string>();
-
-                        if (lstWorkSheetName.Count > 0)
+                        if (txtOutputFileName.Text != "")
                         {
+                            List<String> lstTextFile = new List<string>();
 
-
-                            xlApp = new Excel.Application();
-                            xlWorkBook = xlApp.Workbooks.Open(txtStructureExcelPath.Text, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
-                            lstTextFile.Clear();            //Clear the txt file path list
-                            for (int i = 1; i <= xlWorkBook.Worksheets.Count; i++)
+                            if (lstWorkSheetName.Count > 0)
                             {
-                                if (lstWorkSheetName.Contains(xlWorkBook.Worksheets[i].Name.ToString()))
+
+
+                                xlApp = new Excel.Application();
+                                xlWorkBook = xlApp.Workbooks.Open(txtStructureExcelPath.Text, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+                                lstTextFile.Clear();            //Clear the txt file path list
+                                for (int i = 1; i <= xlWorkBook.Worksheets.Count; i++)
                                 {
-                                    string sheetName = xlWorkBook.Worksheets[i].Name.ToString();
-                                    if (File.Exists("C:\\Temp" + "\\" + sheetName + ".ism"))
-                                        File.Delete("C:\\Temp" + "\\" + sheetName + ".ism");
+                                    if (lstWorkSheetName.Contains(xlWorkBook.Worksheets[i].Name.ToString()))
+                                    {
+                                        string sheetName = xlWorkBook.Worksheets[i].Name.ToString();
+                                        if (File.Exists("C:\\Temp" + "\\" + sheetName + ".ism"))
+                                            File.Delete("C:\\Temp" + "\\" + sheetName + ".ism");
 
-                                    Excel.Worksheet worksheet = (Excel.Worksheet)xlApp.Worksheets[sheetName];
+                                        Excel.Worksheet worksheet = (Excel.Worksheet)xlApp.Worksheets[sheetName];
 
-                                    worksheet.Select(true);
+                                        worksheet.Select(true);
 
-                                    xlWorkBook.SaveAs("C:\\Temp" + "\\" + sheetName + ".ism", Excel.XlFileFormat.xlTextWindows, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                                    lstTextFile.Add("C:\\Temp" + "\\" + sheetName + ".ism");
-                                    txtPath = "C:\\Temp" + "\\" + sheetName + ".ism";
+                                        xlWorkBook.SaveAs("C:\\Temp" + "\\" + sheetName + ".ism", Excel.XlFileFormat.xlTextWindows, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                                        lstTextFile.Add("C:\\Temp" + "\\" + sheetName + ".ism");
+                                        txtPath = "C:\\Temp" + "\\" + sheetName + ".ism";
+                                    }
                                 }
+                                xlWorkBook.Close(false);
+                                releaseObject(xlWorkBook);
+                                releaseObject(xlApp);
+                                //this.quitProcess();
+
+                                //Delete all txt fiel
+                                //for (int ix = 0; ix < lstTextFile.Count; ix++)
+                                //{
+                                //    this.DeleteFilesFromFolders(lstTextFile[ix]);
+                                //}
+
+
                             }
-                            xlWorkBook.Close(false);
-                            releaseObject(xlWorkBook);
-                            releaseObject(xlApp);
-                            //this.quitProcess();
-
-                            //Delete all txt fiel
-                            //for (int ix = 0; ix < lstTextFile.Count; ix++)
-                            //{
-                            //    this.DeleteFilesFromFolders(lstTextFile[ix]);
-                            //}
-
-
                         }
+                        else
+                            MessageBox.Show("Project Name should not be blank");
                     }
                     else
-                        MessageBox.Show("Project Name should not be blank");
+                        MessageBox.Show("File does not exist in the selected location");
                 }
                 else
-                    MessageBox.Show("File does not exist in the selected location");
-            }
-            else
-                MessageBox.Show("Excel File location should not be blank");
+                    MessageBox.Show("Excel File location should not be blank");
 
             }
             catch (Exception ex)
@@ -1265,7 +1292,7 @@ namespace DBI_Scripting.Forms.Analytics
         private bool createFile(string syntaxType)
         {
             string basePath = txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\'));
-            string prefix   = syntaxType == "Table_Cpt" ? "01" : syntaxType == "Table_Count" ? "02" : "00";
+            string prefix = syntaxType == "Table_Cpt" ? "01" : syntaxType == "Table_Count" ? "02" : "00";
             string filePath = basePath + "\\" + prefix + "." + txtOutputFileName.Text + "_" + syntaxType + ".SPS";
 
             if (File.Exists(filePath))
@@ -1453,11 +1480,11 @@ namespace DBI_Scripting.Forms.Analytics
             }
 
             // Capture before going async — myPath must not be read from background thread
-            string spssPath    = txtSpssDataFile.Text;
+            string spssPath = txtSpssDataFile.Text;
             string outputFolder = myPath;
 
             btnBrowseGetStrucutureFile.IsEnabled = false;
-            btnBrowseGetStrucutureFile.Content   = "Creating...";
+            btnBrowseGetStrucutureFile.Content = "Creating...";
             Mouse.OverrideCursor = Cursors.Wait;
 
             try
@@ -1486,7 +1513,7 @@ namespace DBI_Scripting.Forms.Analytics
             {
                 Mouse.OverrideCursor = null;
                 btnBrowseGetStrucutureFile.IsEnabled = true;
-                btnBrowseGetStrucutureFile.Content   = "Create Structure File";
+                btnBrowseGetStrucutureFile.Content = "Create Structure File";
             }
         }
 
@@ -1495,7 +1522,7 @@ namespace DBI_Scripting.Forms.Analytics
             var tcs = new TaskCompletionSource<bool>();
             var thread = new Thread(() =>
             {
-                try   { action(); tcs.SetResult(true); }
+                try { action(); tcs.SetResult(true); }
                 catch (Exception ex) { tcs.SetException(ex); }
             });
             thread.SetApartmentState(ApartmentState.STA);
@@ -1517,19 +1544,19 @@ namespace DBI_Scripting.Forms.Analytics
             var xlCodeSheet = (Excel.Worksheet)worksheets.Add(worksheets[1], Type.Missing, Type.Missing, Type.Missing);
             xlCodeSheet.Name = "Code Mapping";
 
-            xlCodeSheet.Cells[1,  1] = "0";  xlCodeSheet.Cells[1,  2] = "Don't use";
-            xlCodeSheet.Cells[2,  1] = "1";  xlCodeSheet.Cells[2,  2] = "Single Response";              xlCodeSheet.Cells[2,  3] = "Column Pct";
-            xlCodeSheet.Cells[3,  1] = "2";  xlCodeSheet.Cells[3,  2] = "Multiple Response";            xlCodeSheet.Cells[3,  3] = "Column Pct";
-            xlCodeSheet.Cells[4,  1] = "3";  xlCodeSheet.Cells[4,  2] = "Single Response With Mean";    xlCodeSheet.Cells[4,  3] = "Column Pct with Mean";
-            xlCodeSheet.Cells[5,  1] = "4";  xlCodeSheet.Cells[5,  2] = "Rank Response";               xlCodeSheet.Cells[5,  3] = "";
-            xlCodeSheet.Cells[6,  1] = "5";  xlCodeSheet.Cells[6,  2] = "Scaled Question (5)";         xlCodeSheet.Cells[6,  3] = "T2B Cpct B2B Mean S.D. S.E.";
-            xlCodeSheet.Cells[7,  1] = "6";  xlCodeSheet.Cells[7,  2] = "Scaled Question - Reverse (5)"; xlCodeSheet.Cells[7, 3] = "T2B Cpct B2B Mean S.D. S.E.";
-            xlCodeSheet.Cells[8,  1] = "7";  xlCodeSheet.Cells[8,  2] = "Scaled Question (7)";         xlCodeSheet.Cells[8,  3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
-            xlCodeSheet.Cells[9,  1] = "8";  xlCodeSheet.Cells[9,  2] = "";                            xlCodeSheet.Cells[9,  3] = "";
-            xlCodeSheet.Cells[10, 1] = "9";  xlCodeSheet.Cells[10, 2] = "Scaled Question (9)";         xlCodeSheet.Cells[10, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
-            xlCodeSheet.Cells[11, 1] = "10"; xlCodeSheet.Cells[11, 2] = "Scaled Question (10)";        xlCodeSheet.Cells[11, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
-            xlCodeSheet.Cells[12, 1] = "11"; xlCodeSheet.Cells[12, 2] = "Scaled Question (11)";        xlCodeSheet.Cells[12, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
-            xlCodeSheet.Cells[13, 1] = "12"; xlCodeSheet.Cells[13, 2] = "NPS Question (11)";           xlCodeSheet.Cells[13, 3] = "CPT Promoter [9-10] Passive [7-8] Detractor [0-6]";
+            xlCodeSheet.Cells[1, 1] = "0"; xlCodeSheet.Cells[1, 2] = "Don't use";
+            xlCodeSheet.Cells[2, 1] = "1"; xlCodeSheet.Cells[2, 2] = "Single Response"; xlCodeSheet.Cells[2, 3] = "Column Pct";
+            xlCodeSheet.Cells[3, 1] = "2"; xlCodeSheet.Cells[3, 2] = "Multiple Response"; xlCodeSheet.Cells[3, 3] = "Column Pct";
+            xlCodeSheet.Cells[4, 1] = "3"; xlCodeSheet.Cells[4, 2] = "Single Response With Mean"; xlCodeSheet.Cells[4, 3] = "Column Pct with Mean";
+            xlCodeSheet.Cells[5, 1] = "4"; xlCodeSheet.Cells[5, 2] = "Rank Response"; xlCodeSheet.Cells[5, 3] = "";
+            xlCodeSheet.Cells[6, 1] = "5"; xlCodeSheet.Cells[6, 2] = "Scaled Question (5)"; xlCodeSheet.Cells[6, 3] = "T2B Cpct B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[7, 1] = "6"; xlCodeSheet.Cells[7, 2] = "Scaled Question - Reverse (5)"; xlCodeSheet.Cells[7, 3] = "T2B Cpct B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[8, 1] = "7"; xlCodeSheet.Cells[8, 2] = "Scaled Question (7)"; xlCodeSheet.Cells[8, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[9, 1] = "8"; xlCodeSheet.Cells[9, 2] = ""; xlCodeSheet.Cells[9, 3] = "";
+            xlCodeSheet.Cells[10, 1] = "9"; xlCodeSheet.Cells[10, 2] = "Scaled Question (9)"; xlCodeSheet.Cells[10, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[11, 1] = "10"; xlCodeSheet.Cells[11, 2] = "Scaled Question (10)"; xlCodeSheet.Cells[11, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[12, 1] = "11"; xlCodeSheet.Cells[12, 2] = "Scaled Question (11)"; xlCodeSheet.Cells[12, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
+            xlCodeSheet.Cells[13, 1] = "12"; xlCodeSheet.Cells[13, 2] = "NPS Question (11)"; xlCodeSheet.Cells[13, 3] = "CPT Promoter [9-10] Passive [7-8] Detractor [0-6]";
 
             xlCodeSheet.Columns.AutoFit();
             xlCodeSheet.Columns[1].ColumnWidth = 10;
@@ -1628,7 +1655,7 @@ namespace DBI_Scripting.Forms.Analytics
 
                 for (int i = 2; i <= range.Rows.Count; i++)
                 {
-                    string temp1   = myWorksheet.Cells[i, 2].Value.ToString();
+                    string temp1 = myWorksheet.Cells[i, 2].Value.ToString();
                     string varType = myWorksheet.Cells[i, 3].Value.ToString();
 
                     if (!varType.ToUpper().Contains("TEXT"))

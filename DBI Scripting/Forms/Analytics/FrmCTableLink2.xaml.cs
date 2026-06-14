@@ -193,10 +193,21 @@ namespace DBI_Scripting.Forms.Analytics
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtAnalysisExcelPath.Text) || !File.Exists(txtAnalysisExcelPath.Text))
+            {
+                MessageBox.Show("Please browse and select an Excel file first.");
+                return;
+            }
+
+            btnRun.IsEnabled = false;
+            ClearBlankRows();
+
             if (comLinkFormat.Text == "General Format")
                 this.generalLinkFormat();
             else if (comLinkFormat.Text == "Standard Format")
                 this.DBILinkFormat();
+
+            btnRun.IsEnabled = true;
         }
 
         private void generalLinkFormat()
@@ -259,9 +270,16 @@ namespace DBI_Scripting.Forms.Analytics
             int filterIndex = 0;
             int baseIndex = 0;
             j = 1;
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = myRange.Rows.Count;
+            progressBar1.Value = 0;
+            lblStatus.Text = "Step 2: Scanning table rows...";
+            PumpDispatcher();
             for (i = 1; i < myRange.Rows.Count; i++)
             //  for(j=1;j<myRange.Columns.Count;j++)
             {
+                progressBar1.Value = i;
+                if (i % 20 == 0) { lblStatus.Text = $"Step 2: Scanning row {i} of {myRange.Rows.Count}..."; PumpDispatcher(); }
                 string tmp = removeDoubleCot(String.Empty + inputSheet.Cells[i, j].value2);
                 if (tmp.StartsWith("Table "))
                 {
@@ -311,6 +329,11 @@ namespace DBI_Scripting.Forms.Analytics
             }
 
 
+            lblStatus.Text = $"Step 2: Writing index sheet ({index} tables found)...";
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = index;
+            progressBar1.Value = 0;
+            PumpDispatcher();
             outputSheet.Cells[startRow - 1, startColunm] = "Project : " + projectName;
             outputSheet.Cells[startRow - 1, startColunm + 1] = "";
             outputSheet.Cells[startRow - 1, startColunm + 2] = "";
@@ -324,6 +347,8 @@ namespace DBI_Scripting.Forms.Analytics
             myRange.Font.Bold = false;
             for (i = 0; i < index; i++)
             {
+                progressBar1.Value = i + 1;
+                if (i % 10 == 0) { lblStatus.Text = $"Step 2: Writing table {i + 1} of {index}..."; PumpDispatcher(); }
                 if (radioTableTitle.IsChecked == true)
                 {
                     outputSheet.Cells[i + startRow + 1, startColunm] = "Table " + (i + 1).ToString().PadLeft(2, '0');
@@ -396,9 +421,8 @@ namespace DBI_Scripting.Forms.Analytics
             //don't display gridline
             xlApp.ActiveWindow.DisplayGridlines = false;
 
-            //outputSheet.Activate();            
-
-            //xlApp.ActiveWindow.DisplayGridlines = false;
+            lblStatus.Text = "Step 2: Saving file...";
+            PumpDispatcher();
             xlWorkBook.Save();
             //xlApp.Visible = true;
             xlApp.Quit();
@@ -408,6 +432,9 @@ namespace DBI_Scripting.Forms.Analytics
             releaseObject(xlWorkBook);
             releaseObject(xlApp);
 
+            lblStatus.Text = $"Complete — {index} table(s) indexed successfully.";
+            progressBar1.Value = progressBar1.Maximum;
+            PumpDispatcher();
             MessageBox.Show("Index for table has been created successfully");
         }
 
@@ -431,6 +458,8 @@ namespace DBI_Scripting.Forms.Analytics
             //*********************************************
 
             //*********************************************
+            lblStatus.Text = "Step 2: Pre-processing table (inserting spacing rows)...";
+            PumpDispatcher();
             this.InsrtBlankRow();
             //*********************************************
 
@@ -475,9 +504,16 @@ namespace DBI_Scripting.Forms.Analytics
             int filterIndex = 0;
             int baseIndex = 0;
             j = 1;
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = myRange.Rows.Count;
+            progressBar1.Value = 0;
+            lblStatus.Text = "Step 3: Scanning table rows...";
+            PumpDispatcher();
             for (i = 1; i < myRange.Rows.Count; i++)
             //  for(j=1;j<myRange.Columns.Count;j++)
             {
+                progressBar1.Value = i;
+                if (i % 20 == 0) { lblStatus.Text = $"Step 3: Scanning row {i} of {myRange.Rows.Count}..."; PumpDispatcher(); }
                 string tmp = removeDoubleCot(String.Empty + inputSheet.Cells[i, j].value2);
                 if (tmp.StartsWith("XXTable "))
                 {
@@ -617,6 +653,11 @@ namespace DBI_Scripting.Forms.Analytics
 
 
             startRow = startRow + 5;
+            lblStatus.Text = $"Step 3: Writing index sheet ({index} tables found)...";
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = index;
+            progressBar1.Value = 0;
+            PumpDispatcher();
             outputSheet.Cells[startRow, startColunm] = "Table No.";
             outputSheet.Cells[startRow, startColunm + 1] = "Table Title";
             outputSheet.Cells[startRow, startColunm + 2] = "Filter";
@@ -625,6 +666,8 @@ namespace DBI_Scripting.Forms.Analytics
             //myRange.Font.Bold = false;
             for (i = 0; i < index; i++)
             {
+                progressBar1.Value = i + 1;
+                if (i % 10 == 0) { lblStatus.Text = $"Step 3: Writing table {i + 1} of {index}..."; PumpDispatcher(); }
                 if (radioTableTitle.IsChecked == true)
                 {
                     outputSheet.Cells[i + startRow + 1, startColunm] = "Table " + (i + 1).ToString().PadLeft(2, '0');
@@ -702,9 +745,8 @@ namespace DBI_Scripting.Forms.Analytics
             //don't display gridline
             xlApp.ActiveWindow.DisplayGridlines = false;
 
-            //outputSheet.Activate();            
-
-            //xlApp.ActiveWindow.DisplayGridlines = false;
+            lblStatus.Text = "Step 3: Saving file...";
+            PumpDispatcher();
             xlWorkBook.Save();
             //xlApp.Visible = true;
             xlApp.Quit();
@@ -714,6 +756,9 @@ namespace DBI_Scripting.Forms.Analytics
             releaseObject(xlWorkBook);
             releaseObject(xlApp);
 
+            lblStatus.Text = $"Complete — {index} table(s) indexed successfully.";
+            progressBar1.Value = progressBar1.Maximum;
+            PumpDispatcher();
             MessageBox.Show("Index for table has been created successfully");
         }
 
@@ -1158,6 +1203,83 @@ namespace DBI_Scripting.Forms.Analytics
             releaseObject(xlWorkBook1);
             releaseObject(xlApp1);
         }
+        private void ClearBlankRows()
+        {
+            Excel.Application xlApp1 = new Excel.Application();
+            Excel.Workbook xlWorkBook1 = xlApp1.Workbooks.Open(
+                txtAnalysisExcelPath.Text, 0, false, 5, "", "", false,
+                Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", true, false, 0, true, 1, 0);
+
+            string sheetName = txtTableSheetName.Text.Trim();
+            Excel.Worksheet worksheet1 = null;
+
+            for (int i = 1; i <= xlWorkBook1.Worksheets.Count; i++)
+            {
+                if (xlWorkBook1.Worksheets[i].Name.ToString() == sheetName)
+                {
+                    worksheet1 = (Excel.Worksheet)xlWorkBook1.Worksheets[sheetName];
+                    break;
+                }
+            }
+
+            if (worksheet1 == null)
+            {
+                MessageBox.Show($"Sheet '{sheetName}' not found in the workbook.");
+                xlWorkBook1.Close(false);
+                xlApp1.Quit();
+                releaseObject(xlWorkBook1);
+                releaseObject(xlApp1);
+                return;
+            }
+
+            Excel.Range usedRange = worksheet1.UsedRange;
+            int totalRows = usedRange.Rows.Count;
+            int totalCols = usedRange.Columns.Count;
+            int clearedCount = 0;
+
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = totalRows;
+            progressBar1.Value = 0;
+            lblStatus.Text = "Step 1: Scanning for DUMMY ROWs...";
+            PumpDispatcher();
+
+            for (int j = 1; j <= totalRows; j++)
+            {
+                progressBar1.Value = j;
+
+                object cellVal = worksheet1.Cells[j, 1].Value2;
+                if (cellVal != null && cellVal.ToString().Trim() == "DUMMY ROW")
+                {
+                    clearedCount++;
+                    lblStatus.Text = $"Clearing DUMMY ROW at row {j}  ({clearedCount} found so far)...";
+
+                    Excel.Range rowRange = (Excel.Range)worksheet1.Range[
+                        worksheet1.Cells[j, 1],
+                        worksheet1.Cells[j, totalCols]];
+                    rowRange.ClearContents();
+                    releaseObject(rowRange);
+                }
+
+                if (j % 20 == 0)
+                    PumpDispatcher();
+            }
+
+            xlWorkBook1.Save();
+            xlWorkBook1.Close(true);
+            releaseObject(worksheet1);
+            releaseObject(xlWorkBook1);
+            releaseObject(xlApp1);
+
+            progressBar1.Value = totalRows;
+            lblStatus.Text = $"Step 1 done: {clearedCount} DUMMY ROW(s) cleared. Continuing...";
+            PumpDispatcher();
+        }
+
+        private void PumpDispatcher()
+        {
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => { }));
+        }
+
         private void InsrtBlankRow()
         {
             Excel.Application xlApp1 = new Excel.Application();
@@ -1220,6 +1342,7 @@ namespace DBI_Scripting.Forms.Analytics
                         j++;
                         progressBar1.Maximum = range.Rows.Count;
                         progressBar1.Value = j;
+                        if (j % 20 == 0) { lblStatus.Text = $"Step 2: Pre-processing row {j} of {range.Rows.Count}..."; PumpDispatcher(); }
                         if (worksheet1.Cells[j, 1].Value2 != null)
                         {
                             string tmp = removeDoubleCot(String.Empty + worksheet1.Cells[j, 1].value2);

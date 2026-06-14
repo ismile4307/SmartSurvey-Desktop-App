@@ -158,6 +158,7 @@
                     <RibbonButton x:Name="btnCumulativeSyntax" LargeImageSource="Images\Excel_17559_32.png" Label="Cumulative Syntax" KeyTip="V" Click="btnCumulativeSyntax_Click"/>
                     <RibbonButton x:Name="btnCTableSyntax" LargeImageSource="Images\getBrandCode32.png" Label="CTable Syntax" KeyTip="V" Click="btnCTableSyntax_Click"/>
                     <RibbonButton x:Name="btnCTableLink" LargeImageSource="Images\Table132.png" Label="CTable Link" KeyTip="X" Click="btnCTableLink_Click"/>
+                    <RibbonButton x:Name="btnCTableSigTest" LargeImageSource="Images\getPromoCode32.png" Label="CTable Sig Test" KeyTip="G" Click="btnCTableSigTest_Click"/>
                     <RibbonButton x:Name="btn4" LargeImageSource="Images\Folder-Blue-Apps-icon.png" Label="Compare SPSS" KeyTip="V"/>
                 </RibbonGroup>
                 <RibbonGroup x:Name="AnalyticsGroup5" Header="Process">
