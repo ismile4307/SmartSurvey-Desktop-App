@@ -222,8 +222,8 @@ namespace DBI_Scripting
 
         private void btnCumulativeSyntax_Click(object sender, RoutedEventArgs e)
         {
-            FrmCumulativeSyntax myFrmCumulativeSyntax = new FrmCumulativeSyntax();
-            myFrmCumulativeSyntax.ShowDialog();
+            FrmSummaryTableSyntax frm = new FrmSummaryTableSyntax();
+            frm.ShowDialog();
         }
 
         private void btnUploadMedia_Click(object sender, RoutedEventArgs e)

@@ -155,7 +155,7 @@
                     <RibbonButton x:Name="btnOEUnPivot" LargeImageSource="Images\Script132.png" Label="Un Pivot OESyntax" KeyTip="C" Click="btnOEUnPivot_Click"/>
                 </RibbonGroup>
                 <RibbonGroup x:Name="AnalyticsGroup4" Header="CTable Analysis">
-                    <RibbonButton x:Name="btnCumulativeSyntax" LargeImageSource="Images\Excel_17559_32.png" Label="Cumulative Syntax" KeyTip="V" Click="btnCumulativeSyntax_Click"/>
+                    <RibbonButton x:Name="btnCumulativeSyntax" LargeImageSource="Images\Excel_17559_32.png" Label="Summary Table Syntax" KeyTip="V" Click="btnCumulativeSyntax_Click"/>
                     <RibbonButton x:Name="btnCTableSyntax" LargeImageSource="Images\getBrandCode32.png" Label="CTable Syntax" KeyTip="V" Click="btnCTableSyntax_Click"/>
                     <RibbonButton x:Name="btnCTableLink" LargeImageSource="Images\Table132.png" Label="CTable Link" KeyTip="X" Click="btnCTableLink_Click"/>
                     <RibbonButton x:Name="btnCTableSigTest" LargeImageSource="Images\getPromoCode32.png" Label="CTable Sig Test" KeyTip="G" Click="btnCTableSigTest_Click"/>
