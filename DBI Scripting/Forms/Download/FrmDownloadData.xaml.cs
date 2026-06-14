@@ -1,4 +1,4 @@
-﻿using DBI_Scripting.Classes;
+using DBI_Scripting.Classes;
 using DBI_Scripting.Model;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -13,879 +13,580 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace DBI_Scripting.Forms
 {
-    /// <summary>
-    /// Interaction logic for FrmDownloadData.xaml
-    /// </summary>
     public partial class FrmDownloadData : Window
     {
-        private Dictionary<string, string> dicDateConsiderVsCode;
-        private Dictionary<string, string> dicInterviewTypeVsCode;
-        private Dictionary<string, string> dicProjectNameVsCode;
-        private Dictionary<string, string> dicFileTypeVsCode;
+        // ─── Lookup dictionaries ─────────────────────────────────────────────
+        private Dictionary<string, string> _dateTypeMap;
+        private Dictionary<string, string> _interviewTypeMap;
+        private Dictionary<string, string> _projectCodeMap;
+        private Dictionary<string, string> _projectDbMap;
+        private Dictionary<string, string> _projectStartDateMap;
 
-        private Dictionary<string, string> dicProjectNameVsStartDate;
+        // ─── Downloaded tables ───────────────────────────────────────────────
+        private DataTable _dt1, _dt2, _dt3;
 
-        private Dictionary<string, string> dicProjectNameVsDBName;
-
-
-        private Dictionary<String, DataTable> dicDateVsTInterviewInfo = new Dictionary<String, DataTable>();
-        private Dictionary<String, DataTable> dicDateVsTRespAnswer = new Dictionary<String, DataTable>();
-        private Dictionary<String, DataTable> dicDateVsTOpenended = new Dictionary<String, DataTable>();
-
-        DataTable dt1, dt2, dt3;
-
-        private String startDate, endDate, interviewType;
-        private String databasePath;
+        // ─── Cancel support ──────────────────────────────────────────────────
+        private CancellationTokenSource _cts;
 
         public FrmDownloadData()
         {
             InitializeComponent();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        // ─── Initialisation ──────────────────────────────────────────────────
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //txtServerAddress.Text = Properties.Settings.Default.ServerAddress;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
             txtServerAddress.Text = StaticClass.SERVER_URL + "/deskapi/";
 
-            dicDateConsiderVsCode = new Dictionary<string, string>();
-            dicInterviewTypeVsCode = new Dictionary<string, string>();
-            dicFileTypeVsCode = new Dictionary<string, string>();
+            PopulateCombos();
 
-            this.populateDic();
-            dtpDateFrom.Text = DateTime.Now.ToShortDateString().ToString();
-            dtpDateTo.Text = DateTime.Now.ToShortDateString().ToString();
+            dtpDateFrom.SelectedDate = DateTime.Today;
+            dtpDateTo.SelectedDate   = DateTime.Today;
+            comInterviewType.Text    = "Final Interviews";
+            comConsiderDate.Text     = "Sync Date";
+            comFileType.Text         = "Excel";
 
-            comInterviewType.Text = "Final Interviews";
-            comConsiderDate.Text = "Sync Date";
-            comFileType.Text = "Excel";
-
-            this.getProjectsFromServer();
-
+            await LoadProjectsAsync();
         }
 
-        private void populateDic()
+        private void PopulateCombos()
         {
-            comConsiderDate.Items.Clear();
-            comConsiderDate.Items.Add("Sync Date");
-            comConsiderDate.Items.Add("Interview Date");
+            _dateTypeMap = new Dictionary<string, string>
+            {
+                { "Sync Date",      "2" },
+                { "Interview Date", "1" }
+            };
+            comConsiderDate.ItemsSource = _dateTypeMap.Keys.ToList();
 
-            dicDateConsiderVsCode.Clear();
-            dicDateConsiderVsCode.Add("Sync Date", "2");
-            dicDateConsiderVsCode.Add("Interview Date", "1");
-
-            comInterviewType.Items.Clear();
-            comInterviewType.Items.Add("Final Interviews");
-            comInterviewType.Items.Add("Test Interviews");
-            comInterviewType.Items.Add("Reject Interviews");
-            comInterviewType.Items.Add("Terminate Interviews");
-            comInterviewType.Items.Add("Incomplete Interviews");
-            comInterviewType.Items.Add("Final & Terminate Interviews");
-            comInterviewType.Items.Add("Deleted Interviews");
-
-            dicInterviewTypeVsCode.Clear();
-            dicInterviewTypeVsCode.Add("Final Interviews", "1");
-            dicInterviewTypeVsCode.Add("Test Interviews", "2");
-            dicInterviewTypeVsCode.Add("Reject Interviews", "3");
-            dicInterviewTypeVsCode.Add("Terminate Interviews", "4");
-            dicInterviewTypeVsCode.Add("Incomplete Interviews", "5");
-            dicInterviewTypeVsCode.Add("Final & Terminate Interviews", "6");
-            dicInterviewTypeVsCode.Add("Deleted Interviews", "7");
+            _interviewTypeMap = new Dictionary<string, string>
+            {
+                { "Final Interviews",             "1" },
+                { "Test Interviews",              "2" },
+                { "Reject Interviews",            "3" },
+                { "Terminate Interviews",         "4" },
+                { "Incomplete Interviews",        "5" },
+                { "Final & Terminate Interviews", "6" },
+                { "Deleted Interviews",           "7" }
+            };
+            comInterviewType.ItemsSource = _interviewTypeMap.Keys.ToList();
 
             comFileType.Items.Clear();
             comFileType.Items.Add("Excel");
             comFileType.Items.Add("CSV");
-
-            dicFileTypeVsCode.Clear();
-            dicFileTypeVsCode.Add("Excel", "1");
-            dicFileTypeVsCode.Add("CSV", "2");
         }
 
-        private void btnExit_Click(object sender, RoutedEventArgs e)
+        private async Task LoadProjectsAsync()
         {
-            this.Close();
+            Log("Connecting to server...");
+            btnExecute.IsEnabled = false;
+            try
+            {
+                _projectCodeMap      = new Dictionary<string, string>();
+                _projectDbMap        = new Dictionary<string, string>();
+                _projectStartDateMap = new Dictionary<string, string>();
+
+                List<ProjectInfo> projects = await Task.Run(
+                    () => new DownloadClass().getProjectInfoFromServer());
+
+                comProjectName.Items.Clear();
+                if (projects != null && projects.Count > 0)
+                {
+                    foreach (var p in projects)
+                    {
+                        comProjectName.Items.Add(p.ProjectName);
+                        _projectCodeMap[p.ProjectName]      = p.ProjectCode;
+                        _projectDbMap[p.ProjectName]        = p.DatabaseName;
+                        _projectStartDateMap[p.ProjectName] = ConvertDateFormat(p.StartDate);
+                    }
+                    Log(projects.Count + " project(s) loaded.");
+                }
+                else
+                {
+                    Log("No projects returned. Check server connection.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Project load failed: " + ex.Message);
+            }
+            finally
+            {
+                btnExecute.IsEnabled = true;
+            }
         }
+
+        // ─── HTTP helper (async POST via WebClient) ──────────────────────────
+
+        private static async Task<string> PostAsync(string url, string body, CancellationToken ct)
+        {
+            using (var wc = new WebClient())
+            {
+                wc.Encoding = Encoding.UTF8;
+                wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                ct.Register(() => wc.CancelAsync());
+                return await wc.UploadStringTaskAsync(url, "POST", body);
+            }
+        }
+
+        private static DataTable ParseJson(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json)) return new DataTable();
+            return JsonConvert.DeserializeObject(json, typeof(DataTable)) as DataTable
+                   ?? new DataTable();
+        }
+
+        // ─── Download phases ─────────────────────────────────────────────────
+
+        private async Task DownloadScriptAsync(string dbName, string databasePath,
+            CancellationToken ct)
+        {
+            Log("Downloading project script from server...");
+            string source = StaticClass.SERVER_URL + "/scripts/" + dbName;
+            if (File.Exists(databasePath)) File.Delete(databasePath);
+            using (var wc = new WebClient())
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                ct.Register(() => wc.CancelAsync());
+                await wc.DownloadFileTaskAsync(source, databasePath);
+            }
+            Log("Script downloaded.");
+        }
+
+        private async Task DownloadRespondentsAsync(string startDate, string endDate,
+            string dateType, string projectCode, string interviewType, CancellationToken ct)
+        {
+            Log("Downloading respondents...");
+            SetStatus("Phase 1/3 — Respondents");
+            string body = "startDate=" + startDate + "&endDate=" + endDate
+                        + "&dateType=" + dateType + "&projectCode=" + projectCode
+                        + "&interviewType=" + interviewType;
+            string json = await PostAsync(
+                StaticClass.SERVER_URL + "/deskapi/respondentbyproject.php", body, ct);
+            DataTable dt = ParseJson(json);
+            if (dt.Rows.Count > 0) _dt1.Merge(dt);
+            Log("Respondents: " + _dt1.Rows.Count + " record(s).");
+        }
+
+        private async Task DownloadAnswersAsync(string startDate, string endDate,
+            string dateType, string projectCode, string interviewType, CancellationToken ct)
+        {
+            Log("Downloading answers...");
+            SetStatus("Phase 2/3 — Answers");
+            long offset = 0;
+            long batchCount;
+            int page = 1;
+            do
+            {
+                ct.ThrowIfCancellationRequested();
+                string body = "startDate=" + startDate + "&endDate=" + endDate
+                            + "&dateType=" + dateType + "&projectCode=" + projectCode
+                            + "&myOffset=" + offset + "&interviewType=" + interviewType;
+                string json = await PostAsync(
+                    StaticClass.SERVER_URL + "/deskapi/answerbyproject.php", body, ct);
+                DataTable dt = ParseJson(json);
+                batchCount = dt.Rows.Count;
+                if (batchCount > 0) _dt2.Merge(dt);
+                offset += batchCount;
+                Log("Answers page " + page + ": " + _dt2.Rows.Count + " row(s) so far...");
+                page++;
+            }
+            while (batchCount == 10000);
+            Log("Answers complete: " + _dt2.Rows.Count + " total row(s).");
+        }
+
+        private async Task DownloadOpenEndedAsync(string startDate, string endDate,
+            string dateType, string projectCode, string interviewType, CancellationToken ct)
+        {
+            Log("Downloading open-ended responses...");
+            SetStatus("Phase 3/3 — Open-Ended");
+            string body = "startDate=" + startDate + "&endDate=" + endDate
+                        + "&dateType=" + dateType + "&projectCode=" + projectCode
+                        + "&interviewType=" + interviewType;
+            string json = await PostAsync(
+                StaticClass.SERVER_URL + "/deskapi/openendedbyproject.php", body, ct);
+            DataTable dt = ParseJson(json);
+            if (dt.Rows.Count > 0) _dt3.Merge(dt);
+            Log("Open-ended: " + _dt3.Rows.Count + " record(s).");
+        }
+
+        // ─── Execute handler ─────────────────────────────────────────────────
+
+        private async void btnExecute_Click(object sender, RoutedEventArgs e)
+        {
+            if (!ValidateInputs()) return;
+
+            _cts = new CancellationTokenSource();
+            CancellationToken ct = _cts.Token;
+
+            btnExecute.IsEnabled = false;
+            btnCancel.IsEnabled  = true;
+            progressBar1.Value   = 0;
+            txtLog.Clear();
+
+            string projectName    = comProjectName.Text;
+            string dbName         = _projectDbMap[projectName];
+            string tempPath       = Path.GetTempPath();
+            string databasePath   = Path.Combine(tempPath, dbName);
+            string startDate      = dtpDateFrom.SelectedDate.Value.ToString("yyyy-MM-dd");
+            string endDate        = dtpDateTo.SelectedDate.Value.ToString("yyyy-MM-dd");
+            string dateType       = _dateTypeMap[comConsiderDate.Text];
+            string projectCode    = _projectCodeMap[projectName];
+            string interviewType  = _interviewTypeMap[comInterviewType.Text];
+            string format         = comFileType.Text;
+
+            try
+            {
+                // Step 1 — Download script
+                if (!File.Exists(databasePath) || chkDownloadScript.IsChecked == true)
+                {
+                    await DownloadScriptAsync(dbName, databasePath, ct);
+                }
+                else
+                {
+                    Log("Using cached project script.");
+                }
+                progressBar1.Value = 10;
+
+                // Step 2 — Download data
+                _dt1 = new DataTable();
+                _dt2 = new DataTable();
+                _dt3 = new DataTable();
+
+                await DownloadRespondentsAsync(startDate, endDate, dateType, projectCode, interviewType, ct);
+                progressBar1.Value = 30;
+
+                await DownloadAnswersAsync(startDate, endDate, dateType, projectCode, interviewType, ct);
+                progressBar1.Value = 60;
+
+                await DownloadOpenEndedAsync(startDate, endDate, dateType, projectCode, interviewType, ct);
+                progressBar1.Value = 75;
+
+                // Step 3 — Export (runs on UI thread; Excel COM must be UI-thread-affine)
+                Log("Building report...");
+                SetStatus("Exporting...");
+                ExportData(format, databasePath, projectName);
+                progressBar1.Value = 100;
+
+                Log("Complete.");
+                MessageBox.Show("Data download complete.", "Done",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (OperationCanceledException)
+            {
+                Log("Cancelled by user.");
+                progressBar1.Value = 0;
+                SetStatus("Cancelled.");
+            }
+            catch (Exception ex)
+            {
+                Log("Error: " + ex.Message);
+                MessageBox.Show("Error: " + ex.Message, "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                btnExecute.IsEnabled = true;
+                btnCancel.IsEnabled  = false;
+            }
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            _cts?.Cancel();
+            btnCancel.IsEnabled = false;
+            Log("Cancelling...");
+        }
+
+        // ─── Export (Phase 2 cleanup) ─────────────────────────────────────────
+
+        private void ExportData(string format, string databasePath, string projectName)
+        {
+            if (!File.Exists(databasePath))
+            {
+                MessageBox.Show("Script file not found:\n" + databasePath);
+                return;
+            }
+
+            var sql = new SQLite(databasePath);
+            sql.connect();
+
+            try
+            {
+                SetStatus("Building columns...");
+                List<string> columns      = sql.getTableColumnReport();
+                List<List<string>> data   = sql.getTableDataReport(columns, _dt1, _dt2, _dt3, progressBar1);
+
+                if (format == "Excel")
+                    ExportToExcel(columns, data);
+                else
+                    ExportToCsv(columns, data);
+            }
+            finally
+            {
+                sql.Qconnection?.Close();
+            }
+        }
+
+        private void ExportToExcel(List<string> columns, List<List<string>> data)
+        {
+            SetStatus("Writing Excel...");
+            Microsoft.Office.Interop.Excel.Application xlApp  = null;
+            Microsoft.Office.Interop.Excel.Workbook    xlBook = null;
+            object miss = System.Reflection.Missing.Value;
+            try
+            {
+                xlApp  = new Microsoft.Office.Interop.Excel.Application();
+                xlBook = xlApp.Workbooks.Add(miss);
+
+                // Sheet 1: Open-ended
+                var wsOE = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets.get_Item(1);
+                wsOE.Name = "Openended";
+                WriteOeSheet(wsOE);
+
+                // Sheet 2: Main data
+                var wsData = (Microsoft.Office.Interop.Excel.Worksheet)
+                    xlBook.Worksheets.Add(xlBook.Worksheets[1]);
+                wsData.Name = "Data";
+                WriteDataSheet(wsData, columns, data);
+
+                xlBook.SaveAs(txtSaveLocation.Text,
+                    Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
+                Log("Saved: " + txtSaveLocation.Text);
+            }
+            finally
+            {
+                xlBook?.Close(true, miss, miss);
+                xlApp?.Quit();
+                if (xlBook != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(xlBook);
+                if (xlApp  != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(xlApp);
+            }
+        }
+
+        private void ExportToCsv(List<string> columns, List<List<string>> data)
+        {
+            // OE sheet still goes to a companion Excel file
+            SetStatus("Writing OE Excel...");
+            Microsoft.Office.Interop.Excel.Application xlApp  = null;
+            Microsoft.Office.Interop.Excel.Workbook    xlBook = null;
+            object miss = System.Reflection.Missing.Value;
+            try
+            {
+                xlApp  = new Microsoft.Office.Interop.Excel.Application();
+                xlBook = xlApp.Workbooks.Add(miss);
+                var wsOE = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets.get_Item(1);
+                wsOE.Name = "Openended";
+                WriteOeSheet(wsOE);
+                string xlsxPath = Path.ChangeExtension(txtSaveLocation.Text, ".xlsx");
+                xlBook.SaveAs(xlsxPath,
+                    Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
+                Log("OE saved: " + xlsxPath);
+            }
+            finally
+            {
+                xlBook?.Close(true, miss, miss);
+                xlApp?.Quit();
+                if (xlBook != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(xlBook);
+                if (xlApp  != null) System.Runtime.InteropServices.Marshal.ReleaseComObject(xlApp);
+            }
+
+            // Main data → CSV
+            SetStatus("Writing CSV...");
+            string csvPath = Path.ChangeExtension(txtSaveLocation.Text, ".csv");
+            SaveToCsvStream(columns, data, csvPath);
+            Log("CSV saved: " + csvPath);
+        }
+
+        // ─── Sheet writers ───────────────────────────────────────────────────
+
+        private void WriteOeSheet(Microsoft.Office.Interop.Excel.Worksheet ws)
+        {
+            ws.Cells[1, 1] = "Respondent Id";
+            ws.Cells[1, 2] = "QId";
+            ws.Cells[1, 3] = "Attribute Value";
+            ws.Cells[1, 4] = "OE Verbatim";
+
+            int row = 2;
+            using (DataTableReader r = _dt3.CreateDataReader())
+            {
+                while (r.Read())
+                {
+                    ws.Cells[row, 1] = "'" + r["respondent_id"];
+                    ws.Cells[row, 2] = "'" + r["q_id"];
+                    ws.Cells[row, 3] = "'" + r["attribute_value"];
+                    ws.Cells[row, 4] = "'" + Clean(r["response"].ToString());
+                    row++;
+                }
+            }
+            ws.Columns.AutoFit();
+        }
+
+        private void WriteDataSheet(Microsoft.Office.Interop.Excel.Worksheet ws,
+            List<string> columns, List<List<string>> data)
+        {
+            for (int i = 0; i < columns.Count; i++)
+                ws.Cells[1, i + 1] = "'" + columns[i];
+
+            int totalRows = data.Count;
+            int totalCols = totalRows > 0 ? data[0].Count : columns.Count;
+            const int batchSize = 500;
+
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = totalRows;
+            progressBar1.Value   = 0;
+
+            for (int rowStart = 0; rowStart < totalRows; rowStart += batchSize)
+            {
+                int batch = Math.Min(batchSize, totalRows - rowStart);
+                var arr = new object[batch, totalCols];
+
+                for (int i = 0; i < batch; i++)
+                    for (int j = 0; j < totalCols; j++)
+                        arr[i, j] = "'" + Clean(data[rowStart + i][j]);
+
+                var startCell = (Microsoft.Office.Interop.Excel.Range)ws.Cells[rowStart + 2, 1];
+                var range     = startCell.get_Resize(batch, totalCols);
+                range.Value2  = arr;
+
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(range);
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(startCell);
+
+                int done = rowStart + batch;
+                progressBar1.Value = done;
+                SetStatus("Writing rows " + done + " / " + totalRows + "...");
+                DoEvents();
+            }
+
+            ws.Columns.AutoFit();
+        }
+
+        // ─── CSV helpers ─────────────────────────────────────────────────────
+
+        public static void SaveToCsvStream(
+            List<string> columnName, List<List<string>> tableData, string filePath)
+        {
+            using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
+            {
+                writer.WriteLine(EscapeCsvLine(columnName));
+                foreach (var row in tableData)
+                    writer.WriteLine(EscapeCsvLine(row));
+            }
+        }
+
+        private static string EscapeCsvLine(List<string> fields)
+        {
+            return string.Join(",", fields.Select(f =>
+            {
+                if (string.IsNullOrEmpty(f)) return "";
+                if (f.Contains(",") || f.Contains("\"") || f.Contains("\n"))
+                    return "\"" + f.Replace("\"", "\"\"") + "\"";
+                return f;
+            }));
+        }
+
+        // ─── Validation ──────────────────────────────────────────────────────
+
+        private bool ValidateInputs()
+        {
+            if (string.IsNullOrEmpty(comProjectName.Text))
+            { MessageBox.Show("Please select a project."); return false; }
+            if (string.IsNullOrEmpty(comConsiderDate.Text))
+            { MessageBox.Show("Please select a date type."); return false; }
+            if (string.IsNullOrEmpty(comInterviewType.Text))
+            { MessageBox.Show("Please select an interview type."); return false; }
+            if (string.IsNullOrEmpty(txtSaveLocation.Text))
+            { MessageBox.Show("Please select a save location."); return false; }
+            if (dtpDateFrom.SelectedDate == null || dtpDateTo.SelectedDate == null)
+            { MessageBox.Show("Please select valid dates."); return false; }
+            if (dtpDateFrom.SelectedDate.Value > dtpDateTo.SelectedDate.Value)
+            { MessageBox.Show("Start date must not be after end date."); return false; }
+            return true;
+        }
+
+        // ─── Browse handler ──────────────────────────────────────────────────
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-
+            var dlg = new SaveFileDialog { Title = "Save Data File" };
             if (comFileType.Text == "Excel")
-                saveFileDialog1.Filter = "Excel 2007|*.xlsx|All Files|*.*";
-            else if (comFileType.Text == "CSV")
-                saveFileDialog1.Filter = "Comma Seperated Value|*.csv|All Files|*.*";
+                dlg.Filter = "Excel 2007|*.xlsx|All Files|*.*";
+            else
+                dlg.Filter = "CSV|*.csv|All Files|*.*";
 
-            saveFileDialog1.Title = "Save Data File";
-            //saveFileDialog1.ShowDialog();
-
-            if (saveFileDialog1.ShowDialog() == true)
+            if (dlg.ShowDialog() == true)
             {
-                string s_temp = saveFileDialog1.FileName.Substring(0, saveFileDialog1.FileName.LastIndexOf('.'));
-                string fileFormat = saveFileDialog1.FileName.Substring(saveFileDialog1.FileName.LastIndexOf('.'));
-                txtSaveLocation.Text = s_temp + "_" + dtpDateFrom.Text.Replace('/', '_') + "_" + dtpDateTo.Text.Replace('/', '_') + fileFormat;
-
-                Properties.Settings.Default.StartupPath = saveFileDialog1.FileName.Substring(0, saveFileDialog1.FileName.LastIndexOf('\\')); ;
+                string dir     = Path.GetDirectoryName(dlg.FileName);
+                string nameOnly = Path.GetFileNameWithoutExtension(dlg.FileName);
+                string ext     = Path.GetExtension(dlg.FileName);
+                string suffix  = dtpDateFrom.SelectedDate?.ToString("yyyyMMdd")
+                               + "_" + dtpDateTo.SelectedDate?.ToString("yyyyMMdd");
+                txtSaveLocation.Text = Path.Combine(dir, nameOnly + "_" + suffix + ext);
+                Properties.Settings.Default.StartupPath = dir;
                 Properties.Settings.Default.Save();
             }
         }
 
-        private async void getProjectsFromServer()
-        {
-            await DoWorkAsync();
-            try
-            {
-                dicProjectNameVsCode = new Dictionary<string, string>();
-                dicProjectNameVsDBName = new Dictionary<string, string>();
-                dicProjectNameVsStartDate = new Dictionary<string, string>();
+        // ─── Project combo handlers ──────────────────────────────────────────
 
-                DownloadClass myDownloadClass = new DownloadClass();
-
-                List<ProjectInfo> listOfProjectInfo = new List<ProjectInfo>();
-
-                listOfProjectInfo = myDownloadClass.getProjectInfoFromServer();
-
-                comProjectName.Items.Clear();
-                for (int i = 0; i < listOfProjectInfo.Count; i++)
-                {
-                    string projectName = listOfProjectInfo[i].ProjectName;
-                    comProjectName.Items.Add(projectName);
-
-                    dicProjectNameVsCode.Add(projectName, listOfProjectInfo[i].ProjectCode);
-                    dicProjectNameVsDBName.Add(projectName, listOfProjectInfo[i].DatabaseName);
-                    dicProjectNameVsStartDate.Add(projectName, convertData(listOfProjectInfo[i].StartDate));
-                }
-
-
-                //string temp = myRequest.GetResponse().ToString();
-                //if (temp == "New record created successfully")
-                //{
-                //    UpdateSyncStatusToComplete(dicProjectNameVsCode[comProjectSyncData.Text], listOfUnSyncRespId[x], txtAnswerDBPath.Text);
-                //    //this.loadGrid(txtAnswerDBPath.Text);
-                //    //MessageBox.Show("One record has been uploaded successfully...");
-                //    lblMessageSyncData.Text = listOfUnSyncRespId[x] + " uploaded sucessfully";
-                //    Application.DoEvents();
-                //}
-                //else
-                //{
-                //MessageBox.Show("");
-                //}
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Server connection failed");
-            }
-
-        }
-
-        private string convertData(string myDate)
-        {
-            string convertedDate = "";
-            if (myDate != "")
-            {
-                string[] word = myDate.Split('-');
-                convertedDate = word[1] + "-" + word[0] + "-" + word[2];
-                return convertedDate;
-            }
-
-            return convertedDate;
-        }
-
-        private void populateTInterviewInfo()
-        {
-            //try
-            //{
-            lblExecute.Content = "Execute Now : " + "Download Data";
-            DoEvents();
-
-            WebClient c = new WebClient();
-            MyWebRequest myRequest1;
-            //if (chkDeletedRec.Checked == false)
-            //myRequest1 = new MyWebRequest(Properties.Settings.Default.ServerAddress + "/respondent.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
-            myRequest1 = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/respondentbyproject.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
-            //else
-            //myRequest1 = new MyWebRequest("http://capiapi.chronometerhub.com/download_data/respondentdel.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comDateConsider.Text] + "&projectCode=" + dicProjectNameVsCode[comProject.Text]);
-            string temp = StaticClass.SERVER_URL + "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text];
-            //Console.WriteLine(data);
-            //JObject o = JObject.Parse(data);
-            string data = myRequest1.GetResponse().ToString();
-
-            DataTable dt1_temp = (DataTable)JsonConvert.DeserializeObject(data, (typeof(DataTable)));
-
-            if (dt1_temp.Rows.Count > 0)
-                dt1.Merge(dt1_temp);
-
-            //if (!dicDateVsTInterviewInfo.ContainsKey(startDate))
-            //    dicDateVsTInterviewInfo.Add(startDate, dt1);
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
-        }
-
-        private void populateTResponseInfo()
-        {
-            lblExecute.Content = "Execute Now : " + "Download Data";
-            DoEvents();
-
-
-            long myOffset = 0;
-            long noOfRow = 10000;
-
-            while (noOfRow == 10000)
-            {
-                WebClient c = new WebClient();
-                MyWebRequest myRequest2;
-                //if (chkDeletedRec.Checked == false)
-                //myRequest2 = new MyWebRequest(Properties.Settings.Default.ServerAddress + "/answer.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&myOffset=" + myOffset.ToString() + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
-                myRequest2 = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/answerbyproject.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&myOffset=" + myOffset.ToString() + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
-                //else
-                //myRequest2 = new MyWebRequest("http://capiapi.chronometerhub.com/download_data/answerdel.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comDateConsider.Text] + "&projectCode=" + dicProjectNameVsCode[comProject.Text]);
-                //Console.WriteLine(data);
-                //JObject o = JObject.Parse(data);
-                string data = myRequest2.GetResponse().ToString();
-
-                DataTable dt2_temp = (DataTable)JsonConvert.DeserializeObject(data, (typeof(DataTable)));
-
-                //if (dt2_temp != null)
-                //{
-                if (dt2_temp.Rows.Count > 0)
-                    dt2.Merge(dt2_temp);
-
-
-                myOffset = myOffset + dt2_temp.Rows.Count;
-                noOfRow = dt2_temp.Rows.Count;
-                //}
-
-                c.Dispose();
-
-                //MessageBox.Show("");
-            }
-
-
-
-
-            //if (!dicDateVsTRespAnswer.ContainsKey(startDate))
-            //    dicDateVsTRespAnswer.Add(startDate, dt2);
-
-        }
-
-        private void populateTOpenendedInfo()
-        {
-            lblExecute.Content = "Execute Now : " + "Download Data";
-            DoEvents();
-
-            WebClient c = new WebClient();
-            MyWebRequest myRequest3;
-            //if (chkDeletedRec.Checked == false)
-            //myRequest3 = new MyWebRequest(Properties.Settings.Default.ServerAddress + "/openended.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
-            myRequest3 = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/openendedbyproject.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comConsiderDate.Text] + "&projectCode=" + dicProjectNameVsCode[comProjectName.Text] + "&interviewType=" + dicInterviewTypeVsCode[comInterviewType.Text]);
-            //else
-            //myRequest3 = new MyWebRequest("http://capiapi.chronometerhub.com/download_data/openendeddel.php", "POST", "startDate=" + startDate + "&endDate=" + endDate + "&dateType=" + dicDateConsiderVsCode[comDateConsider.Text] + "&projectCode=" + dicProjectNameVsCode[comProject.Text]);
-            //Console.WriteLine(data);
-            //JObject o = JObject.Parse(data);
-            string data = myRequest3.GetResponse().ToString();
-
-            DataTable dt3_temp = (DataTable)JsonConvert.DeserializeObject(data, (typeof(DataTable)));
-
-            if (dt3_temp.Rows.Count > 0)
-                dt3.Merge(dt3_temp);
-
-            //if (!dicDateVsTOpenended.ContainsKey(startDate))
-            //    dicDateVsTOpenended.Add(startDate, dt3);
-
-        }
-
-        private void exportToExcel()
-        {
-            //string TypeOfReport;
-            //try
-            //{
-
-            databasePath = @"C:\Temp\" + dicProjectNameVsDBName[comProjectName.Text];
-            //databasePath = System.AppDomain.CurrentDomain.BaseDirectory + "\\" + dicProjectNameVsDBName[comProjectName.Text];
-
-            if (File.Exists(databasePath) == false)
-            {
-                MessageBox.Show("Script file not found..");
-                return;
-            }
-
-
-            SQLite sql = new SQLite(databasePath);
-            sql.connect();
-
-
-
-            lblOperationNo.Content = "Operation No : 3/3";
-            lblExecute.Content = "Execute Now : Populate Excel";
-            //Application.DoEvents();
-
-
-
-
-            Microsoft.Office.Interop.Excel.Application xlApp;
-            Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
-            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
-            object misValue = System.Reflection.Missing.Value;
-
-            xlApp = new Microsoft.Office.Interop.Excel.Application();
-            xlWorkBook = xlApp.Workbooks.Add(misValue);
-
-            xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-            xlWorkSheet.Name = "Openeneded";
-
-
-            xlWorkSheet.Cells[1, 1] = "Respondent Id";
-            xlWorkSheet.Cells[1, 2] = "QId";
-            xlWorkSheet.Cells[1, 3] = "Attribute Value";
-            xlWorkSheet.Cells[1, 4] = "OE Verbatim";
-
-            int row = 2;
-            DataTableReader drd = dt3.CreateDataReader();// sql.getDataTableOpenended();
-
-            while (drd.Read())
-            {
-                xlWorkSheet.Cells[row, 1] = "'" + drd["respondent_id"].ToString();
-                xlWorkSheet.Cells[row, 2] = "'" + drd["q_id"].ToString();
-                xlWorkSheet.Cells[row, 3] = "'" + drd["attribute_value"].ToString();
-                xlWorkSheet.Cells[row, 4] = "'" + ReplaceNewlines(drd["response"].ToString(), " ");
-                row = row + 1;
-            }
-
-            xlWorkSheet.Columns.AutoFit();
-
-
-
-
-
-
-
-
-
-
-            //******************* Get the Openended *****************************************************
-
-            Microsoft.Office.Interop.Excel.Sheets worksheets = xlWorkBook.Worksheets;
-            var xlNewSheet = (Microsoft.Office.Interop.Excel.Worksheet)worksheets.Add(worksheets[1]);
-            xlNewSheet.Name = "Data";
-
-
-            List<string> columnName = new List<string>();
-            List<List<string>> tableData = new List<List<string>>();
-
-            columnName = sql.getTableColumnReport();
-            tableData = sql.getTableDataReport(columnName, dt1, dt2, dt3, progressBar1);
-
-            for (int i = 1; i <= columnName.Count; i++)
-            {
-                xlNewSheet.Cells[1, i] = "'" + columnName[i - 1];
-            }
-
-
-
-            int p = 1;
-            progressBar1.Minimum = 0;
-            progressBar1.Maximum = tableData.Count * tableData[0].Count;
-
-            // Get dimensions of the 2-d array
-            int rowCount = tableData.Count;// arrays.GetLength(0);
-            int columnCount = tableData[0].Count;// arrays.GetLength(0);
-
-            string[,] arrays = new string[rowCount, columnCount];//tableData.Select(a => a.ToArray()).ToArray();
-
-
-            for (int i = 1; i <= tableData.Count; i++)
-            {
-                for (int j = 1; j <= tableData[i - 1].Count; j++)
-                {
-                    progressBar1.Value = p;
-                    p++;
-
-                    arrays[i - 1, j - 1] = "'" + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ");
-
-                    //xlNewSheet.Cells[i + 1, j] = "'" + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ");
-                }
-            }
-
-
-
-            //// Get an Excel Range of the same dimensions
-            //Microsoft.Office.Interop.Excel.Range range = (Microsoft.Office.Interop.Excel.Range)xlNewSheet.Cells[2, 1];
-            //range = range.get_Resize(rowCount, columnCount);
-            //// Assign the 2-d array to the Excel Range
-            //range.set_Value(Microsoft.Office.Interop.Excel.XlRangeValueDataType.xlRangeValueDefault, arrays);
-
-
-            //xlNewSheet.Columns.AutoFit();
-
-            int batchSize = 500;
-            int totalRows = arrays.GetLength(0);
-            int totalCols = arrays.GetLength(1);
-
-            for (int rowStart = 0; rowStart < totalRows; rowStart += batchSize)
-            {
-                int currentBatchSize = Math.Min(batchSize, totalRows - rowStart);
-
-                object[,] batchArray = new object[currentBatchSize, totalCols];
-
-                // Copy current batch to batchArray
-                for (int i = 0; i < currentBatchSize; i++)
-                {
-                    for (int j = 0; j < totalCols; j++)
-                    {
-                        batchArray[i, j] = arrays[rowStart + i, j];
-                    }
-                }
-
-                // Define the Excel range
-                Microsoft.Office.Interop.Excel.Range startCell = (Microsoft.Office.Interop.Excel.Range)xlNewSheet.Cells[rowStart + 2, 1];
-                Microsoft.Office.Interop.Excel.Range writeRange = startCell.get_Resize(currentBatchSize, totalCols);
-
-                // Assign values
-                writeRange.Value2 = batchArray;
-
-                // Optional: release COM references (can help in long runs)
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(writeRange);
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(startCell);
-                writeRange = null;
-                startCell = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-            }
-
-            // Auto-fit columns after writing all data
-            xlNewSheet.Columns.AutoFit();
-
-
-            //xlApp.Visible = true;
-
-
-
-
-            //xlWorkBook.SaveAs(txt_SQLiteDB_Location.Text.Substring(0, txt_SQLiteDB_Location.Text.LastIndexOf("\\")) + "\\" + comProject.Text + "_" + txtWeekNo.Text + ".xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
-            //xlWorkBook.SaveAs("D:\\Ismile Personal\\New folder (2)\\Analysis\\" + comProject.Text + "_" + txtWeekNo.Text + ".xlsx", Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
-            xlWorkBook.SaveAs(txtSaveLocation.Text, Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
-            xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Quit();
-
-            sql.releaseObject(xlWorkSheet);
-            sql.releaseObject(xlWorkBook);
-            sql.releaseObject(xlApp);
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("No Data found for given date range");
-            //}
-        }
-
-        private void exportToCSV()
-        {
-            //string TypeOfReport;
-            //try
-            //{
-
-            databasePath = @"C:\Temp\" + dicProjectNameVsDBName[comProjectName.Text];
-            //databasePath = System.AppDomain.CurrentDomain.BaseDirectory + "\\" + dicProjectNameVsDBName[comProjectName.Text];
-
-            if (File.Exists(databasePath) == false)
-            {
-                MessageBox.Show("Script file not found..");
-                return;
-            }
-
-
-            SQLite sql = new SQLite(databasePath);
-            sql.connect();
-
-
-
-            lblOperationNo.Content = "Operation No : 3/3";
-            lblExecute.Content = "Execute Now : Populate Excel";
-            //Application.DoEvents();
-
-
-
-
-            Microsoft.Office.Interop.Excel.Application xlApp;
-            Microsoft.Office.Interop.Excel.Workbook xlWorkBook;
-            Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet;
-            object misValue = System.Reflection.Missing.Value;
-
-            xlApp = new Microsoft.Office.Interop.Excel.Application();
-            xlWorkBook = xlApp.Workbooks.Add(misValue);
-
-            xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
-            xlWorkSheet.Name = "Openeneded";
-
-
-            xlWorkSheet.Cells[1, 1] = "Respondent Id";
-            xlWorkSheet.Cells[1, 2] = "QId";
-            xlWorkSheet.Cells[1, 3] = "Attribute Value";
-            xlWorkSheet.Cells[1, 4] = "OE Verbatim";
-
-            int row = 2;
-            DataTableReader drd = dt3.CreateDataReader();// sql.getDataTableOpenended();
-
-            while (drd.Read())
-            {
-                xlWorkSheet.Cells[row, 1] = "'" + drd["respondent_id"].ToString();
-                xlWorkSheet.Cells[row, 2] = "'" + drd["q_id"].ToString();
-                xlWorkSheet.Cells[row, 3] = "'" + drd["attribute_value"].ToString();
-                xlWorkSheet.Cells[row, 4] = "'" + ReplaceNewlines(drd["response"].ToString(), " ");
-                row = row + 1;
-            }
-
-            xlWorkSheet.Columns.AutoFit();
-
-            string fileName = txtSaveLocation.Text.Substring(0, txtSaveLocation.Text.LastIndexOf('.')) + ".xlsx";
-            xlWorkBook.SaveAs(fileName, Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
-            xlWorkBook.Close(true, misValue, misValue);
-            xlApp.Quit();
-
-            sql.releaseObject(xlWorkSheet);
-            sql.releaseObject(xlWorkBook);
-            sql.releaseObject(xlApp);
-
-
-
-
-
-
-
-            //******************* Get the Openended *****************************************************
-
-            List<string> columnName = new List<string>();
-            List<List<string>> tableData = new List<List<string>>();
-
-            columnName = sql.getTableColumnReport();
-            tableData = sql.getTableDataReport(columnName, dt1, dt2, dt3, progressBar1);
-            fileName = txtSaveLocation.Text.Substring(0, txtSaveLocation.Text.LastIndexOf('.')) + ".csv";
-
-            SaveToCsvStream(columnName, tableData, fileName);
-
-            //TextWriter txtWriter = new StreamWriter(fileName);
-            //String colName = "";
-            //for (int i = 1; i <= columnName.Count; i++)
-            //{
-            //    colName = colName + columnName[i - 1] + ",";
-            //}
-
-            //txtWriter.WriteLine(colName);
-
-
-            //int p = 1;
-            //progressBar1.Minimum = 0;
-            //progressBar1.Maximum = tableData.Count * tableData[0].Count;
-
-            //// Get dimensions of the 2-d array
-            //int rowCount = tableData.Count;// arrays.GetLength(0);
-            //int columnCount = tableData[0].Count;// arrays.GetLength(0);
-
-            //string[,] arrays = new string[rowCount, columnCount];//tableData.Select(a => a.ToArray()).ToArray();
-
-
-            //for (int i = 1; i <= tableData.Count; i++)
-            //{
-            //    String myData = "";
-            //    for (int j = 1; j <= tableData[i - 1].Count; j++)
-            //    {
-            //        progressBar1.Value = p;
-            //        p++;
-
-            //        myData = myData + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ").Replace(",", ";") + ",";
-
-            //        //xlNewSheet.Cells[i + 1, j] = "'" + ReplaceNewlines(tableData[i - 1].ToList()[j - 1], " ");
-            //    }
-
-            //    txtWriter.WriteLine(myData);
-
-            //}
-
-            //txtWriter.Close();
-
-        }
-
-        public static void SaveToCsv(List<string> columnName, List<List<string>> tableData, string filePath)
-        {
-            var sb = new StringBuilder();
-
-            // ---- Add Header ----
-            var escapedHeader = columnName.Select(field =>
-            {
-                if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
-                    return "\"" + field.Replace("\"", "\"\"") + "\"";
-                return field;
-            });
-
-            sb.AppendLine(string.Join(",", escapedHeader));
-
-
-            // ---- Add Rows ----
-            foreach (var row in tableData)
-            {
-                var escapedRow = row.Select(field =>
-                {
-                    if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
-                        return "\"" + field.Replace("\"", "\"\"") + "\"";
-                    return field;
-                });
-
-                sb.AppendLine(string.Join(",", escapedRow));
-            }
-
-            File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
-        }
-
-        public static void SaveToCsvStream(List<string> columnName,List<List<string>> tableData,string filePath)
-            {
-                using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
-                {
-                    // Write header
-                    writer.WriteLine(EscapeCsvLine(columnName));
-
-                    // Write each row
-                    foreach (var row in tableData)
-                    {
-                        writer.WriteLine(EscapeCsvLine(row));
-                    }
-                }
-            }
-
-            // CSV escaping helper
-            private static string EscapeCsvLine(List<string> fields)
-            {
-                return string.Join(",", fields.Select(f =>
-                {
-                    if (string.IsNullOrEmpty(f)) return "";
-
-                    if (f.Contains(",") || f.Contains("\"") || f.Contains("\n"))
-                        return "\"" + f.Replace("\"", "\"\"") + "\"";
-
-                    return f;
-                }));
-        }
-
-
-        private string ReplaceNewlines(string blockOfText, string replaceWith)
-        {
-            return blockOfText.Replace("\r\n", replaceWith).Replace("\n", replaceWith).Replace("\r", replaceWith);
-        }
-        private string ReplaceQuomma(string blockOfText, string replaceWith)
-        {
-            return blockOfText.Replace(",", replaceWith);
-        }
-
-        private void btnExecute_Click(object sender, RoutedEventArgs e)
-        {
-            //try
-            //{
-            if (setData())
-            {
-                String baseDirectory = @"C:\Temp\";
-
-                if (!Directory.Exists(@"C:\Temp"))
-                {
-                    MessageBox.Show("Temp Derecory not exist in C drive. Pleaes create it first...");
-                    return;
-                }
-                //databasePath = System.AppDomain.CurrentDomain.BaseDirectory + dicProjectNameVsDBName[comProjectName.Text];
-                databasePath = baseDirectory + dicProjectNameVsDBName[comProjectName.Text];
-
-                if (File.Exists(databasePath) == true)
-                    File.Delete(databasePath);
-
-                if (File.Exists(databasePath) == false || chkDownloadScript.IsChecked == true)
-                {
-                    try
-                    {
-                        progressBar1.Value = 0;
-                        ServicePointManager.Expect100Continue = true;
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-
-                        using (WebClient client = new WebClient())
-                        {
-                            //string source = Properties.Settings.Default.ServerAddress + "/" + dicProjectNameVsDBName[comProjectName.Text];
-                            string source = StaticClass.SERVER_URL + "/scripts/" + dicProjectNameVsDBName[comProjectName.Text];
-                            //string temp2 = txtSaveLocation.Text + "\\" + lstRespondentId[i]["Region"] + "_" + lstRespondentId[i]["RespondentId"] + ".3gp";
-                            //string destination = System.AppDomain.CurrentDomain.BaseDirectory + dicProjectNameVsDBName[comProjectName.Text];
-                            string destination = baseDirectory + dicProjectNameVsDBName[comProjectName.Text];
-                            if (!File.Exists(destination))
-                                //client.DownloadFile(serverPath + "/audio/" + lstRespondentId[i]["RespondentId"] + ".3gp", txtSaveLocation.Text + "\\" + lstRespondentId[i]["Region"] + "_" + lstRespondentId[i]["RespondentId"] + ".3gp");
-                                client.DownloadFile(source, destination);
-                        }
-                    }
-                    catch (Exception ex) { /*MessageBox.Show(ex.ToString());*/}
-                }
-
-
-
-                dt1 = new DataTable();
-                dt2 = new DataTable();
-                dt3 = new DataTable();
-
-
-
-                endDate = "";
-                //this.cleanDB();
-                double totalDay = (Convert.ToDateTime(dtpDateTo.Text) - Convert.ToDateTime(dtpDateFrom.Text)).TotalDays;
-
-                dicDateVsTInterviewInfo.Clear();
-                dicDateVsTRespAnswer.Clear();
-                dicDateVsTOpenended.Clear();
-                string stDate = dtpDateFrom.Text;
-                int iDay = 1;
-                for (int i = 0; i <= Convert.ToInt32(totalDay); i = i + iDay)
-                {
-                    if (endDate.ToString() != "")
-                        stDate = Convert.ToDateTime(endDate).AddDays(iDay).ToShortDateString();
-
-                    //string tmp = Convert.ToDateTime(stDate).AddDays(iDay).ToShortDateString();
-
-                    startDate = stDate.Split('/')[2] + "-" + stDate.Split('/')[0] + "-" + stDate.Split('/')[1];
-                    endDate = stDate.Split('/')[2] + "-" + stDate.Split('/')[0] + "-" + stDate.Split('/')[1];
-                    //endDate = tmp.Split('/')[2] + "-" + tmp.Split('/')[0] + "-" + tmp.Split('/')[1];
-                    //string tmp = dateTimePickerFrom.Value.ToShortDateString();
-                    //startDate = tmp.Split('/')[2] + "-" + tmp.Split('/')[0] + "-" + tmp.Split('/')[1];
-                    //tmp = dateTimePickerTo.Value.ToShortDateString();
-                    //endDate = tmp.Split('/')[2] + "-" + tmp.Split('/')[0] + "-" + tmp.Split('/')[1];
-
-
-                    lblOperationNo.Content = "Operation No : 1/2";
-                    lblExecute.Content = "Execute Now : Download Data";
-                    lblCurrentDate.Content = startDate;
-                    //Application.DoEvents();
-
-                    this.populateTInterviewInfo();
-                    this.populateTResponseInfo();
-                    this.populateTOpenendedInfo();
-
-                }
-
-                lblOperationNo.Content = "Operation No : 2/2";
-                lblExecute.Content = "Execute Now : Populate Table";
-                DoEvents();
-
-                if (comFileType.Text == "Excel")
-                    this.exportToExcel();
-                else
-                    this.exportToCSV();
-
-                //if (chkDataBackup.Checked == true)
-                //{
-                //    this.BackupDataInSQLiteDB();
-                //}
-
-                MessageBox.Show("Data populate complete");
-
-
-            }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
-        }
-
-        private bool setData()
-        {
-            if (checkData())
-            {
-                startDate = dtpDateFrom.Text;
-                endDate = dtpDateTo.Text;
-
-                return true;
-            }
-            return false;
-        }
-
-        private bool checkData()
-        {
-            if (comProjectName.Text == "")
-            {
-                MessageBox.Show("Project Name should be slected");
-                return false;
-            }
-            if (comConsiderDate.Text == "")
-            {
-                MessageBox.Show("Consider Date should be selected");
-                return false;
-            }
-            if (comInterviewType.Text == "")
-            {
-                MessageBox.Show("Interview Type should be selected");
-                return false;
-            }
-            if (txtSaveLocation.Text == "")
-            {
-                MessageBox.Show("Please select the save location to save the data");
-                return false;
-            }
-            if (dtpDateFrom.SelectedDate.Value > dtpDateTo.SelectedDate.Value)
-            {
-                MessageBox.Show("Start date should not be greated than end data");
-                return false;
-            }
-
-            return true;
-        }
-
-        public static void DoEvents()
-        {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate { }));
-        }
-
-        private void comProjectName_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if(comProjectName.Text!="")
-            //dtpDateFrom.Text = dicProjectNameVsStartDate[comProjectName.Text];
-        }
+        private void comProjectName_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
         private void comProjectName_DropDownClosed(object sender, EventArgs e)
         {
-            if (comProjectName.Text != "")
-                dtpDateFrom.Text = dicProjectNameVsStartDate[comProjectName.Text];
+            if (string.IsNullOrEmpty(comProjectName.Text)) return;
+            if (_projectStartDateMap == null ||
+                !_projectStartDateMap.ContainsKey(comProjectName.Text)) return;
+            if (DateTime.TryParse(_projectStartDateMap[comProjectName.Text], out DateTime d))
+                dtpDateFrom.SelectedDate = d;
         }
 
-        private async Task DoWorkAsync()
+        private void btnExit_Click(object sender, RoutedEventArgs e) => this.Close();
+
+        // ─── Utility ─────────────────────────────────────────────────────────
+
+        private static string ConvertDateFormat(string raw)
         {
-            await Task.Run(() =>
+            if (string.IsNullOrEmpty(raw)) return "";
+            string[] p = raw.Split('-');
+            return p.Length == 3 ? p[1] + "-" + p[0] + "-" + p[2] : raw;
+        }
+
+        private static string Clean(string s)
+            => s.Replace("\r\n", " ").Replace("\n", " ").Replace("\r", " ");
+
+        private void Log(string msg)
+        {
+            string line = "[" + DateTime.Now.ToString("HH:mm:ss") + "] " + msg + "\n";
+            if (txtLog.Dispatcher.CheckAccess())
             {
-                //do some work HERE
-                Thread.Sleep(1000);
-            });
+                txtLog.AppendText(line);
+                txtLog.ScrollToEnd();
+            }
+            else
+            {
+                txtLog.Dispatcher.Invoke(() => { txtLog.AppendText(line); txtLog.ScrollToEnd(); });
+            }
+        }
+
+        private void SetStatus(string msg)
+        {
+            if (lblCurrentOperation.Dispatcher.CheckAccess())
+                lblCurrentOperation.Text = msg;
+            else
+                lblCurrentOperation.Dispatcher.Invoke(() => lblCurrentOperation.Text = msg);
+        }
+
+        private static void DoEvents()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(
+                System.Windows.Threading.DispatcherPriority.Background,
+                new System.Threading.ThreadStart(delegate { }));
         }
     }
 }
-
-
-//try
-//{
-//    WebClient client = new WebClient();
-//    string myFile = @"D:\test_file.txt";
-//    client.Credentials = CredentialCache.DefaultCredentials;
-//    client.UploadFile(@"http://localhost/uploads/upload.php", "POST", myFile);
-//    client.Dispose();
-//}
-//catch (Exception err)
-//{
-//    MessageBox.Show(err.Message);
-//}
-
-//<?php
-//    $filepath = $_FILES["file"]["tmp_name"];
-//    move_uploaded_file($filepath,"test_file.txt");
-//?>
