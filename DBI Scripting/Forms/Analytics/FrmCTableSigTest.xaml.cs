@@ -143,6 +143,7 @@ namespace DBI_Scripting.Forms.Analytics
                         "Overflow Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 
                 // Generate group definition file
+                bool groupDefSaved = false;
                 if (_capturedGroups != null && _capturedGroups.Count > 0)
                 {
                     string defContent = GenerateGroupDefContent(_capturedGroups, _maxSet1Letters, _maxSet2Letters);
@@ -160,16 +161,47 @@ namespace DBI_Scripting.Forms.Analytics
                         txtGroupDefPath.Text = saveDlg.FileName;
                         PrepareGroupDefView();
                         SetStatusS1("Group definition file saved.");
+                        groupDefSaved = true;
+                    }
+                    else
+                    {
+                        SetStatusS1("Group definition file save canceled.");
                     }
                 }
+                else
+                {
+                    SetStatusS1("No letter rows inserted — group definition file not generated.");
+                }
 
-                MessageBox.Show(
-                    "Prepare Table complete.\n\n" +
-                    "• Letter row inserted just above each Total row.\n" +
-                    "• S.TEST rows inserted between data rows.\n" +
-                    "• Group Definition file generated and loaded into Section 2.\n\n" +
-                    "Select your worksheet in Section 2 and run the sig test.",
-                    "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (groupDefSaved)
+                {
+                    MessageBox.Show(
+                        "Prepare Table complete.\n\n" +
+                        "• Letter row inserted just above each Total row.\n" +
+                        "• S.TEST rows inserted between data rows.\n" +
+                        "• Group Definition file generated and loaded into Section 2.\n\n" +
+                        "Select your worksheet in Section 2 and run the sig test.",
+                        "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (_capturedGroups != null && _capturedGroups.Count > 0)
+                {
+                    MessageBox.Show(
+                        "Prepare Table complete, but the Group Definition file was NOT saved " +
+                        "(the Save dialog was canceled).\n\n" +
+                        "Run Section 1 again to be prompted to save it, or browse to an existing " +
+                        "Group Definition file in Section 2.",
+                        "Complete — Group Def Not Saved", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Prepare Table complete, but NO Group Definition file was generated.\n\n" +
+                        "This happens when every \"Total\" row in this worksheet already has a letter row " +
+                        "above it (e.g. from an earlier Prepare run), so no new letter row was inserted. " +
+                        "If you need a fresh Group Definition file, remove the existing letter rows first, " +
+                        "or browse to a Group Definition file you already saved.",
+                        "Complete — No Group Def Generated", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             catch (Exception ex)
             {
@@ -200,17 +232,22 @@ namespace DBI_Scripting.Forms.Analytics
             { Name = name; StartCol = startCol; EndCol = endCol; }
         }
 
-        // Two-pass attribute detection:
+        // Three-pass attribute detection:
         //   Pass 1 — read banner variables from the Base row (merged cells give variable spans).
         //   Pass 2 — for each variable, inspect the sub-attribute row (baseRow+1):
         //     · If all cells inside the variable range have span=1  → no nesting,
         //       the whole variable is ONE group (e.g. Product C3-C9 = 1 group).
         //     · If any cell has span>1 (merged) → split into sub-attribute groups
         //       (e.g. Centre → Dhaka 4-col merge + Rajshahi 4-col merge = 2 groups).
+        //   Pass 3 — for each sub-attribute group found in Pass 2, inspect the row below it
+        //     (baseRow+2) the same way: if it also has merged cells, split that sub-attribute
+        //     into leaf groups instead of keeping it whole (e.g. Centre → Dhaka → Panel 1-3,
+        //     each a 2-col leaf group, rather than treating all of Dhaka as one group).
         private List<BannerGroup> GetAttributeGroups(Excel.Worksheet ws, int baseRow)
         {
             var result = new List<BannerGroup>();
             int attrRow = baseRow + 1;
+            int leafRow = baseRow + 2;
             int totalCols = ws.UsedRange.Columns.Count;
 
             int c = 2;
@@ -235,14 +272,7 @@ namespace DBI_Scripting.Forms.Analytics
                 }
 
                 // ── Check sub-attribute row for merged cells inside this variable ──
-                bool hasSubGroups = false;
-                int sc = Math.Max(varStart, 3);
-                while (sc <= varEnd)
-                {
-                    Excel.Range attrCell = (Excel.Range)ws.Cells[attrRow, sc];
-                    if (attrCell.MergeArea.Columns.Count > 1) { hasSubGroups = true; break; }
-                    sc++;
-                }
+                bool hasSubGroups = RangeHasMerge(ws, attrRow, Math.Max(varStart, 3), varEnd);
 
                 if (!hasSubGroups)
                 {
@@ -252,7 +282,7 @@ namespace DBI_Scripting.Forms.Analytics
                 else
                 {
                     // Each merged cell in the sub-attribute row = one attribute group
-                    sc = Math.Max(varStart, 3);
+                    int sc = Math.Max(varStart, 3);
                     while (sc <= varEnd)
                     {
                         Excel.Range attrCell = (Excel.Range)ws.Cells[attrRow, sc];
@@ -260,7 +290,27 @@ namespace DBI_Scripting.Forms.Analytics
                         int attrEnd   = attrStart + attrCell.MergeArea.Columns.Count - 1;
                         object attrVal = ws.Cells[attrRow, attrStart].Value2;
                         string attrName = attrVal != null ? attrVal.ToString().Trim() : "";
-                        result.Add(new BannerGroup(attrName, attrStart, attrEnd));
+
+                        // ── Check one level deeper for further nesting inside this sub-attribute ──
+                        if (RangeHasMerge(ws, leafRow, attrStart, attrEnd))
+                        {
+                            int lc = attrStart;
+                            while (lc <= attrEnd)
+                            {
+                                Excel.Range leafCell = (Excel.Range)ws.Cells[leafRow, lc];
+                                int leafStart = leafCell.MergeArea.Column;
+                                int leafEnd   = leafStart + leafCell.MergeArea.Columns.Count - 1;
+                                object leafVal = ws.Cells[leafRow, leafStart].Value2;
+                                string leafName = leafVal != null ? leafVal.ToString().Trim() : "";
+                                result.Add(new BannerGroup(leafName, leafStart, leafEnd));
+                                lc = leafEnd + 1;
+                            }
+                        }
+                        else
+                        {
+                            result.Add(new BannerGroup(attrName, attrStart, attrEnd));
+                        }
+
                         sc = attrEnd + 1;
                     }
                 }
@@ -269,6 +319,17 @@ namespace DBI_Scripting.Forms.Analytics
             }
 
             return result;
+        }
+
+        // True if any cell in [fromCol, toCol] on the given row is part of a multi-column merge.
+        private bool RangeHasMerge(Excel.Worksheet ws, int row, int fromCol, int toCol)
+        {
+            for (int c = fromCol; c <= toCol; c++)
+            {
+                Excel.Range cell = (Excel.Range)ws.Cells[row, c];
+                if (cell.MergeArea.Columns.Count > 1) return true;
+            }
+            return false;
         }
 
         private bool HasLetterRowAbove(Excel.Worksheet ws, int totalRow)
@@ -787,14 +848,24 @@ namespace DBI_Scripting.Forms.Analytics
                     Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", true, false, 0, true, 1, 0);
                 ws = (Excel.Worksheet)xlWb.Worksheets[sSelectedSheetS2];
 
+                var sigWarnings = new List<string>();
                 SetStatusS2("Running significance test...");
-                RunSigTestOnSheet(ws);
+                RunSigTestOnSheet(ws, sigWarnings);
 
                 SetStatusS2("Saving...");
                 xlWb.Save();
 
                 progressBarS2.Value = progressBarS2.Maximum;
                 SetStatusS2("Significance test complete.");
+
+                if (sigWarnings.Count > 0)
+                    MessageBox.Show(
+                        "Significance test completed, but some MEAN rows were skipped:\n\n" +
+                        string.Join("\n", sigWarnings) +
+                        "\n\nEach MEAN row must be followed by S. D. then S. E. for its sig test to run. " +
+                        "Check those rows in the worksheet.",
+                        "Mean Sig Test Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+
                 MessageBox.Show("Significance test completed successfully.",
                     "Complete", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -812,7 +883,7 @@ namespace DBI_Scripting.Forms.Analytics
             }
         }
 
-        private void RunSigTestOnSheet(Excel.Worksheet ws)
+        private void RunSigTestOnSheet(Excel.Worksheet ws, List<string> warnings)
         {
             // Build threshold list (sorted descending — index 0 = upper/strict, index 1 = lower)
             var thresholds = new List<double>();
@@ -884,6 +955,15 @@ namespace DBI_Scripting.Forms.Analytics
                             object sev = ws.Cells[seRow, c].Value2;
                             if (sev is double) seVals[c] = (double)sev;
                         }
+                    }
+                    else
+                    {
+                        // S.D./S.E. not where expected — skip this row rather than silently
+                        // falling back to a proportion z-test on raw mean values (which would
+                        // produce meaningless/misleading sig letters).
+                        warnings.Add($"  • Row {j}: expected 'S. E.' two rows below SIG. TEST but found " +
+                            $"'{(seLabelStr == "" ? "(blank)" : seLabelStr)}' — mean sig test skipped for this row.");
+                        continue;
                     }
                 }
 
