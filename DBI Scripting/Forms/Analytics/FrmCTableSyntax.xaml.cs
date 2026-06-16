@@ -359,6 +359,7 @@ namespace DBI_Scripting.Forms.Analytics
             txt_writer.WriteLine("NUMERIC nBlank (f8.0).");
             txt_writer.WriteLine("COMPUTE nBlank=99.");
             txt_writer.WriteLine(@"VALUE LABELS nBlank 99 ""DUMMY ROW"".");
+            txt_writer.WriteLine(@"VARIABLE LEVEL nBlank(NOMINAL).");
             txt_writer.WriteLine("");
 
 
@@ -688,7 +689,7 @@ namespace DBI_Scripting.Forms.Analytics
                     if (chkIncludeBlankRow.IsChecked == true)
                     {
                         txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " nBlank DISPLAY=NONE");
-                        txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + nBlank [COUNT F40.0] BY " + bannerText1 + "");
+                        txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + nBlank[C] [COUNT F40.0] BY " + bannerText1 + "");
                     }
                     else
                     {
@@ -740,7 +741,7 @@ namespace DBI_Scripting.Forms.Analytics
                         if (chkIncludeBlankRow.IsChecked == true)
                         {
                             txt_writer.WriteLine("  /VLABELS VARIABLES=$" + lstMRUniqueVariableName[i] + " " + nestedVairables + " nBlank DISPLAY=NONE");
-                            txt_writer.WriteLine("  /TABLE $" + lstMRUniqueVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + nBlank [COUNT F40.0] BY " + bannerText1 + "");
+                            txt_writer.WriteLine("  /TABLE $" + lstMRUniqueVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + nBlank[C] [COUNT F40.0] BY " + bannerText1 + "");
                         }
                         else
                         {
