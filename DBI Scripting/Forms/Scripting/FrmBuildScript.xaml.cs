@@ -4248,6 +4248,29 @@ namespace DBI_Scripting.Forms.Scripting
 
             #endregion
 
+            if (myQuestion.QType == "32" && listOfAttributeMain.Count > 0)
+            {
+                int expectedCount = -1;
+                string expectedListName = null;
+                foreach (AttributeMain attr in listOfAttributeMain)
+                {
+                    if (string.IsNullOrEmpty(attr.LinkId2)) continue;
+                    if (dicGridListNameVsList.ContainsKey(attr.LinkId2))
+                    {
+                        int count = dicGridListNameVsList[attr.LinkId2].Count;
+                        if (expectedCount == -1)
+                        {
+                            expectedCount = count;
+                            expectedListName = attr.LinkId2;
+                        }
+                        else if (count != expectedCount)
+                        {
+                            txtWriter.WriteLine("Question : " + myQuestion.QId + "  PSCALE grid list \"" + attr.LinkId2 + "\" has " + count + " attributes but expected " + expectedCount + " (same as \"" + expectedListName + "\")");
+                        }
+                    }
+                }
+            }
+
             if (myQuestion.QId != null)
                 dicQidVsAttributeListTemp.Add(myQuestion.QId, listOfAttributeMain);
             else
@@ -6461,6 +6484,29 @@ namespace DBI_Scripting.Forms.Scripting
             }
 
             #endregion
+
+            if (myQuestion.QType == "32" && listOfAttributeMain.Count > 0)
+            {
+                int expectedCount = -1;
+                string expectedListName = null;
+                foreach (AttributeMain attr in listOfAttributeMain)
+                {
+                    if (string.IsNullOrEmpty(attr.LinkId2)) continue;
+                    if (dicGridListNameVsList.ContainsKey(attr.LinkId2))
+                    {
+                        int count = dicGridListNameVsList[attr.LinkId2].Count;
+                        if (expectedCount == -1)
+                        {
+                            expectedCount = count;
+                            expectedListName = attr.LinkId2;
+                        }
+                        else if (count != expectedCount)
+                        {
+                            txtWriter.WriteLine("Question : " + myQuestion.QId + "  PSCALE grid list \"" + attr.LinkId2 + "\" has " + count + " attributes but expected " + expectedCount + " (same as \"" + expectedListName + "\")");
+                        }
+                    }
+                }
+            }
 
             if (myQuestion.QId != null)
                 dicQidVsAttributeListTemp.Add(myQuestion.QId, listOfAttributeMain);
