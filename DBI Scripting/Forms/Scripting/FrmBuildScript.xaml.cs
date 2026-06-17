@@ -2689,14 +2689,14 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     myQuestion.QType = "7"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
-                else if (myText.ToUpper().Trim().Contains("*SCALE7"))
+                else if (myText.ToUpper().Trim().Contains("*PSCALE"))
                 {
                     myQuestion.QType = "32"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
-                else if (myText.ToUpper().Trim().Contains("*SCALE10"))
-                {
-                    myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-                }
+                //else if (myText.ToUpper().Trim().Contains("*SCALE10"))
+                //{
+                //    myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                //}
                 else if (myText.ToUpper().Trim().Contains("*GRIDMR"))
                 {
                     myQuestion.QType = "8"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -3332,7 +3332,7 @@ namespace DBI_Scripting.Forms.Scripting
                             {
                                 List<AttributeMain> listOfAttributeTemp = new List<AttributeMain>(dicListNameVsList[word1[1].Split('"')[1].Trim()]);
 
-                                if (myQuestion.QType == "7" || myQuestion.QType == "26" || myQuestion.QType == "40" || myQuestion.QType == "61")
+                                if (myQuestion.QType == "7" || myQuestion.QType == "26" || myQuestion.QType == "32" || myQuestion.QType == "40" || myQuestion.QType == "61")
                                 {
                                     if (currentGridListName != "")
                                     {
@@ -3747,6 +3747,12 @@ namespace DBI_Scripting.Forms.Scripting
                             if (mylabel.Contains("*AUTOCOMPLETE") & !mylabel.Contains("*USEGRIDLIST")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " USEGRIDLIST must be exist for Form attribute");
                             //if (mylabel.Contains("*NUMBER") & !mylabel.Contains("*MIN")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " MIN must be exist for Form attribute");
                             //if (mylabel.Contains("*NUMBER") & !mylabel.Contains("*MAX")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " MAX must be exist for Form attribute");
+                        }
+
+                        if (myQuestion.QType == "32")
+                        {
+                            if (!mylabel.Contains("*SR")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " SR must be exist for PSCALE attribute");
+                            if (!mylabel.Contains("*USEGRIDLIST")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " USEGRIDLIST must be exist for PSCALE attribute");
                         }
 
 
@@ -4930,14 +4936,14 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     myQuestion.QType = "7"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
-                else if (myText.ToUpper().Trim().Contains("*SCALE7"))
+                else if (myText.ToUpper().Trim().Contains("*PSCALE"))
                 {
                     myQuestion.QType = "32"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
-                else if (myText.ToUpper().Trim().Contains("*SCALE10"))
-                {
-                    myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-                }
+                //else if (myText.ToUpper().Trim().Contains("*SCALE10"))
+                //{
+                //    myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                //}
                 else if (myText.ToUpper().Trim().Contains("*GRIDMR"))
                 {
                     myQuestion.QType = "8"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -5955,6 +5961,12 @@ namespace DBI_Scripting.Forms.Scripting
                             if (mylabel.Contains("*AUTOCOMPLETE") & !mylabel.Contains("*USEGRIDLIST")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " USEGRIDLIST must be exist for Form attribute");
                             //if (mylabel.Contains("*NUMBER") & !mylabel.Contains("*MIN")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " MIN must be exist for Form attribute");
                             //if (mylabel.Contains("*NUMBER") & !mylabel.Contains("*MAX")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " MAX must be exist for Form attribute");
+                        }
+
+                        if (myQuestion.QType == "32")
+                        {
+                            if (!mylabel.Contains("*SR")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " SR must be exist for PSCALE attribute");
+                            if (!mylabel.Contains("*USEGRIDLIST")) txtWriter.WriteLine("Line : " + dicLine[i + 1] + " USEGRIDLIST must be exist for PSCALE attribute");
                         }
 
 
@@ -9611,8 +9623,8 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("STARTREC");
             listOfKeyWords.Add("ENDREC");
             listOfKeyWords.Add("EXTCAMERA");
-            listOfKeyWords.Add("SCALE7");
-            listOfKeyWords.Add("SCALE10");
+            listOfKeyWords.Add("PSCALE");
+            //listOfKeyWords.Add("SCALE10");
 
             listOfKeyWords.Add("ADDRESS1");
             listOfKeyWords.Add("ADDRESS2");
