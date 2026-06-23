@@ -45,6 +45,7 @@ namespace DBI_Scripting.Forms.Analytics
         private List<string> lstFilterLabel = new List<string>();
 
         private string mrVarList = "";
+        private string type8VarList = "";
         private string analysisType = "";
         private string _currentSyntaxFilePath = "";
 
@@ -620,6 +621,7 @@ namespace DBI_Scripting.Forms.Analytics
         private void prepareScript()
         {
             mrVarList = "";
+            type8VarList = "";
 
             txt_writer.WriteLine("");
 
@@ -698,7 +700,7 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     if (chkIncludeBlankRow.IsChecked == true)
                         txt_writer.WriteLine("  /CATEGORIES VARIABLES=nBlank ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
@@ -719,11 +721,12 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstMRBreakPoint[i] == "XXX")
                     {
-
+                        bool addBlankRow = chkIncludeBlankRow.IsChecked == true
+                            && !mrVarList.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Contains("nBlank");
 
                         txt_writer.WriteLine("* Define Multiple Response Sets.");
                         txt_writer.WriteLine("MRSETS");
-                        txt_writer.WriteLine("  /MCGROUP NAME=$" + lstMRUniqueVariableName[i] + " LABEL='Spontanious Awareness' VARIABLES=" + mrVarList + " ");
+                        txt_writer.WriteLine("  /MCGROUP NAME=$" + lstMRUniqueVariableName[i] + " LABEL='Spontaneous Awareness' VARIABLES=" + mrVarList + " ");
                         txt_writer.WriteLine("  /DISPLAY NAME=[$" + lstMRUniqueVariableName[i] + "].");
                         txt_writer.WriteLine("");
 
@@ -738,7 +741,7 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine("CTABLES");
                         txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
 
-                        if (chkIncludeBlankRow.IsChecked == true)
+                        if (addBlankRow)
                         {
                             txt_writer.WriteLine("  /VLABELS VARIABLES=$" + lstMRUniqueVariableName[i] + " " + nestedVairables + " nBlank DISPLAY=NONE");
                             txt_writer.WriteLine("  /TABLE $" + lstMRUniqueVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + nBlank[C] [COUNT F40.0] BY " + bannerText1 + "");
@@ -750,8 +753,8 @@ namespace DBI_Scripting.Forms.Analytics
                         }
                         txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                         txt_writer.WriteLine("  /CATEGORIES VARIABLES=$" + lstMRUniqueVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
-                        if (chkIncludeBlankRow.IsChecked == true)
+                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                        if (addBlankRow)
                             txt_writer.WriteLine("  /CATEGORIES VARIABLES=nBlank ORDER=A KEY=VALUE EMPTY=INCLUDE");
                         txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                         txt_writer.WriteLine("  /TITLES");
@@ -793,7 +796,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + m_" + lstVariableName[i] + " [S][MEAN F40.2] + sd_" + lstVariableName[i] + " [S][STDDEV F40.2] + se_" + lstVariableName[i] + " [S][SEMEAN F40.2] BY " + bannerText1 + "");
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -841,7 +844,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, &cat1, &cat2, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -889,7 +892,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, &cat1, &cat2, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -942,7 +945,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -954,17 +957,48 @@ namespace DBI_Scripting.Forms.Analytics
                 }
                 else if (lstTableType[i] == "8")
                 {
-                    //4	Scaled Question (9)	T1B T2B T3B Cpct B3B B2B B1B Mean S.T S.D. S.E. 
+                    type8VarList = type8VarList + lstVariableName[i] + " ";
 
-                    if (lstFilterCondition[i] == "")
+                    if (lstMRBreakPoint[i] == "XXX")
                     {
+                        if (lstFilterCondition[i] != "")
+                        {
+                            txt_writer.WriteLine("TEMPORARY.");
+                            txt_writer.WriteLine("SELECT IF " + lstFilterCondition[i] + ".");
+                            txt_writer.WriteLine("");
+                        }
 
-                    }
-                    else if (lstFilterCondition[i] != "")
-                    {
+                        txt_writer.WriteLine("* Define Total Variable.");
+                        txt_writer.WriteLine("COMPUTE Total=1.");
+                        txt_writer.WriteLine("EXECUTE.");
+                        txt_writer.WriteLine("");
+                        txt_writer.WriteLine("VARIABLE LEVEL Total (SCALE).");
+                        txt_writer.WriteLine("");
 
+                        txt_writer.WriteLine("* Custom Tables.");
+                        txt_writer.WriteLine("CTABLES");
+                        txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
+                        txt_writer.WriteLine("  /VLABELS VARIABLES=" + nestedVairables + " DISPLAY=NONE");
+
+                        var sb8 = new System.Text.StringBuilder("  /TABLE Total[S] [SUM F40.0]");
+                        string[] vars8 = type8VarList.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string v in vars8)
+                            sb8.Append("\n  + " + v + " [S][MEAN]");
+                        sb8.Append("\n  BY " + bannerText1);
+                        txt_writer.WriteLine(sb8.ToString());
+
+                        txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
+                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                        txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
+                        txt_writer.WriteLine("  /TITLES");
+                        txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", "") + "'");
+                        txt_writer.WriteLine("    CORNER='Base : " + lstFilterLabel[i] + "'");
+                        txt_writer.WriteLine("    CAPTION='Home'.");
+                        txt_writer.WriteLine("");
+
+                        type8VarList = "";
+                        i_TableNo = i_TableNo + 1;
                     }
-                    i_TableNo = i_TableNo + 1;
                 }
                 else if (lstTableType[i] == "9")
                 {
@@ -1008,7 +1042,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1058,7 +1092,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1108,7 +1142,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1155,7 +1189,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, &cat1, &cat2, &cat3, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=EXCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1553,7 +1587,7 @@ namespace DBI_Scripting.Forms.Analytics
             xlCodeSheet.Cells[6, 1] = "5"; xlCodeSheet.Cells[6, 2] = "Scaled Question (5)"; xlCodeSheet.Cells[6, 3] = "T2B Cpct B2B Mean S.D. S.E.";
             xlCodeSheet.Cells[7, 1] = "6"; xlCodeSheet.Cells[7, 2] = "Scaled Question - Reverse (5)"; xlCodeSheet.Cells[7, 3] = "T2B Cpct B2B Mean S.D. S.E.";
             xlCodeSheet.Cells[8, 1] = "7"; xlCodeSheet.Cells[8, 2] = "Scaled Question (7)"; xlCodeSheet.Cells[8, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
-            xlCodeSheet.Cells[9, 1] = "8"; xlCodeSheet.Cells[9, 2] = ""; xlCodeSheet.Cells[9, 3] = "";
+            xlCodeSheet.Cells[9, 1] = "8"; xlCodeSheet.Cells[9, 2] = "Mean Summary"; xlCodeSheet.Cells[9, 3] = "Summary Of Mean";
             xlCodeSheet.Cells[10, 1] = "9"; xlCodeSheet.Cells[10, 2] = "Scaled Question (9)"; xlCodeSheet.Cells[10, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
             xlCodeSheet.Cells[11, 1] = "10"; xlCodeSheet.Cells[11, 2] = "Scaled Question (10)"; xlCodeSheet.Cells[11, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
             xlCodeSheet.Cells[12, 1] = "11"; xlCodeSheet.Cells[12, 2] = "Scaled Question (11)"; xlCodeSheet.Cells[12, 3] = "T2B T3B Cpct B3B B2B Mean S.D. S.E.";
