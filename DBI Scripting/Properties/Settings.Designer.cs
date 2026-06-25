@@ -46,5 +46,17 @@ namespace DBI_Scripting.Properties {
                 this["StartupPath"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Arrowhead Research Pvt. Ltd.")]
+        public string PreparedBy {
+            get {
+                return ((string)(this["PreparedBy"]));
+            }
+            set {
+                this["PreparedBy"] = value;
+            }
+        }
     }
 }

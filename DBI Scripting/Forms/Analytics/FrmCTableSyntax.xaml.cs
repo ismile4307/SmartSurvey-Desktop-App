@@ -1328,11 +1328,13 @@ namespace DBI_Scripting.Forms.Analytics
         {
             string basePath = txtStructureExcelPath.Text.Substring(0, txtStructureExcelPath.Text.LastIndexOf('\\'));
             string prefix = syntaxType == "Table_Cpt" ? "01" : syntaxType == "Table_Count" ? "02" : "00";
-            string filePath = basePath + "\\" + prefix + "." + txtOutputFileName.Text + "_" + syntaxType + ".SPS";
+            string sheetSuffix = lstWorkSheetName.Count > 0 ? "_" + lstWorkSheetName[0] : "";
+            string fileName = prefix + "." + txtOutputFileName.Text + "_" + syntaxType + sheetSuffix + ".SPS";
+            string filePath = basePath + "\\" + fileName;
 
             if (File.Exists(filePath))
             {
-                MessageBox.Show("SPSS file with same name [" + prefix + "." + txtOutputFileName.Text + "_" + syntaxType + ".SPS] exist\nPlease check it first and rename the file name..");
+                MessageBox.Show("SPSS file with same name [" + fileName + "] exist\nPlease check it first and rename the file name..");
                 return false;
             }
 

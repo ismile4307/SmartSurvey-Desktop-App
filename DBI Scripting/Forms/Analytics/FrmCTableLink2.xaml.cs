@@ -187,8 +187,14 @@ namespace DBI_Scripting.Forms.Analytics
 
             comLinkFormat.Items.Add("General Format");
             comLinkFormat.Items.Add("Standard Format");
-
             comLinkFormat.Text = "Standard Format";
+
+            comPreparedBy.Items.Add("Arrowhead Research Pvt. Ltd.");
+            comPreparedBy.Items.Add("SmartSurveyBD Pvt. Ltd.");
+            comPreparedBy.Items.Add("DBI Research Private Ltd.");
+
+            string saved = Properties.Settings.Default.PreparedBy;
+            comPreparedBy.Text = string.IsNullOrWhiteSpace(saved) ? "Arrowhead Research Pvt. Ltd." : saved;
         }
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
@@ -198,6 +204,9 @@ namespace DBI_Scripting.Forms.Analytics
                 MessageBox.Show("Please browse and select an Excel file first.");
                 return;
             }
+
+            Properties.Settings.Default.PreparedBy = comPreparedBy.Text;
+            Properties.Settings.Default.Save();
 
             btnRun.IsEnabled = false;
             ClearBlankRows();
@@ -411,7 +420,7 @@ namespace DBI_Scripting.Forms.Analytics
 
             if (index != 0)
             {
-                outputSheet.Cells[index + startRow + 1, startColunm] = "Prepared By : SmartSurvey BD Pvt Ltd.";
+                outputSheet.Cells[index + startRow + 1, startColunm] = "Prepared By : " + comPreparedBy.Text;
                 outputSheet.Cells[index + startRow + 2, startColunm] = "Date : " + DateTime.Now.ToShortDateString().ToString();
             }
 
@@ -596,7 +605,7 @@ namespace DBI_Scripting.Forms.Analytics
 
             
 
-            outputSheet.Cells[3, 2] = "Prepared By : SmartSurveyBD Pvt. Ltd.";
+            outputSheet.Cells[3, 2] = "Prepared By : " + comPreparedBy.Text;
             outputSheet.Cells[3, 2].Font.Size = 11;
             outputSheet.Cells[3, 2].Font.Color = System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Black);
             outputSheet.Cells[3, 2].Font.Italic = true;

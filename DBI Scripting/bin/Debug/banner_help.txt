@@ -10,10 +10,10 @@
 ********************************************************************************************************************
 
 *Banner (ColVar)
-ATotal+b1Centre+b1Age+b1SEC
+ATotal+Product+(Center+UserType)>Product
 
 *Banner (ColVarPct)
-ATotal b1Centre b1Age b1SEC
+ATotal Product Center UserType Product
 
 *Output File Name
 ProjectName
