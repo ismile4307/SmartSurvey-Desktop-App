@@ -444,3 +444,5 @@ D:\SmartSurvey-Desktop-App\DBI Scripting\obj\Debug\Smart Survey.exe
 D:\SmartSurvey-Desktop-App\DBI Scripting\obj\Debug\Smart Survey.pdb
 D:\SmartSurvey-Desktop-App\DBI Scripting\obj\Debug\Forms\Analytics\FrmCTableSigTest.baml
 D:\SmartSurvey-Desktop-App\DBI Scripting\obj\Debug\Forms\Analytics\FrmCTableSigTest.g.cs
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Analytics\FrmCTableSigTest.baml
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Analytics\FrmCTableSigTest.g.cs

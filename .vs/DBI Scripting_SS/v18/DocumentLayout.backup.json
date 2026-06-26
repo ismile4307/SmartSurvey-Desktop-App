@@ -1,89 +1,89 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\SmartSurvey-Desktop-App\\",
+  "WorkspaceRootPath": "E:\\MR Tools\\SmartSurvey - ss\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|d:\\smartsurvey-desktop-app\\dbi scripting\\forms\\analytics\\frmctablelink2.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmctablelink2.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\analytics\\frmctablelink2.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmctablelink2.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\analytics\\frmctablesyntax.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmctablesyntax.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\scripting\\frmbuildscript.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmbuildscript.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\analytics\\frmanalysistable.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmanalysistable.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\analytics\\frmanalysistable.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmanalysistable.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\analytics\\frmtransposesyntax.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmtransposesyntax.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\analytics\\frmtransposesyntax.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmtransposesyntax.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\scripting\\frmtransplaceholder2.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmtransplaceholder2.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\scripting\\frmtransplaceholder2.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmtransplaceholder2.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\classes\\checklogicalexp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\classes\\checklogicalexp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\classes\\functionalcondition.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\classes\\functionalcondition.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\analytics\\frmoesyntaxspss.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmoesyntaxspss.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\download\\frmcreateoeexcel.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
-      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\download\\frmcreateoeexcel.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\analytics\\frmctablesyntax.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\analytics\\frmctablesyntax.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmctablesyntax.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\scripting\\frmbuildscript.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|e:\\mr tools\\smartsurvey - ss\\dbi scripting\\forms\\analytics\\frmctablelink2.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmctablelink2.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\analytics\\frmctablesyntax.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmctablesyntax.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\analytics\\frmctablelink2.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmctablelink2.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\scripting\\frmbuildscript.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmbuildscript.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\analytics\\frmanalysistable.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmanalysistable.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\analytics\\frmanalysistable.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmanalysistable.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\analytics\\frmtransposesyntax.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmtransposesyntax.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\analytics\\frmtransposesyntax.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmtransposesyntax.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\scripting\\frmtransplaceholder2.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmtransplaceholder2.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\scripting\\frmtransplaceholder2.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmtransplaceholder2.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\classes\\checklogicalexp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\classes\\checklogicalexp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\classes\\functionalcondition.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\classes\\functionalcondition.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\analytics\\frmoesyntaxspss.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\analytics\\frmoesyntaxspss.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\download\\frmcreateoeexcel.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\download\\frmcreateoeexcel.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\scripting\\frmbuildscript.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmbuildscript.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\scripting\\frmuploadscript.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\scripting\\frmuploadscript.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|",
       "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmuploadscript.xaml.cs||{8B382828-6202-11D1-8870-0000F87579D2}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\scripting\\frmuploadscript.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\scripting\\frmuploadscript.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\scripting\\frmuploadscript.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|D:\\SmartSurvey-Desktop-App\\dbi scripting\\forms\\settings\\frmcheckscript.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|E:\\MR Tools\\SmartSurvey - ss\\dbi scripting\\forms\\settings\\frmcheckscript.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FFDDD318-1EB6-4FDF-A443-5B570EDEB659}|DBI Scripting\\Smart Survey.csproj|solutionrelative:dbi scripting\\forms\\settings\\frmcheckscript.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -94,15 +94,23 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 7,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "FrmCTableLink2.xaml",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml",
               "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-06-24T10:00:51.357Z",
@@ -110,23 +118,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FrmCTableLink2.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml.cs",
-              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml.cs",
-              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml.cs",
-              "ViewState": "AgIAALUBAAAAAAAAAAAawLwBAAA2AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-24T02:35:20.311Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "MainWindow.xaml",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\MainWindow.xaml",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\MainWindow.xaml",
               "RelativeDocumentMoniker": "DBI Scripting\\MainWindow.xaml",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\MainWindow.xaml",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\MainWindow.xaml",
               "RelativeToolTip": "DBI Scripting\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-06-14T20:51:13.132Z"
@@ -135,21 +131,22 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "FrmCTableSyntax.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml.cs",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml.cs",
               "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml.cs",
-              "ViewState": "AgIAABIFAAAAAAAAAAASwCkFAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAHkDAAAAAAAAAAAAwH8DAACEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T20:51:13.167Z"
+              "WhenOpened": "2026-06-14T20:51:13.167Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "FunctionalCondition.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Classes\\FunctionalCondition.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Classes\\FunctionalCondition.cs",
               "RelativeDocumentMoniker": "DBI Scripting\\Classes\\FunctionalCondition.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Classes\\FunctionalCondition.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Classes\\FunctionalCondition.cs",
               "RelativeToolTip": "DBI Scripting\\Classes\\FunctionalCondition.cs",
               "ViewState": "AgIAAKUCAAAAAAAAAAAywMECAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -157,11 +154,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\MainWindow.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "DBI Scripting\\MainWindow.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\MainWindow.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\MainWindow.xaml.cs",
               "RelativeToolTip": "DBI Scripting\\MainWindow.xaml.cs",
               "ViewState": "AgIAAGAAAAAAAAAAAAAvwG0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -169,82 +166,35 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "FrmTransposeSyntax.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml.cs",
-              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml.cs",
-              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml.cs",
-              "ViewState": "AgIAAOIBAAAAAAAAAAAowB0BAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T20:51:13.132Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "FrmBuildScript.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml.cs",
-              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml.cs",
-              "RelativeToolTip": "DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml.cs",
-              "ViewState": "AgIAADMlAAAAAAAAAAAswFIlAAARAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T20:51:13.161Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "FrmAnalysisTable.xaml",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml",
-              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml",
-              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml",
+              "DocumentIndex": 0,
+              "Title": "FrmCTableSyntax.xaml",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml",
+              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml",
+              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-06-14T20:51:13.132Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "FrmAnalysisTable.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml.cs",
-              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml.cs",
-              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml.cs",
-              "ViewState": "AgIAAL0QAAAAAAAAAAAlwM0QAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T20:51:13.161Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "CheckLogicalExp.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Classes\\CheckLogicalExp.cs",
-              "RelativeDocumentMoniker": "DBI Scripting\\Classes\\CheckLogicalExp.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Classes\\CheckLogicalExp.cs",
-              "RelativeToolTip": "DBI Scripting\\Classes\\CheckLogicalExp.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAwwBsAAAA3AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-14T20:51:13.161Z",
+              "WhenOpened": "2026-06-14T20:51:13.167Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "FrmTransposeSyntax.xaml",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml",
-              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml",
-              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-06-14T20:51:13.164Z"
+              "DocumentIndex": 3,
+              "Title": "FrmCTableLink2.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml.cs",
+              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml.cs",
+              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmCTableLink2.xaml.cs",
+              "ViewState": "AgIAALUBAAAAAAAAAAAawLwBAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-24T02:35:20.311Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "FrmTransPlaceholder2.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml.cs",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml.cs",
               "RelativeToolTip": "DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml.cs",
               "ViewState": "AgIAAJQDAAAAAAAAAAAgwKoDAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -252,11 +202,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "FrmTransPlaceholder2.xaml",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml",
               "RelativeToolTip": "DBI Scripting\\Forms\\Scripting\\FrmTransPlaceholder2.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-06-14T20:51:13.164Z"
@@ -265,9 +215,9 @@
               "$type": "Document",
               "DocumentIndex": 20,
               "Title": "FrmCheckScript.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Settings\\FrmCheckScript.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Settings\\FrmCheckScript.xaml.cs",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Settings\\FrmCheckScript.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Settings\\FrmCheckScript.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Settings\\FrmCheckScript.xaml.cs",
               "RelativeToolTip": "DBI Scripting\\Forms\\Settings\\FrmCheckScript.xaml.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -275,11 +225,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "FrmOESyntaxSPSS.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmOESyntaxSPSS.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmOESyntaxSPSS.xaml.cs",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmOESyntaxSPSS.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmOESyntaxSPSS.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmOESyntaxSPSS.xaml.cs",
               "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmOESyntaxSPSS.xaml.cs",
               "ViewState": "AgIAACMAAAAAAAAAAADgvy4AAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -287,11 +237,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "FrmCreateOEExcel.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Download\\FrmCreateOEExcel.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Download\\FrmCreateOEExcel.xaml.cs",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Download\\FrmCreateOEExcel.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Download\\FrmCreateOEExcel.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Download\\FrmCreateOEExcel.xaml.cs",
               "RelativeToolTip": "DBI Scripting\\Forms\\Download\\FrmCreateOEExcel.xaml.cs",
               "ViewState": "AgIAAJEBAAAAAAAAAAAAwJgBAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -299,22 +249,81 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "FrmCTableSyntax.xaml",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml",
-              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml",
-              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmCTableSyntax.xaml",
+              "DocumentIndex": 9,
+              "Title": "FrmTransposeSyntax.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml.cs",
+              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml.cs",
+              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml.cs",
+              "ViewState": "AgIAAOIBAAAAAAAAAAAowB0BAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-14T20:51:13.132Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FrmBuildScript.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml.cs",
+              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml.cs",
+              "RelativeToolTip": "DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml.cs",
+              "ViewState": "AgIAADMlAAAAAAAAAAAswFIlAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-14T20:51:13.161Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FrmAnalysisTable.xaml",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml",
+              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml",
+              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-06-14T20:51:13.167Z"
+              "WhenOpened": "2026-06-14T20:51:13.132Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FrmAnalysisTable.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml.cs",
+              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml.cs",
+              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmAnalysisTable.xaml.cs",
+              "ViewState": "AgIAAL0QAAAAAAAAAAAlwM0QAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-14T20:51:13.161Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "CheckLogicalExp.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Classes\\CheckLogicalExp.cs",
+              "RelativeDocumentMoniker": "DBI Scripting\\Classes\\CheckLogicalExp.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Classes\\CheckLogicalExp.cs",
+              "RelativeToolTip": "DBI Scripting\\Classes\\CheckLogicalExp.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAwwBsAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-14T20:51:13.161Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FrmTransposeSyntax.xaml",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml",
+              "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml",
+              "RelativeToolTip": "DBI Scripting\\Forms\\Analytics\\FrmTransposeSyntax.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-06-14T20:51:13.164Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 19,
               "Title": "FrmUploadScript.xaml",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml",
               "RelativeToolTip": "DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-06-14T20:51:13.167Z"
@@ -323,9 +332,9 @@
               "$type": "Document",
               "DocumentIndex": 18,
               "Title": "FrmUploadScript.xaml.cs",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml.cs",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml.cs",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml.cs",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml.cs",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml.cs",
               "RelativeToolTip": "DBI Scripting\\Forms\\Scripting\\FrmUploadScript.xaml.cs",
               "ViewState": "AgIAAJAAAAAAAAAAAAAlwJkAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -335,9 +344,9 @@
               "$type": "Document",
               "DocumentIndex": 17,
               "Title": "FrmBuildScript.xaml",
-              "DocumentMoniker": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml",
+              "DocumentMoniker": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml",
               "RelativeDocumentMoniker": "DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml",
-              "ToolTip": "D:\\SmartSurvey-Desktop-App\\DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml",
+              "ToolTip": "E:\\MR Tools\\SmartSurvey - ss\\DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml",
               "RelativeToolTip": "DBI Scripting\\Forms\\Scripting\\FrmBuildScript.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-06-14T20:51:13.167Z"

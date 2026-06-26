@@ -666,6 +666,7 @@ namespace DBI_Scripting.Forms.Analytics
             txt_writer.WriteLine("");
 
             int i_TableNo = 1;
+            string emptyBannerValue = chkExcludeEmptyBanner.IsChecked == true ? "EXCLUDE" : "INCLUDE";
 
             String nestedVairables = GetBannerNestedVariable(bannerText1);
             String bannerVariablesForLabel = GetBannerVariablesForLabel(bannerText1);
@@ -700,7 +701,7 @@ namespace DBI_Scripting.Forms.Analytics
                     }
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     if (chkIncludeBlankRow.IsChecked == true)
                         txt_writer.WriteLine("  /CATEGORIES VARIABLES=nBlank ORDER=A KEY=VALUE EMPTY=INCLUDE");
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
@@ -753,7 +754,7 @@ namespace DBI_Scripting.Forms.Analytics
                         }
                         txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                         txt_writer.WriteLine("  /CATEGORIES VARIABLES=$" + lstMRUniqueVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                         if (addBlankRow)
                             txt_writer.WriteLine("  /CATEGORIES VARIABLES=nBlank ORDER=A KEY=VALUE EMPTY=INCLUDE");
                         txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
@@ -796,7 +797,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [" + analysisType + ", TOTAL[COUNT F40.0]] + m_" + lstVariableName[i] + " [S][MEAN F40.2] + sd_" + lstVariableName[i] + " [S][STDDEV F40.2] + se_" + lstVariableName[i] + " [S][SEMEAN F40.2] BY " + bannerText1 + "");
                     txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " ORDER=A KEY=VALUE EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -844,7 +845,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, &cat1, &cat2, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -892,7 +893,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, &cat1, &cat2, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -945,7 +946,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -988,7 +989,7 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine(sb8.ToString());
 
                         txt_writer.WriteLine("  /SLABELS POSITION=ROW VISIBLE=NO");
-                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                        txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                         txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                         txt_writer.WriteLine("  /TITLES");
                         txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstMRVariableLabel[i].Replace("'", "") + "'");
@@ -1042,7 +1043,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1092,7 +1093,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1142,7 +1143,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, &cat1, &cat2, &cat3, &cat4, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");
@@ -1189,7 +1190,7 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + lstVariableName[i] + " [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, &cat1, &cat2, &cat3, OTHERNM] EMPTY=INCLUDE TOTAL=YES POSITION=BEFORE");
 
 
-                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=INCLUDE");
+                    txt_writer.WriteLine("  /CATEGORIES VARIABLES=" + bannerText2 + " ORDER=A KEY=VALUE EMPTY=" + emptyBannerValue);
                     txt_writer.WriteLine("  /CRITERIA CILEVEL=95");
                     txt_writer.WriteLine("  /TITLES");
                     txt_writer.WriteLine("    TITLE='Table " + i_TableNo.ToString() + ": " + lstVariableLabel[i].Replace("'", "") + "'");

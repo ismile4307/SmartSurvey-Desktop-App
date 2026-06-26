@@ -185,11 +185,15 @@
                             <ColumnDefinition Width="200"/>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Analysis Type" VerticalAlignment="Center"
                                    FontWeight="SemiBold" Foreground="#374151" FontSize="12"/>
                         <ComboBox Grid.Column="2" x:Name="comAnalysisType" Height="26" VerticalAlignment="Center"/>
                         <CheckBox Grid.Column="4" x:Name="chkIncludeBlankRow" Content="Include Blank Row"
+                                  IsChecked="True" VerticalAlignment="Center" FontSize="12" Foreground="#374151"/>
+                        <CheckBox Grid.Column="6" x:Name="chkExcludeEmptyBanner" Content="Exclude Empty Banner"
                                   VerticalAlignment="Center" FontSize="12" Foreground="#374151"/>
                     </Grid>
                 </Border>
