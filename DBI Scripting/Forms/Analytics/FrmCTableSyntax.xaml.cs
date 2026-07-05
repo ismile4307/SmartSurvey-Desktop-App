@@ -1759,38 +1759,28 @@ namespace DBI_Scripting.Forms.Analytics
             if (string.IsNullOrWhiteSpace(input) || !input.Contains(">"))
                 return string.Empty;
 
-            // Split by '>' and skip root
-            var levels = input.Split('>')
-                              .Skip(1)
-                              .Select(x =>
-                              {
-                                  int cut = x.IndexOfAny(new[] { '+', '(' });
-                                  return cut > 0 ? x.Substring(0, cut) : x;
-                              })
-                              .Where(x => !string.IsNullOrWhiteSpace(x))
-                              .ToList();
+            var result = new List<string>();
 
-            if (!levels.Any())
-                return string.Empty;
-
-            List<string> result = new List<string>();
-
-            // Always take first
-            result.Add(levels.First());
-
-            // Take middle if more than 2 levels
-            if (levels.Count > 2)
+            foreach (string level in input.Split('>').Skip(1))
             {
-                int midIndex = levels.Count / 2;
-                result.Add(levels[midIndex]);
+                string trimmed = level.Trim();
+                if (string.IsNullOrWhiteSpace(trimmed))
+                    continue;
+
+                // Levels starting with '(' are parenthesised column-header groups —
+                // they belong to GetBannerVariablesForLabel (DISPLAY=LABEL), not here.
+                if (trimmed.StartsWith("("))
+                    continue;
+
+                // Standalone nesting key: take the name up to the first +, (, or space.
+                int cut = trimmed.IndexOfAny(new[] { '+', '(', ' ' });
+                string varName = cut > 0 ? trimmed.Substring(0, cut).Trim() : trimmed;
+
+                if (!string.IsNullOrWhiteSpace(varName) && !result.Contains(varName))
+                    result.Add(varName);
             }
 
-            // Always take last
-            if (levels.Count > 1)
-                result.Add(levels.Last());
-
-            // Remove duplicates but preserve order
-            return string.Join(" ", result.Distinct());
+            return string.Join(" ", result);
         }
 
         static string GetBannerVariablesForLabel(string input)
@@ -1798,35 +1788,25 @@ namespace DBI_Scripting.Forms.Analytics
             if (string.IsNullOrWhiteSpace(input))
                 return string.Empty;
 
-            // Split by '>'
+            var variables = new List<string>();
             var levels = input.Split('>');
 
-            List<string> variables = new List<string>();
-
-            // 1️⃣ Process root (first level)
+            // Root level: non-paren vars first (preserves banner order), then each () group.
             string root = levels[0];
-            // Extract variables in parentheses
-            var rootParenMatches = Regex.Matches(root, @"\((.*?)\)");
-            foreach (Match m in rootParenMatches)
-            {
-                variables.AddRange(m.Groups[1].Value.Split('+').Select(x => x.Trim()).Where(x => x != ""));
-            }
-            // Also include any variable outside parentheses
-            string rootWithoutParen = Regex.Replace(root, @"\((.*?)\)", "").Trim();
+            string rootWithoutParen = Regex.Replace(root, @"\(.*?\)", "").Trim();
             variables.AddRange(rootWithoutParen.Split('+').Select(x => x.Trim()).Where(x => x != ""));
+            foreach (Match m in Regex.Matches(root, @"\((.*?)\)"))
+                variables.AddRange(m.Groups[1].Value.Split('+').Select(x => x.Trim()).Where(x => x != ""));
 
-            // 2️⃣ Process remaining levels, only variables inside parentheses
+            // Sub-levels: only vars inside () are column-header groups (DISPLAY=LABEL).
+            // Standalone vars after > are nesting keys handled by GetBannerNestedVariable (DISPLAY=NONE).
             for (int i = 1; i < levels.Length; i++)
             {
-                string level = levels[i].Trim();
-                var parenMatches = Regex.Matches(level, @"\((.*?)\)");
-                foreach (Match m in parenMatches)
-                {
+                foreach (Match m in Regex.Matches(levels[i], @"\((.*?)\)"))
                     variables.AddRange(m.Groups[1].Value.Split('+').Select(x => x.Trim()).Where(x => x != ""));
-                }
             }
 
-            return string.Join(" ", variables);
+            return string.Join(" ", variables.Distinct());
         }
 
     }
