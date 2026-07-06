@@ -1452,7 +1452,9 @@ namespace DBI_Scripting.Forms.Analytics
 
         private void btnBrowseBannerFile_Click(object sender, RoutedEventArgs e)
         {
-            String sTemp = System.AppDomain.CurrentDomain.BaseDirectory;
+            string sTemp = @"C:\Temp";
+            if (!Directory.Exists(sTemp))
+                Directory.CreateDirectory(sTemp);
             TextWriter txtWriter = new StreamWriter(sTemp + "\\banner_help.txt");
             txtWriter.WriteLine("********************************************************************************************************************");
             txtWriter.WriteLine("*  ********* ColVar ***********************                                                                        *");
@@ -1477,7 +1479,7 @@ namespace DBI_Scripting.Forms.Analytics
             txtWriter.Close();
 
 
-            Process.Start(System.AppDomain.CurrentDomain.BaseDirectory + "\\banner_help.txt");
+            Process.Start(sTemp + "\\banner_help.txt");
         }
 
         private async void btnBrowseGetStrucutureFile_Click(object sender, RoutedEventArgs e)
