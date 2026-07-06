@@ -312,16 +312,6 @@ namespace DBI_Scripting.Forms.Analytics
                     var filledCodes = codes.Where(c => !string.IsNullOrWhiteSpace(c)).ToList();
                     if (filledCodes.Count != filledCodes.Distinct().Count())
                         validationErrors.Add("'" + bannerV + "': duplicate New Code values found.");
-
-                    // Mode 2 (single var RECODE): New Code must be numeric
-                    if (!isMultiVar)
-                    {
-                        foreach (string code in filledCodes)
-                        {
-                            if (!int.TryParse(code, out _))
-                                validationErrors.Add("'" + bannerV + "': New Code '" + code + "' must be a whole number for RECODE.");
-                        }
-                    }
                 }
                 else
                 {
@@ -375,7 +365,6 @@ namespace DBI_Scripting.Forms.Analytics
                 var newLabels = dicBannerNewLabels[bannerV];
                 var conds = dicBannerConditions[bannerV];
                 bool isCustom = codes.Any(c => !string.IsNullOrWhiteSpace(c));
-                bool isMultiVar = spssVars.Trim().Contains(" ");
 
                 txt_writer.WriteLine("NUMERIC " + bannerV + " (f8.0).");
 
@@ -384,27 +373,9 @@ namespace DBI_Scripting.Forms.Analytics
                     // Mode 1: direct copy
                     txt_writer.WriteLine("COMPUTE " + bannerV + " = " + spssVars.Trim() + ".");
                 }
-                else if (!isMultiVar)
-                {
-                    // Mode 2: RECODE (single source variable, grouped values)
-                    var sb = new System.Text.StringBuilder("RECODE " + spssVars.Trim() + " ");
-                    for (int ri = 0; ri < codes.Count; ri++)
-                    {
-                        string cond = conds[ri].Trim();
-                        if (cond.ToUpper().Contains("THRU"))
-                            sb.Append("(" + cond + "=" + codes[ri] + ")");
-                        else
-                        {
-                            string joined = string.Join(",", cond.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
-                            sb.Append("(" + joined + "=" + codes[ri] + ")");
-                        }
-                    }
-                    sb.Append("(ELSE=SYSMIS) INTO " + bannerV + ".");
-                    txt_writer.WriteLine(sb.ToString());
-                }
                 else
                 {
-                    // Mode 3: IF statements (multiple source variables)
+                    // Mode 2: IF statements — condition from column F, new code from column D
                     for (int ri = 0; ri < codes.Count; ri++)
                         txt_writer.WriteLine("IF (" + conds[ri] + ") " + bannerV + "=" + codes[ri] + ".");
                 }
