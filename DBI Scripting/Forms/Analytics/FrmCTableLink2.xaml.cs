@@ -268,10 +268,10 @@ namespace DBI_Scripting.Forms.Analytics
             int j = 0;
 
             Excel.Range myRange;
-            string[] tableTitle = new string[1500];
-            string[] tableLink = new string[1500];
-            string[] tableFilter = new string[1500];
-            string[] tableBase = new string[1500];
+            string[] tableTitle = new string[5500];
+            string[] tableLink = new string[5500];
+            string[] tableFilter = new string[5500];
+            string[] tableBase = new string[5500];
 
             myRange = inputSheet.UsedRange;
             int r = myRange.Columns.Count;
@@ -502,10 +502,10 @@ namespace DBI_Scripting.Forms.Analytics
             int j = 0;
 
             Excel.Range myRange;
-            string[] tableTitle = new string[1500];
-            string[] tableLink = new string[1500];
-            string[] tableFilter = new string[1500];
-            string[] tableBase = new string[1500];
+            string[] tableTitle = new string[5500];
+            string[] tableLink = new string[5500];
+            string[] tableFilter = new string[5500];
+            string[] tableBase = new string[5500];
 
             myRange = inputSheet.UsedRange;
             int r = myRange.Columns.Count;
@@ -1320,9 +1320,9 @@ namespace DBI_Scripting.Forms.Analytics
                     bool flag = false;
 
 
-                    string[] tableNo = new string[1500];
-                    string[] tableTitle = new string[1500];
-                    string[] tableFilter = new string[1500];
+                    string[] tableNo = new string[5500];
+                    string[] tableTitle = new string[5500];
+                    string[] tableFilter = new string[5500];
 
 
                     //###################################
