@@ -241,6 +241,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\Download\FrmSyncResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\Download\FrmUnPivotOE.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -458,6 +462,9 @@
     </Compile>
     <Compile Include="Forms\Download\FrmSyncData.xaml.cs">
       <DependentUpon>FrmSyncData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Download\FrmSyncResults.xaml.cs">
+      <DependentUpon>FrmSyncResults.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Download\FrmUnPivotOE.xaml.cs">
       <DependentUpon>FrmUnPivotOE.xaml</DependentUpon>
