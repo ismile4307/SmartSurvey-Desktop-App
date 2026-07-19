@@ -128,6 +128,13 @@ namespace DBI_Scripting.Forms.Download
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
+            if (!Directory.Exists(baseDirectory))
+                Directory.CreateDirectory(baseDirectory);
+
+            btnRun.IsEnabled = false;
+            try
+            {
+
             List<string> listOEQuestoin = new List<string>();
             listOEQuestoin = this.getOEQuestionList();
             lstWorkSheetName = new List<string>();
@@ -271,7 +278,7 @@ namespace DBI_Scripting.Forms.Download
                         while (strline2 != null)
                         {
                             //progressBar1.Value = p;
-                            string[] word = strline2.Split('\t');
+                            string[] word = strline2.Replace("\n"," ").Split('\t');
 
                             dicFieldValue2.Clear();
                             for (int j = 0; j < heading2.Length; j++)
@@ -308,6 +315,11 @@ namespace DBI_Scripting.Forms.Download
                 else
                     MessageBox.Show("Select Excel Sheet");
 
+            }
+            }
+            finally
+            {
+                btnRun.IsEnabled = true;
             }
         }
 
