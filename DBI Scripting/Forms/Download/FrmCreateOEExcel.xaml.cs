@@ -273,29 +273,33 @@ namespace DBI_Scripting.Forms.Download
                         Dictionary<string, string> dicFieldValue2 = new Dictionary<string, string>();
 
 
-                        //bool startToTakeBrandCode = false;
-                        strline2 = txtReader2.ReadLine();     //Read the 2nd Line
-                        while (strline2 != null)
+                        string currentLine2 = txtReader2.ReadLine();     //Read the 2nd Line
+                        while (currentLine2 != null)
                         {
-                            //progressBar1.Value = p;
-                            string[] word = strline2.Replace("\n"," ").Split('\t');
+                            // Assemble a complete logical row — cells with embedded newlines
+                            // cause the row to span multiple physical lines in the txt file.
+                            // Keep appending the next physical line until column count matches.
+                            string[] word = currentLine2.Replace("\n", " ").Split('\t');
+                            while (word.Length < heading2.Length)
+                            {
+                                string nextLine = txtReader2.ReadLine();
+                                if (nextLine == null) break;
+                                currentLine2 = currentLine2 + " " + nextLine;
+                                word = currentLine2.Replace("\n", " ").Split('\t');
+                            }
 
                             dicFieldValue2.Clear();
                             for (int j = 0; j < heading2.Length; j++)
                             {
-                                if (!dicFieldValue2.ContainsKey(heading2[j]))
+                                if (j < word.Length && !dicFieldValue2.ContainsKey(heading2[j]))
                                     dicFieldValue2.Add(heading2[j], word[j]);
                             }
 
                             this.populateOEDictionaryFromData(dicFieldValue2);
 
-                            strline2 = txtReader2.ReadLine();
-                            //p = p + 1;
-
-
+                            currentLine2 = txtReader2.ReadLine();
                         }
 
-                        //}
                         txtReader2.Close();
                     }
 
