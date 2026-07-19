@@ -154,13 +154,19 @@ namespace DBI_Scripting.Forms.Download
             string dbName     = dicProjectNameVsDatabaseName[comProjectName.Text];
             string scriptPath = baseDirectory + dbName;
 
+            lblProgress.Content = "Downloading project script from server...";
+            lblStatus.Content = "Status : " + dbName;
+            DoEvents();
             try
             {
                 await DownloadScriptAsync(dbName, scriptPath);
+                lblProgress.Content = "Script downloaded.";
+                DoEvents();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Failed to download project script:\n" + ex.Message);
+                lblProgress.Content = "Script download failed.";
                 return;
             }
 
@@ -176,15 +182,16 @@ namespace DBI_Scripting.Forms.Download
                 {
                     List<String> lstTextFile = new List<string>();
 
-
                     lstWorkSheetName.Clear();
                     lstWorkSheetName.Add("Openended");
 
-                    //if (lstWorkSheetName.Count > 0)
-                    //{
+                    lblProgress.Content = "Reading Openended sheet from Excel...";
+                    lblStatus.Content = "Status : Openended";
+                    DoEvents();
+
                     Excel.Application xlApp = new Excel.Application();
                     Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(txtExcelDataPath.Text, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
-                    lstTextFile.Clear();            //Clear the txt file path list
+                    lstTextFile.Clear();
                     for (int i = 1; i <= xlWorkBook.Worksheets.Count; i++)
                     {
                         if (lstWorkSheetName.Contains(xlWorkBook.Worksheets[i].Name.ToString()))
@@ -194,7 +201,6 @@ namespace DBI_Scripting.Forms.Download
                                 File.Delete(baseDirectory + sheetName + ".txt");
 
                             Excel.Worksheet worksheet = (Excel.Worksheet)xlApp.Worksheets[sheetName];
-
                             worksheet.Select(true);
 
                             xlWorkBook.SaveAs(baseDirectory + sheetName + ".txt", Excel.XlFileFormat.xlTextWindows, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
@@ -205,64 +211,48 @@ namespace DBI_Scripting.Forms.Download
                     releaseObject(xlWorkBook);
                     releaseObject(xlApp);
 
+                    lblProgress.Content = "Processing OE verbatims...";
+                    DoEvents();
+
                     dicQidVsOEVerbatim.Clear();
-                    //********************************************************
-                    //this.createList();
-                    //********************************************************
                     for (int i = 0; i < lstTextFile.Count; i++)
                     {
-                        //Dim file_Path As String = GetFoxproDBDir(txt_FoxDB_Location.Text) + "\FoxproDB\" + Trim(ews.Name.ToString()) + ".DBF"
                         string s_temp, strline;
                         TextReader txtReader = new StreamReader(lstTextFile[i]);
-                        //int lenReader = File.ReadAllLines(lstTextFile[i]).Length;
-                        //s_temp = lstTextFile[i].ToString();
-                        //s_temp = s_temp.Substring(s_temp.LastIndexOf('\\'));
-                        //lblWorkOn.Text = s_temp.Substring(1, s_temp.LastIndexOf('.') - 1);
-                        //lblTotalRecord.Text = lenReader.ToString();
-                        //lblComplete.Text = (i).ToString() + "/" + lstTextFile.Count.ToString();
-                        //Application.DoEvents();
 
-                        strline = txtReader.ReadLine();     //Read the Headding
+                        strline = txtReader.ReadLine();     //Read the Heading
                         string[] heading = strline.Split('\t');
 
-                        //string file_Path = txt_FoxDB_Location.Text;
-                        //string DatabaseName = file_Path.Substring(file_Path.LastIndexOf('\\') + 1);
                         Dictionary<string, string> dicFieldValue = new Dictionary<string, string>();
 
-
-                        //bool startToTakeBrandCode = false;
                         strline = txtReader.ReadLine();     //Read the 2nd Line
                         while (strline != null)
                         {
-                            //progressBar1.Value = p;
                             string[] word = strline.Split('\t');
-
                             this.populateOEDictionary(word);
-
                             strline = txtReader.ReadLine();
-                            //p = p + 1;
-
-
                         }
 
-                        //}
                         txtReader.Close();
                     }
 
+                    lblProgress.Content = "Building OE question list...";
+                    DoEvents();
 
                     this.PopulateQIdForOE();
-
-                    //****************************************
 
                     if (chkOnlyTakeOE.IsChecked == false)
                     {
                         lstWorkSheetName.Clear();
                         lstWorkSheetName.Add("Data");
 
+                        lblProgress.Content = "Reading Data sheet from Excel...";
+                        lblStatus.Content = "Status : Data";
+                        DoEvents();
 
                         xlApp = new Excel.Application();
                         xlWorkBook = xlApp.Workbooks.Open(txtExcelDataPath.Text, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
-                        lstTextFile.Clear();            //Clear the txt file path list
+                        lstTextFile.Clear();
                         for (int i = 1; i <= xlWorkBook.Worksheets.Count; i++)
                         {
                             if (lstWorkSheetName.Contains(xlWorkBook.Worksheets[i].Name.ToString()))
@@ -272,7 +262,6 @@ namespace DBI_Scripting.Forms.Download
                                     File.Delete(baseDirectory + sheetName + ".txt");
 
                                 Excel.Worksheet worksheet = (Excel.Worksheet)xlApp.Worksheets[xlWorkBook.Worksheets[i].Name.ToString()];
-
                                 worksheet.Select(true);
 
                                 xlWorkBook.SaveAs(baseDirectory + sheetName + ".txt", Excel.XlFileFormat.xlTextWindows, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlNoChange, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
@@ -282,25 +271,16 @@ namespace DBI_Scripting.Forms.Download
                         xlWorkBook.Close(true);
                         releaseObject(xlWorkBook);
                         releaseObject(xlApp);
-                        //****************************************
 
+                        lblProgress.Content = "Processing Data sheet...";
+                        DoEvents();
 
                         TextReader txtReader2 = new StreamReader(lstTextFile[0]);
-                        //int lenReader = File.ReadAllLines(lstTextFile[i]).Length;
-                        //s_temp = lstTextFile[i].ToString();
-                        //s_temp = s_temp.Substring(s_temp.LastIndexOf('\\'));
-                        //lblWorkOn.Text = s_temp.Substring(1, s_temp.LastIndexOf('.') - 1);
-                        //lblTotalRecord.Text = lenReader.ToString();
-                        //lblComplete.Text = (i).ToString() + "/" + lstTextFile.Count.ToString();
-                        //Application.DoEvents();
 
-                        string strline2 = txtReader2.ReadLine();     //Read the Headding
+                        string strline2 = txtReader2.ReadLine();     //Read the Heading
                         string[] heading2 = strline2.Split('\t');
 
-                        //string file_Path = txt_FoxDB_Location.Text;
-                        //string DatabaseName = file_Path.Substring(file_Path.LastIndexOf('\\') + 1);
                         Dictionary<string, string> dicFieldValue2 = new Dictionary<string, string>();
-
 
                         string currentLine2 = txtReader2.ReadLine();     //Read the 2nd Line
                         while (currentLine2 != null)
@@ -330,19 +310,31 @@ namespace DBI_Scripting.Forms.Download
                         }
 
                         txtReader2.Close();
+
+                        lblProgress.Content = "Data sheet processed.";
+                        DoEvents();
                     }
 
-                    //****************************************
+                    lblProgress.Content = "Exporting to Excel...";
+                    lblStatus.Content = "Status : Exporting";
+                    DoEvents();
 
                     this.exportToExcel();
 
-                    //************************************** CreateDirectory *********************************************************
-
-                    //***********************************************************************************************
                     if (dicQidVsOEVerbatim.Count > 0)
+                    {
+                        lblProgress.Content = "Done — " + dicQidVsOEVerbatim.Count + " OE question(s) exported.";
+                        lblStatus.Content = "Status : Complete";
+                        DoEvents();
                         MessageBox.Show("Write Complete");
+                    }
                     else
+                    {
+                        lblProgress.Content = "No OE verbatims found.";
+                        lblStatus.Content = "Status : Complete";
+                        DoEvents();
                         MessageBox.Show("No OE verbatims found to create OE sheet");
+                    }
 
                 }
                 else
