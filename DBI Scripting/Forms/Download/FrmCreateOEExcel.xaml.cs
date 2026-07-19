@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -89,6 +90,21 @@ namespace DBI_Scripting.Forms.Download
             });
         }
 
+        private async Task DownloadScriptAsync(string dbName, string scriptPath)
+        {
+            if (File.Exists(scriptPath)) File.Delete(scriptPath);
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            using (var wc = new WebClient())
+            {
+                await wc.DownloadFileTaskAsync(
+                    StaticClass.SERVER_URL + "/scripts/" + dbName, scriptPath);
+            }
+        }
+
         private void frmCreateOEExcel_Loaded(object sender, RoutedEventArgs e)
         {
             this.getProjectsFromServer();
@@ -126,7 +142,7 @@ namespace DBI_Scripting.Forms.Download
             }
         }
 
-        private void btnRun_Click(object sender, RoutedEventArgs e)
+        private async void btnRun_Click(object sender, RoutedEventArgs e)
         {
             if (!Directory.Exists(baseDirectory))
                 Directory.CreateDirectory(baseDirectory);
@@ -134,6 +150,19 @@ namespace DBI_Scripting.Forms.Download
             btnRun.IsEnabled = false;
             try
             {
+
+            string dbName     = dicProjectNameVsDatabaseName[comProjectName.Text];
+            string scriptPath = baseDirectory + dbName;
+
+            try
+            {
+                await DownloadScriptAsync(dbName, scriptPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to download project script:\n" + ex.Message);
+                return;
+            }
 
             List<string> listOEQuestoin = new List<string>();
             listOEQuestoin = this.getOEQuestionList();
