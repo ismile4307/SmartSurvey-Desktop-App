@@ -149,7 +149,7 @@ namespace DBI_Scripting.Forms.Download
 
 
                     lstWorkSheetName.Clear();
-                    lstWorkSheetName.Add("Openeneded");
+                    lstWorkSheetName.Add("Openended");
 
                     //if (lstWorkSheetName.Count > 0)
                     //{
