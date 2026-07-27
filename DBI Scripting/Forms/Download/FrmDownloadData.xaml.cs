@@ -50,9 +50,10 @@ namespace DBI_Scripting.Forms
 
             dtpDateFrom.SelectedDate = DateTime.Today;
             dtpDateTo.SelectedDate   = DateTime.Today;
-            comInterviewType.Text    = "Final Interviews";
-            comConsiderDate.Text     = "Sync Date";
-            comFileType.Text         = "Excel";
+            comInterviewType.Text        = "Final Interviews";
+            comConsiderDate.Text         = "Sync Date";
+            comFileType.Text             = "Excel";
+            chkDownloadScript.IsChecked  = true;
 
             await LoadProjectsAsync();
         }
@@ -233,7 +234,8 @@ namespace DBI_Scripting.Forms
 
             string projectName    = comProjectName.Text;
             string dbName         = _projectDbMap[projectName];
-            string tempPath       = Path.GetTempPath();
+            string tempPath       = @"C:\Temp";
+            Directory.CreateDirectory(tempPath);
             string databasePath   = Path.Combine(tempPath, dbName);
             string startDate      = dtpDateFrom.SelectedDate.Value.ToString("yyyy-MM-dd");
             string endDate        = dtpDateTo.SelectedDate.Value.ToString("yyyy-MM-dd");
