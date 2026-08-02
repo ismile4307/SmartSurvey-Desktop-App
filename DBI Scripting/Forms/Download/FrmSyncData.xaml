@@ -14,15 +14,16 @@
         <Label x:Name="lblDBPath" Content="Database Path :" HorizontalAlignment="Left" Margin="17,82,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="136"/>
         <TextBox x:Name="txtDataBasePath" HorizontalAlignment="Left" Height="23" Margin="115,85,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="574"/>
         <Button x:Name="btnBrowse" Content="Browse" HorizontalAlignment="Left" Margin="708,86,0,0" VerticalAlignment="Top" Height="22" Width="75" RenderTransformOrigin="1.35,-4.746" Click="btnBrowse_Click"/>
-        <DataGrid x:Name="dataGridView" HorizontalAlignment="Left" Margin="19,126,0,0" VerticalAlignment="Top" Height="233" Width="764" SelectionMode="Single" IsReadOnly="True" SelectionChanged="dataGridView_SelectionChanged">
+        <CheckBox x:Name="chkSelectAll" Content="Select All" HorizontalAlignment="Left" Margin="19,112,0,0" VerticalAlignment="Top" Checked="chkSelectAll_Checked" Unchecked="chkSelectAll_Unchecked"/>
+        <DataGrid x:Name="dataGridView" HorizontalAlignment="Left" Margin="19,132,0,0" VerticalAlignment="Top" Height="228" Width="764" SelectionMode="Extended" IsReadOnly="True" SelectionChanged="dataGridView_SelectionChanged">
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
                 </Style>
             </DataGrid.ItemContainerStyle>
         </DataGrid>
-        <Label Content="Respondent Id :" HorizontalAlignment="Left" Margin="17,368,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="98"/>
-        <TextBox x:Name="txtRespondentId" HorizontalAlignment="Left" Height="23" Margin="110,372,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="152"/>
+        <Label Content="Selection :" HorizontalAlignment="Left" Margin="17,368,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="98"/>
+        <TextBox x:Name="txtRespondentId" HorizontalAlignment="Left" Height="23" Margin="110,372,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="152" IsReadOnly="True"/>
         <Button x:Name="btnSync" Content="Sync" HorizontalAlignment="Left" Margin="384,373,0,0" VerticalAlignment="Top" Height="22" Width="75" RenderTransformOrigin="1.35,-4.746" Click="btnSync_Click"/>
         <Label x:Name="lblMessageSyncData" Content="Message :" HorizontalAlignment="Left" Margin="473,369,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="98"/>
         <Label x:Name="txtNoOfRecord" Content="No of Rec :" HorizontalAlignment="Left" Margin="269,369,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="98"/>

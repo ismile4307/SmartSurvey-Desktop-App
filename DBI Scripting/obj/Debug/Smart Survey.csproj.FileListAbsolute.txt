@@ -148,10 +148,6 @@ E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Xceed.Wpf.AvalonDock.Themes
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Xceed.Wpf.AvalonDock.Themes.Metro.dll
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Xceed.Wpf.AvalonDock.Themes.VS2010.dll
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Xceed.Wpf.Toolkit.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\System.Net.Http.Formatting.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\System.Web.Http.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\System.Net.Http.Formatting.xml
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\System.Web.Http.xml
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\cs-CZ\Xceed.Wpf.AvalonDock.resources.dll
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\de\Xceed.Wpf.AvalonDock.resources.dll
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\es\Xceed.Wpf.AvalonDock.resources.dll
@@ -278,16 +274,6 @@ E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey.csproj.Generat
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Settings\FrmCheckScript.g.cs
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey_MarkupCompile.lref
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Settings\FrmCheckScript.baml
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Microsoft.TeamFoundation.Client.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Microsoft.TeamFoundation.Common.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\microsoft.teamfoundation.controls.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Microsoft.VisualStudio.Services.Common.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Microsoft.VisualStudio.Services.Client.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Microsoft.TeamFoundation.Diff.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Microsoft.VisualStudio.Services.WebApi.dll
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Microsoft.TeamFoundation.Common.xml
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\microsoft.teamfoundation.controls.xml
-E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\Microsoft.TeamFoundation.Diff.xml
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey.csproj.AssemblyReference.cache
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey.csproj.CoreCompileInputs.cache
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Su.4F7E639F.Up2Date
@@ -446,3 +432,9 @@ D:\SmartSurvey-Desktop-App\DBI Scripting\obj\Debug\Forms\Analytics\FrmCTableSigT
 D:\SmartSurvey-Desktop-App\DBI Scripting\obj\Debug\Forms\Analytics\FrmCTableSigTest.g.cs
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Analytics\FrmCTableSigTest.baml
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Analytics\FrmCTableSigTest.g.cs
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmSyncResults.baml
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Download\FrmSyncResults.g.cs
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\System.Data.SQLite.dll
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\System.Data.SQLite.xml
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\SQLite.Interop.dll
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey_Content.g.cs

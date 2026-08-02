@@ -485,25 +485,30 @@ namespace DBI_Scripting.Forms.Analytics
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN\".");
+                    txt_writer.WriteLine("RECODE m_" + lstVariableName[i] + " (1=1)(2=2)(3=3)(4=4)(5=5)(else=sysmis).");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
+                    txt_writer.WriteLine("RECODE sd_" + lstVariableName[i] + " (1=1)(2=2)(3=3)(4=4)(5=5)(else=sysmis).");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
+                    txt_writer.WriteLine("RECODE se_" + lstVariableName[i] + " (1=1)(2=2)(3=3)(4=4)(5=5)(else=sysmis).");
                     txt_writer.WriteLine("");
                 }
                 else if (lstTableType[i] == "6")
                 {
                     txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     txt_writer.WriteLine("VARIABLE LABELS m_" + lstVariableName[i] + " \"MEAN (Rev)\".");
-                    txt_writer.WriteLine("RECODE m_" + lstVariableName[i] + " (1=5)(2=4)(3=3)(4=2)(5=1).");
+                    txt_writer.WriteLine("RECODE m_" + lstVariableName[i] + " (1=5)(2=4)(3=3)(4=2)(5=1)(else=sysmis).");
 
                     txt_writer.WriteLine("COMPUTE sd_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     txt_writer.WriteLine("VARIABLE LABELS sd_" + lstVariableName[i] + " \"S. D.\".");
+                    txt_writer.WriteLine("RECODE sd_" + lstVariableName[i] + "(6 thru high=sysmis).");
 
                     txt_writer.WriteLine("COMPUTE se_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                     txt_writer.WriteLine("VARIABLE LABELS se_" + lstVariableName[i] + " \"S. E.\".");
+                    txt_writer.WriteLine("RECODE se_" + lstVariableName[i] + "(6 thru high=sysmis).");
                     txt_writer.WriteLine("");
                 }
                 else if (lstTableType[i] == "7")
@@ -854,9 +859,9 @@ namespace DBI_Scripting.Forms.Analytics
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + bannerVariablesForLabel + " DISPLAY=LABEL");
                     txt_writer.WriteLine("  /VLABELS VARIABLES=" + lstVariableName[i] + " " + nestedVairables + " DISPLAY=NONE");
 
-                    txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([4]+[5])");
+                    txt_writer.WriteLine("  /PCOMPUTE &cat1 = EXPR([1]+[2])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat1 LABEL = \"TOP 2 BOX [1/2]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
-                    txt_writer.WriteLine("  /PCOMPUTE &cat2 = EXPR([1]+[2])");
+                    txt_writer.WriteLine("  /PCOMPUTE &cat2 = EXPR([4]+[5])");
                     txt_writer.WriteLine("  /PPROPERTIES &cat2 LABEL = \"BOTTOM 2 BOX [4/5]\" FORMAT=COLPCT.VALIDN F40.1 HIDESOURCECATS=NO");
 
                     txt_writer.WriteLine("  /TABLE " + lstVariableName[i] + "[C] [COLPCT.COUNT F40." + txtDecimalPlace.Text + ", TOTAL[COUNT F40.0]] +  m_" + lstVariableName[i] + " [S][MEAN F40.2] + sd_" + lstVariableName[i] + " [S][STDDEV F40.2] + se_" + lstVariableName[i] + " [S][SEMEAN F40.2] BY " + bannerText1 + "");

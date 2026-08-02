@@ -515,7 +515,10 @@ namespace DBI_Scripting.Forms.Scripting
                                         string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
                                         if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
                                         {
-                                            listOfAttributeTemp = dicQidVsAttributeList[abc[1].Trim()];
+                                            if (!dicQidVsAttributeList.ContainsKey(abc[1].Trim()))
+                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " *REPEAT references unknown QId '" + abc[1].Trim() + "'");
+                                            else
+                                                listOfAttributeTemp = dicQidVsAttributeList[abc[1].Trim()];
                                         }
                                     }
                                     hasRepeat = true;
@@ -3593,7 +3596,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                                 txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
                                                             else
                                                             {
-                                                                if (myQuestion.QType == "17")
+                                                                if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13")
                                                                     attributeMain.Comments = xyz[1].Trim();
                                                                 else
                                                                     attributeMain.ForceAndMsgOpt = xyz[1].Trim();
@@ -4064,7 +4067,7 @@ namespace DBI_Scripting.Forms.Scripting
                                             txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
                                         else
                                         {
-                                            if (myQuestion.QType == "17")
+                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13")
                                                 attributeMain.Comments = xyz[1].Trim();
                                             else
                                                 attributeMain.ForceAndMsgOpt = xyz[1].Trim();
@@ -4317,7 +4320,10 @@ namespace DBI_Scripting.Forms.Scripting
                         string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
                         if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
                         {
-                            listOfAttributeTempLanX = dicQidVsAttributeListLan1[abc[1].Trim()];
+                            if (!dicQidVsAttributeListLan1.ContainsKey(abc[1].Trim()))
+                                txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " *REPEAT references unknown QId '" + abc[1].Trim() + "'");
+                            else
+                                listOfAttributeTempLanX = dicQidVsAttributeListLan1[abc[1].Trim()];
                         }
                     }
                     hasRepeat = true;
@@ -5831,7 +5837,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                             txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
                                                         else
                                                         {
-                                                            if (myQuestion.QType == "17")
+                                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13")
                                                                 attributeMain.Comments = xyz[1].Trim();
                                                             else
                                                                 attributeMain.ForceAndMsgOpt = xyz[1].Trim();
@@ -6301,7 +6307,7 @@ namespace DBI_Scripting.Forms.Scripting
                                             txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
                                         else
                                         {
-                                            if (myQuestion.QType == "17")
+                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13")
                                                 attributeMain.Comments = xyz[1].Trim();
                                             else
                                                 attributeMain.ForceAndMsgOpt = xyz[1].Trim();
@@ -9847,6 +9853,11 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     if (qtype == "48")
                     {
+                        if (!dicQidVsAttributeList.ContainsKey(qid))
+                        {
+                            listOfErrorMsg.Add(qid + " - Form Question attributes not found (QId may be undefined or missing *ATTRIBUTE block)");
+                            continue;
+                        }
                         List<AttributeMain> listOfAttribute = dicQidVsAttributeList[qid];
                         if (listOfAttribute.Count == 0)
                         {
@@ -9868,6 +9879,11 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     if (qtype == "60")
                     {
+                        if (!dicQidVsAttributeList.ContainsKey(qid))
+                        {
+                            listOfErrorMsg.Add(qid + " - FIFSInfo Question attributes not found (QId may be undefined or missing *ATTRIBUTE block)");
+                            continue;
+                        }
                         List<AttributeMain> listOfAttribute = dicQidVsAttributeList[qid];
                         if (listOfAttribute.Count == 0)
                         {
@@ -9889,6 +9905,11 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     else if (qtype == "1" || (qtype == "2"))
                     {
+                        if (!dicQidVsAttributeList.ContainsKey(qid))
+                        {
+                            listOfErrorMsg.Add(qid + " - Attributes not found (QId may be undefined or missing *ATTRIBUTE block)");
+                            continue;
+                        }
                         List<AttributeMain> listOfAttribute = dicQidVsAttributeList[qid];
                         if (listOfAttribute.Count == 0)
                         {

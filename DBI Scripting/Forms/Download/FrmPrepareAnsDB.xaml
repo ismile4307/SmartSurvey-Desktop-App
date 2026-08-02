@@ -6,18 +6,18 @@ Title="Prepare Ans DB from Server" Height="552" Width="768.885" WindowStartupLoc
     <Grid Loaded="Grid_Loaded">
         <Button x:Name="btnExportToExcel" Content="Export to Excel" HorizontalAlignment="Left" Margin="461,248,0,0" VerticalAlignment="Top" Width="108" Height="31" Click="btnReject_Click"/>
         <Button x:Name="btnClose" Content="Close" HorizontalAlignment="Left" Margin="464,407,0,0" VerticalAlignment="Top" Width="102" RenderTransformOrigin="8.079,-5.321" Click="btnClose_Click" Height="31"/>
-        <Label Content="Project Name :" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
-        <ComboBox x:Name="comProjectName" HorizontalAlignment="Left" Margin="103,29,0,0" VerticalAlignment="Top" Width="166"/>
-        <CheckBox x:Name="chkSelectAll" Content="Select All" HorizontalAlignment="Left" Margin="240,456,0,0" VerticalAlignment="Top" Click="chkSelectAll_Click"/>
-        <Label Content="Database List" HorizontalAlignment="Left" Margin="74,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
-        <wpfTool:CheckListBox x:Name="chkListBoxDBName" HorizontalAlignment="Left" Height="303" Margin="18,168,0,0" VerticalAlignment="Top" Width="205" ItemSelectionChanged="chkListBoxRespondentId_ItemSelectionChanged"/>
+        <Label Content="Project Name :" HorizontalAlignment="Left" Margin="46,26,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <ComboBox x:Name="comProjectName" HorizontalAlignment="Left" Margin="142,28,0,0" VerticalAlignment="Top" Width="166"/>
+        <CheckBox x:Name="chkSelectAll" Content="Select All" HorizontalAlignment="Left" Margin="274,456,0,0" VerticalAlignment="Top" Click="chkSelectAll_Click"/>
+        <Label Content="Database List" HorizontalAlignment="Left" Margin="113,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="-3.74,-2.112"/>
+        <wpfTool:CheckListBox x:Name="chkListBoxDBName" HorizontalAlignment="Left" Height="303" Margin="52,168,0,0" VerticalAlignment="Top" Width="205" ItemSelectionChanged="chkListBoxRespondentId_ItemSelectionChanged"/>
         <GroupBox Header="" HorizontalAlignment="Left" Margin="296,304,0,0" VerticalAlignment="Top" Height="78" Width="438">
             <Grid>
                 <Label x:Name="lblProgress" Content="Progress : " HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="406"/>
             </Grid>
         </GroupBox>
-        <Label Content="Ans DB Path :" HorizontalAlignment="Left" Margin="18,56,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="80"/>
-        <TextBox x:Name="txtAnsDBPath" HorizontalAlignment="Left" Height="23" Margin="103,58,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="551"/>
+        <Label Content="Ans DB Path :" HorizontalAlignment="Left" Margin="54,57,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="80"/>
+        <TextBox x:Name="txtAnsDBPath" HorizontalAlignment="Left" Height="23" Margin="140,58,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="514"/>
         <Button x:Name="btnBrowseAnsDB" Content="Browse" HorizontalAlignment="Left" Margin="660,59,0,0" VerticalAlignment="Top" Height="22" Width="75" Click="btnBrowse_Click"/>
         <Label Content="Output Excel Name :" HorizontalAlignment="Left" Margin="18,88,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.813,-0.45" Width="120"/>
         <TextBox x:Name="txtOutputExcelName" HorizontalAlignment="Left" Height="23" Margin="140,91,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="514"/>

@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ic_surveybd2.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sqlite.interop.dll")]
 
 
