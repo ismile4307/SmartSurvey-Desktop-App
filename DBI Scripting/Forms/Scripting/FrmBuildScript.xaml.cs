@@ -2557,6 +2557,11 @@ namespace DBI_Scripting.Forms.Scripting
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"SVRDATAOF\[\d+,[a-zA-Z0-9_.]+,[a-zA-Z0-9_.]+,[a-zA-Z0-9_.]+\]").Success)
+                    {
+                        //*INCLUDE VarName SvrDataOf[project_code,qid,fltQid,fltValue]
+                        myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                    }
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[2].Trim() + ", Should be [Number to Number]");
 
                 }
