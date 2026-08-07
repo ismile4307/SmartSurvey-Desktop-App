@@ -21,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DBI_Scripting.Forms.Scripting
 {
@@ -105,6 +106,22 @@ namespace DBI_Scripting.Forms.Scripting
 
         private bool hasEnd = false;
         private bool hasTerminate = false;
+
+        // Panel data fields
+        private string _selectedPanelSheet = "";
+        private string _panelTempPath = "";
+        private List<string> lstOutletId;
+        private List<string> lstOutletName;
+        private List<string> lstPnlData3, lstPnlData4, lstPnlData5, lstPnlData6, lstPnlData7;
+        private List<string> lstPnlData8, lstPnlData9, lstPnlData10, lstPnlData11, lstPnlData12;
+        private List<string> lstPnlData13, lstPnlData14, lstPnlData15, lstPnlData16, lstPnlData17;
+        private List<string> lstPnlData18, lstPnlData19, lstPnlData20, lstPnlData21, lstPnlData22;
+        private List<string> lstPnlData23, lstPnlData24, lstPnlData25, lstPnlData26, lstPnlData27;
+        private List<string> lstPnlData28, lstPnlData29, lstPnlData30, lstPnlData31, lstPnlData32;
+        private List<string> lstPnlData33, lstPnlData34, lstPnlData35, lstPnlData36, lstPnlData37;
+        private List<string> lstPnlData38, lstPnlData39, lstPnlData40, lstPnlData41, lstPnlData42;
+        private List<string> lstPnlData43, lstPnlData44, lstPnlData45, lstPnlData46, lstPnlData47;
+        private List<string> lstPnlData48, lstPnlData49, lstPnlData50;
         #endregion
 
         public FrmBuildScript()
@@ -1421,6 +1438,13 @@ namespace DBI_Scripting.Forms.Scripting
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+
+                // Auto-insert panel data if an Excel file was provided
+                if (txtPanelExcel.Text != "" && _selectedPanelSheet != "")
+                {
+                    txtStatus.Text = "Inserting panel data…";
+                    this.InsertPanelData();
+                }
 
                 DisplayBuildResult(myPath + "\\BuildResult.txt");
                 SetUIState(running: false);
@@ -10445,6 +10469,276 @@ namespace DBI_Scripting.Forms.Scripting
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate { }));
         }
+
+        #region Panel Data
+
+        private void btnBrowsePanelExcel_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OpenFileDialog dlg = new OpenFileDialog();
+                dlg.InitialDirectory = Properties.Settings.Default.StartupPath;
+                dlg.FileName = "";
+                dlg.Filter = "Excel Data (*.xlsx)|*.xlsx|All Files (*.*)|*.*";
+                if (dlg.ShowDialog() == true)
+                {
+                    txtPanelExcel.Text = dlg.FileName;
+                    _selectedPanelSheet = "";
+                    chkListBoxPanelWorksheet.Items.Clear();
+                    LoadPanelWorksheets();
+                }
+                else
+                    txtPanelExcel.Text = "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void LoadPanelWorksheets()
+        {
+            try
+            {
+                if (!File.Exists(txtPanelExcel.Text)) return;
+
+                Excel.Application xlApp = new Excel.Application();
+                Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(
+                    txtPanelExcel.Text, 0, true, 5, "", "", true,
+                    Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+
+                chkListBoxPanelWorksheet.Items.Clear();
+                for (int i = 1; i <= xlWorkBook.Worksheets.Count; i++)
+                    chkListBoxPanelWorksheet.Items.Add(xlWorkBook.Worksheets[i].Name.ToString());
+
+                ReleaseComObject(xlWorkBook);
+                ReleaseComObject(xlApp);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void chkListBoxPanelWorksheet_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
+        {
+            _selectedPanelSheet = "";
+            if (chkListBoxPanelWorksheet.SelectedItems.Count > 1)
+                chkListBoxPanelWorksheet.SelectedItems.Remove(chkListBoxPanelWorksheet.SelectedItems[0].ToString());
+            if (chkListBoxPanelWorksheet.SelectedItems.Count > 0)
+                _selectedPanelSheet = chkListBoxPanelWorksheet.SelectedItems[0].ToString();
+        }
+
+        private void btnKillPanelProcess_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcessesByName("EXCEL"))
+                p.Kill();
+        }
+
+        private void InsertPanelData()
+        {
+            try
+            {
+                // Step 1: Export selected worksheet to a temp .ism (tab-delimited) file
+                Excel.Application xlApp = new Excel.Application();
+                Excel.Workbook xlWorkBook = xlApp.Workbooks.Open(
+                    txtPanelExcel.Text, 0, true, 5, "", "", true,
+                    Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
+
+                string tempDir = myPath + "\\temp";
+                if (!Directory.Exists(tempDir))
+                    Directory.CreateDirectory(tempDir);
+
+                string ismPath = tempDir + "\\" + _selectedPanelSheet + ".ism";
+                if (File.Exists(ismPath))
+                    File.Delete(ismPath);
+
+                foreach (Excel.Worksheet ws in xlApp.Worksheets)
+                {
+                    if (ws.Name == _selectedPanelSheet)
+                    {
+                        ws.Select(true);
+                        xlWorkBook.SaveAs(ismPath, Excel.XlFileFormat.xlTextWindows,
+                            Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                            Excel.XlSaveAsAccessMode.xlNoChange,
+                            Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                        _panelTempPath = ismPath;
+                        break;
+                    }
+                }
+
+                xlWorkBook.Close(false);
+                ReleaseComObject(xlWorkBook);
+                ReleaseComObject(xlApp);
+
+                if (_panelTempPath == "" || !File.Exists(_panelTempPath))
+                {
+                    AppendResult("Panel data: worksheet export failed — sheet not found.", true);
+                    return;
+                }
+
+                // Step 2: Read the temp file into lists
+                LoadPanelData(_panelTempPath);
+
+                // Step 3: Write rows into T_PanelData
+                ConnectionDB connDB = new ConnectionDB();
+                if (connDB.connect(scriptFilePath))
+                {
+                    if (connDB.sqlite_conn.State == ConnectionState.Closed)
+                        connDB.sqlite_conn.Open();
+
+                    using (SQLiteTransaction tx = connDB.sqlite_conn.BeginTransaction())
+                    {
+                        new SQLiteCommand("DELETE FROM T_PanelData;", connDB.sqlite_conn).ExecuteNonQuery();
+
+                        for (int x = 0; x < lstOutletId.Count; x++)
+                        {
+                            SQLiteCommand cmd = new SQLiteCommand(connDB.sqlite_conn);
+                            cmd.CommandText =
+                                "INSERT INTO T_PanelData (my_key,pdata1,pdata2,pdata3,pdata4,pdata5,pdata6,pdata7,pdata8,pdata9,pdata10," +
+                                "pdata11,pdata12,pdata13,pdata14,pdata15,pdata16,pdata17,pdata18,pdata19,pdata20," +
+                                "pdata21,pdata22,pdata23,pdata24,pdata25,pdata26,pdata27,pdata28,pdata29,pdata30," +
+                                "pdata31,pdata32,pdata33,pdata34,pdata35,pdata36,pdata37,pdata38,pdata39,pdata40," +
+                                "pdata41,pdata42,pdata43,pdata44,pdata45,pdata46,pdata47,pdata48,pdata49,pdata50) VALUES (" +
+                                "'" + lstOutletId[x] + "','" + lstOutletName[x] + "','" + lstPnlData3[x] + "','" + lstPnlData4[x] + "','" + lstPnlData5[x] + "'," +
+                                "'" + lstPnlData6[x] + "','" + lstPnlData7[x] + "','" + lstPnlData8[x] + "','" + lstPnlData9[x] + "','" + lstPnlData10[x] + "'," +
+                                "'" + lstPnlData11[x] + "','" + lstPnlData12[x] + "','" + lstPnlData13[x] + "','" + lstPnlData14[x] + "','" + lstPnlData15[x] + "'," +
+                                "'" + lstPnlData16[x] + "','" + lstPnlData17[x] + "','" + lstPnlData18[x] + "','" + lstPnlData19[x] + "','" + lstPnlData20[x] + "'," +
+                                "'" + lstPnlData21[x] + "','" + lstPnlData22[x] + "','" + lstPnlData23[x] + "','" + lstPnlData24[x] + "','" + lstPnlData25[x] + "'," +
+                                "'" + lstPnlData26[x] + "','" + lstPnlData27[x] + "','" + lstPnlData28[x] + "','" + lstPnlData29[x] + "','" + lstPnlData30[x] + "'," +
+                                "'" + lstPnlData31[x] + "','" + lstPnlData32[x] + "','" + lstPnlData33[x] + "','" + lstPnlData34[x] + "','" + lstPnlData35[x] + "'," +
+                                "'" + lstPnlData36[x] + "','" + lstPnlData37[x] + "','" + lstPnlData38[x] + "','" + lstPnlData39[x] + "','" + lstPnlData40[x] + "'," +
+                                "'" + lstPnlData41[x] + "','" + lstPnlData42[x] + "','" + lstPnlData43[x] + "','" + lstPnlData44[x] + "','" + lstPnlData45[x] + "'," +
+                                "'" + lstPnlData46[x] + "','" + lstPnlData47[x] + "','" + lstPnlData48[x] + "','" + lstPnlData49[x] + "','" + lstPnlData50[x] + "','')";
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        tx.Commit();
+                    }
+
+                    if (connDB.sqlite_conn.State == ConnectionState.Open)
+                        connDB.sqlite_conn.Close();
+                }
+
+                AppendResult("Panel data inserted: " + lstOutletId.Count + " rows written to T_PanelData.", false);
+            }
+            catch (Exception ex)
+            {
+                AppendResult("Panel data error: " + ex.Message, true);
+            }
+        }
+
+        private void LoadPanelData(string path)
+        {
+            TextReader txtReader = new StreamReader(path);
+            txtReader.ReadLine(); // skip header row
+            string strline = txtReader.ReadLine();
+
+            lstOutletId = new List<string>();   lstOutletName = new List<string>();
+            lstPnlData3 = new List<string>();   lstPnlData4 = new List<string>();
+            lstPnlData5 = new List<string>();   lstPnlData6 = new List<string>();
+            lstPnlData7 = new List<string>();   lstPnlData8 = new List<string>();
+            lstPnlData9 = new List<string>();   lstPnlData10 = new List<string>();
+            lstPnlData11 = new List<string>();  lstPnlData12 = new List<string>();
+            lstPnlData13 = new List<string>();  lstPnlData14 = new List<string>();
+            lstPnlData15 = new List<string>();  lstPnlData16 = new List<string>();
+            lstPnlData17 = new List<string>();  lstPnlData18 = new List<string>();
+            lstPnlData19 = new List<string>();  lstPnlData20 = new List<string>();
+            lstPnlData21 = new List<string>();  lstPnlData22 = new List<string>();
+            lstPnlData23 = new List<string>();  lstPnlData24 = new List<string>();
+            lstPnlData25 = new List<string>();  lstPnlData26 = new List<string>();
+            lstPnlData27 = new List<string>();  lstPnlData28 = new List<string>();
+            lstPnlData29 = new List<string>();  lstPnlData30 = new List<string>();
+            lstPnlData31 = new List<string>();  lstPnlData32 = new List<string>();
+            lstPnlData33 = new List<string>();  lstPnlData34 = new List<string>();
+            lstPnlData35 = new List<string>();  lstPnlData36 = new List<string>();
+            lstPnlData37 = new List<string>();  lstPnlData38 = new List<string>();
+            lstPnlData39 = new List<string>();  lstPnlData40 = new List<string>();
+            lstPnlData41 = new List<string>();  lstPnlData42 = new List<string>();
+            lstPnlData43 = new List<string>();  lstPnlData44 = new List<string>();
+            lstPnlData45 = new List<string>();  lstPnlData46 = new List<string>();
+            lstPnlData47 = new List<string>();  lstPnlData48 = new List<string>();
+            lstPnlData49 = new List<string>();  lstPnlData50 = new List<string>();
+
+            while (strline != null)
+            {
+                string[] word = strline.Split('\t');
+                lstOutletId.Add(word[0]);
+                lstOutletName.Add(word.Length > 1 ? word[1].Replace("'", "''").Trim() : "");
+
+                lstPnlData3.Add(word.Length > 2 ? word[2].Replace("'", "''").Trim() : "");
+                lstPnlData4.Add(word.Length > 3 ? word[3].Replace("'", "''").Trim() : "");
+                lstPnlData5.Add(word.Length > 4 ? word[4].Replace("'", "''").Trim() : "");
+                lstPnlData6.Add(word.Length > 5 ? word[5].Replace("'", "''").Trim() : "");
+                lstPnlData7.Add(word.Length > 6 ? word[6].Replace("'", "''").Trim() : "");
+                lstPnlData8.Add(word.Length > 7 ? word[7].Replace("'", "''").Trim() : "");
+                lstPnlData9.Add(word.Length > 8 ? word[8].Replace("'", "''").Trim() : "");
+                lstPnlData10.Add(word.Length > 9 ? word[9].Replace("'", "''").Trim() : "");
+                lstPnlData11.Add(word.Length > 10 ? word[10].Replace("'", "''").Trim() : "");
+                lstPnlData12.Add(word.Length > 11 ? word[11].Replace("'", "''").Trim() : "");
+                lstPnlData13.Add(word.Length > 12 ? word[12].Replace("'", "''").Trim() : "");
+                lstPnlData14.Add(word.Length > 13 ? word[13].Replace("'", "''").Trim() : "");
+                lstPnlData15.Add(word.Length > 14 ? word[14].Replace("'", "''").Trim() : "");
+                lstPnlData16.Add(word.Length > 15 ? word[15].Replace("'", "''").Trim() : "");
+                lstPnlData17.Add(word.Length > 16 ? word[16].Replace("'", "''").Trim() : "");
+                lstPnlData18.Add(word.Length > 17 ? word[17].Replace("'", "''").Trim() : "");
+                lstPnlData19.Add(word.Length > 18 ? word[18].Replace("'", "''").Trim() : "");
+                lstPnlData20.Add(word.Length > 19 ? word[19].Replace("'", "''").Trim() : "");
+                lstPnlData21.Add(word.Length > 20 ? word[20].Replace("'", "''").Trim() : "");
+                lstPnlData22.Add(word.Length > 21 ? word[21].Replace("'", "''").Trim() : "");
+                lstPnlData23.Add(word.Length > 22 ? word[22].Replace("'", "''").Trim() : "");
+                lstPnlData24.Add(word.Length > 23 ? word[23].Replace("'", "''").Trim() : "");
+                lstPnlData25.Add(word.Length > 24 ? word[24].Replace("'", "''").Trim() : "");
+                lstPnlData26.Add(word.Length > 25 ? word[25].Replace("'", "''").Trim() : "");
+                lstPnlData27.Add(word.Length > 26 ? word[26].Replace("'", "''").Trim() : "");
+                lstPnlData28.Add(word.Length > 27 ? word[27].Replace("'", "''").Trim() : "");
+                lstPnlData29.Add(word.Length > 28 ? word[28].Replace("'", "''").Trim() : "");
+                lstPnlData30.Add(word.Length > 29 ? word[29].Replace("'", "''").Trim() : "");
+                lstPnlData31.Add(word.Length > 30 ? word[30].Replace("'", "''").Trim() : "");
+                lstPnlData32.Add(word.Length > 31 ? word[31].Replace("'", "''").Trim() : "");
+                lstPnlData33.Add(word.Length > 32 ? word[32].Replace("'", "''").Trim() : "");
+                lstPnlData34.Add(word.Length > 33 ? word[33].Replace("'", "''").Trim() : "");
+                lstPnlData35.Add(word.Length > 34 ? word[34].Replace("'", "''").Trim() : "");
+                lstPnlData36.Add(word.Length > 35 ? word[35].Replace("'", "''").Trim() : "");
+                lstPnlData37.Add(word.Length > 36 ? word[36].Replace("'", "''").Trim() : "");
+                lstPnlData38.Add(word.Length > 37 ? word[37].Replace("'", "''").Trim() : "");
+                lstPnlData39.Add(word.Length > 38 ? word[38].Replace("'", "''").Trim() : "");
+                lstPnlData40.Add(word.Length > 39 ? word[39].Replace("'", "''").Trim() : "");
+                lstPnlData41.Add(word.Length > 40 ? word[40].Replace("'", "''").Trim() : "");
+                lstPnlData42.Add(word.Length > 41 ? word[41].Replace("'", "''").Trim() : "");
+                lstPnlData43.Add(word.Length > 42 ? word[42].Replace("'", "''").Trim() : "");
+                lstPnlData44.Add(word.Length > 43 ? word[43].Replace("'", "''").Trim() : "");
+                lstPnlData45.Add(word.Length > 44 ? word[44].Replace("'", "''").Trim() : "");
+                lstPnlData46.Add(word.Length > 45 ? word[45].Replace("'", "''").Trim() : "");
+                lstPnlData47.Add(word.Length > 46 ? word[46].Replace("'", "''").Trim() : "");
+                lstPnlData48.Add(word.Length > 47 ? word[47].Replace("'", "''").Trim() : "");
+                lstPnlData49.Add(word.Length > 48 ? word[48].Replace("'", "''").Trim() : "");
+                lstPnlData50.Add(word.Length > 49 ? word[49].Replace("'", "''").Trim() : "");
+
+                strline = txtReader.ReadLine();
+            }
+
+            txtReader.Close();
+        }
+
+        private void ReleaseComObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch
+            {
+                obj = null;
+            }
+            finally
+            {
+                GC.Collect();
+            }
+        }
+
+        #endregion
     }
 
     class TranslatedQtext
