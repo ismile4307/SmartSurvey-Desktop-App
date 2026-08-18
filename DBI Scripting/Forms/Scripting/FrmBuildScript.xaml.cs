@@ -3537,7 +3537,7 @@ namespace DBI_Scripting.Forms.Scripting
                                     }
                                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                                 }
-                                else if (myQuestion.QType == "27")
+                                else if (myQuestion.QType == "27" || myQuestion.QType == "28")
                                 {
                                     if (currentGridListName != "")
                                     {
@@ -3573,7 +3573,7 @@ namespace DBI_Scripting.Forms.Scripting
                                             myAttributeMain.AttributeLang10 = listOfAttributeTemp[x].AttributeLang10;
 
                                             listOfAttributeMain.Add(myAttributeMain);
-                                            listOfAttributeMain[x].LinkId1 = "27";
+                                            listOfAttributeMain[x].LinkId1 = myQuestion.QType;
                                             listOfAttributeMain[x].LinkId2 = currentGridListName;
 
                                             listOfAttributeMain[x].FilterQid = GridFilterQId;
@@ -3853,12 +3853,12 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                             }
-                            else if (myQuestion.QType == "27")
+                            else if (myQuestion.QType == "27" || myQuestion.QType == "28")
                             {
                                 if (currentGridListName != "")
                                 {
 
-                                    attributeMain.LinkId1 = "27";
+                                    attributeMain.LinkId1 = myQuestion.QType;
                                     attributeMain.LinkId2 = currentGridListName;
 
                                     attributeMain.FilterQid = GridFilterQId;
@@ -3911,11 +3911,11 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " list unavailable");
                             }
-                            else if (myQuestion.QType == "27")
+                            else if (myQuestion.QType == "27" || myQuestion.QType == "28")
                             {
                                 if (currentGridListName != "")
                                 {
-                                    attributeMain.LinkId1 = "27";
+                                    attributeMain.LinkId1 = myQuestion.QType;
                                     attributeMain.LinkId2 = currentGridListName;
 
                                     attributeMain.FilterQid = GridFilterQId;
@@ -5790,7 +5790,7 @@ namespace DBI_Scripting.Forms.Scripting
                                     }
                                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                                 }
-                                else if (myQuestion.QType == "27")
+                                else if (myQuestion.QType == "27" || myQuestion.QType == "28")
                                 {
                                     if (currentGridListName != "")
                                     {
@@ -5826,7 +5826,7 @@ namespace DBI_Scripting.Forms.Scripting
                                             myAttributeMain.AttributeLang10 = listOfAttributeTemp[x].AttributeLang10;
 
                                             listOfAttributeMain.Add(myAttributeMain);
-                                            listOfAttributeMain[x].LinkId1 = "27";
+                                            listOfAttributeMain[x].LinkId1 = myQuestion.QType;
                                             listOfAttributeMain[x].LinkId2 = currentGridListName;
 
                                             listOfAttributeMain[x].FilterQid = GridFilterQId;
@@ -6103,12 +6103,12 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
                             }
-                            else if (myQuestion.QType == "27")
+                            else if (myQuestion.QType == "27" || myQuestion.QType == "28")
                             {
                                 if (currentGridListName != "")
                                 {
 
-                                    attributeMain.LinkId1 = "27";
+                                    attributeMain.LinkId1 = myQuestion.QType;
                                     attributeMain.LinkId2 = currentGridListName;
 
                                     attributeMain.FilterQid = GridFilterQId;
@@ -6161,11 +6161,11 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
                             }
-                            else if (myQuestion.QType == "27")
+                            else if (myQuestion.QType == "27" || myQuestion.QType == "28")
                             {
                                 if (currentGridListName != "")
                                 {
-                                    attributeMain.LinkId1 = "27";
+                                    attributeMain.LinkId1 = myQuestion.QType;
                                     attributeMain.LinkId2 = currentGridListName;
 
                                     attributeMain.FilterQid = GridFilterQId;
@@ -6653,6 +6653,41 @@ namespace DBI_Scripting.Forms.Scripting
 
                 sqlite_cmd0.ExecuteNonQuery();
                 sqlite_cmd0.Dispose();
+
+                #endregion
+
+                #region update T_QType from QType.ini
+
+                string qtypeIniPath = System.AppDomain.CurrentDomain.BaseDirectory + "QType.ini";
+                if (File.Exists(qtypeIniPath))
+                {
+                    SQLiteCommand sqlite_cmdQ = connectionDB.sqlite_conn.CreateCommand();
+                    sqlite_cmdQ.CommandText = "DELETE FROM T_QType";
+                    sqlite_cmdQ.ExecuteNonQuery();
+
+                    string[] qtypeLines = File.ReadAllLines(qtypeIniPath);
+                    foreach (string qtypeLine in qtypeLines)
+                    {
+                        if (string.IsNullOrWhiteSpace(qtypeLine)) continue;
+                        string[] cols = qtypeLine.Split('\t');
+                        if (cols.Length < 6) continue;
+
+                        sqlite_cmdQ.CommandText = "INSERT INTO T_QType (ID, ControlType, Status, ShowInReport, ForQuesLink, ResponseType, Description) VALUES ("
+                            + cols[0].Trim() + ","
+                            + "'" + cols[1].Trim().Replace("'", "''") + "',"
+                            + "'" + cols[2].Trim() + "',"
+                            + "'" + cols[3].Trim() + "',"
+                            + "'" + cols[4].Trim() + "',"
+                            + "'" + cols[5].Trim() + "',"
+                            + "'');";
+                        sqlite_cmdQ.ExecuteNonQuery();
+                    }
+                    sqlite_cmdQ.Dispose();
+                }
+                else
+                {
+                    MessageBox.Show("Warning: QType.ini not found at " + qtypeIniPath + ". T_QType not updated.");
+                }
 
                 #endregion
 
