@@ -205,6 +205,38 @@ namespace DBI_Scripting.Classes
                         }
                     }
                 }
+                else if (word[0].ToUpper() == "SVRDATAOF")
+                {
+                    // Syntax: SVRDATAOF[project_code,qid,fltQid,fltValue]  (strictly 4 params)
+                    // param[0] = project_code (numeric) — skip QId check
+                    // param[1] = qid           — must be a valid question ID
+                    // param[2] = fltQid        — must be a valid question ID
+                    // param[3] = fltValue      — a filter value, not a QId — skip check
+                    string[] logicPart = word[1].Split(',');
+                    if (logicPart.Length != 4) return false;
+                    if (!Regex.IsMatch(logicPart[0].Trim(), @"^\d+$")) return false; // project_code must be numeric
+                    if (!listOfQuestionIdForDupliCheck.Contains(logicPart[1].Trim())) return false; // qid
+                    if (!listOfQuestionIdForDupliCheck.Contains(logicPart[2].Trim())) return false; // fltQid
+                    // logicPart[3] is fltValue — no QId check needed
+                }
+                else if (word[0].ToUpper() == "LCLDATAOF")
+                {
+                    // Syntax: LCLDATAOF[project_code,qid,fltQid,fltValue]  (4 params)
+                    //         LCLDATAOF[project_code,qid]                  (2 params)
+                    // param[0] = project_code (numeric) — skip QId check
+                    // param[1] = qid           — must be a valid question ID
+                    // param[2] = fltQid        — must be a valid question ID (4-param form only)
+                    // param[3] = fltValue      — a filter value, not a QId — skip check
+                    string[] logicPart = word[1].Split(',');
+                    if (logicPart.Length != 2 && logicPart.Length != 4) return false;
+                    if (!Regex.IsMatch(logicPart[0].Trim(), @"^\d+$")) return false; // project_code must be numeric
+                    if (!listOfQuestionIdForDupliCheck.Contains(logicPart[1].Trim())) return false; // qid
+                    if (logicPart.Length == 4)
+                    {
+                        if (!listOfQuestionIdForDupliCheck.Contains(logicPart[2].Trim())) return false; // fltQid
+                        // logicPart[3] is fltValue — no QId check needed
+                    }
+                }
                 else
                 {
                     if (word[1].Contains("."))
@@ -344,6 +376,8 @@ namespace DBI_Scripting.Classes
             listOfFunctionName.Add("USERIDOF");
             listOfFunctionName.Add("WRONGLOCATIONOF");
             listOfFunctionName.Add("STRINGOF");
+            listOfFunctionName.Add("SVRDATAOF");
+            listOfFunctionName.Add("LCLDATAOF");
         }
 
     }

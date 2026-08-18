@@ -172,6 +172,19 @@ namespace DBI_Scripting.Forms.Scripting
             Mouse.OverrideCursor = Cursors.Wait;
             try
             {
+                // Derive myPath from the script text box if the user typed the path directly
+                // (Browse button sets myPath, but typing bypasses it)
+                if (string.IsNullOrEmpty(myPath) && !string.IsNullOrEmpty(txtScriptPath.Text)
+                    && txtScriptPath.Text.Contains('\\'))
+                    myPath = txtScriptPath.Text.Substring(0, txtScriptPath.Text.LastIndexOf('\\'));
+
+                if (string.IsNullOrEmpty(txtScriptPath.Text) || !File.Exists(txtScriptPath.Text))
+                {
+                    AppendResult("Script file not found: " + txtScriptPath.Text, true);
+                    SetUIState(running: false);
+                    return;
+                }
+
                 #region Define local variables
                 checkLogicalExp = new CheckLogicalExp();
 
@@ -1453,6 +1466,7 @@ namespace DBI_Scripting.Forms.Scripting
             catch (Exception ex)
             {
                 AppendResult("Unexpected build error: " + ex.Message, true);
+                AppendResult("Location: " + ex.StackTrace, true);
                 SetUIState(running: false);
             }
             finally
@@ -2586,6 +2600,12 @@ namespace DBI_Scripting.Forms.Scripting
                         //*INCLUDE VarName SvrDataOf[project_code,qid,fltQid,fltValue]
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"LCLDATAOF\[\d+,[a-zA-Z0-9_.]+,[a-zA-Z0-9_.]+,[a-zA-Z0-9_.]+\]").Success ||
+                             Regex.Match(abc[2].Trim().ToUpper(), @"LCLDATAOF\[\d+,[a-zA-Z0-9_.]+\]").Success)
+                    {
+                        //*INCLUDE VarName LclDataOf[project_code,qid,fltQid,fltValue] or LclDataOf[project_code,qid]
+                        myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                    }
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[2].Trim() + ", Should be [Number to Number]");
 
                 }
@@ -2774,6 +2794,11 @@ namespace DBI_Scripting.Forms.Scripting
                 else if (myText.ToUpper().Trim().Contains("*GRIDNUM"))
                 {
                     myQuestion.QType = "27"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                    qTypeForGridQid = 8;
+                }
+                else if (myText.ToUpper().Trim().Contains("*GRIDALPHA"))
+                {
+                    myQuestion.QType = "28"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
                 }
                 else if (myText.ToUpper().Trim().Contains("*MAXDIFF"))
@@ -4681,6 +4706,11 @@ namespace DBI_Scripting.Forms.Scripting
 
                                     for (int x = 0; x < listOfAttributeTemp.Count; x++)
                                     {
+                                        if (listOfAttributeTemp[x].AttributeEnglish == null)
+                                        {
+                                            txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " *USELIST \"" + word1[1].Split('"')[1].Trim() + "\" — attribute at index " + (x + 1) + " has no label (AttributeEnglish is missing in Language " + languageNo + ")");
+                                            continue;
+                                        }
                                         if (!listOfAttributeTemp[x].AttributeEnglish.Contains("*"))
                                         {
                                             listOfAttributeMainLanX.Add(listOfAttributeTemp[x]);
@@ -5047,6 +5077,11 @@ namespace DBI_Scripting.Forms.Scripting
                 else if (myText.ToUpper().Trim().Contains("*GRIDNUM"))
                 {
                     myQuestion.QType = "27"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                    qTypeForGridQid = 8;
+                }
+                else if (myText.ToUpper().Trim().Contains("*GRIDALPHA"))
+                {
+                    myQuestion.QType = "28"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
                 }
                 else if (myText.ToUpper().Trim().Contains("*MAXDIFF"))
@@ -9534,7 +9569,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                         if (hasQid == false)
                         {
-                            txtWriter.WriteLine(pair.Key + " : Attribute not matched in Language  " + LanguageNo.ToString());
+                            txtWriter.WriteLine(pair.Key + " : Attribute value [" + attributeValue + "] not matched in Language " + LanguageNo.ToString());
                         }
                     }
                 }
@@ -9567,7 +9602,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                         if (hasQid == false)
                         {
-                            txtWriter.WriteLine(pair.Key + " : Attribute not matched in Language  " + LanguageNo.ToString());
+                            txtWriter.WriteLine(pair.Key + " : GridList attribute value [" + attributeValue + "] not matched in Language " + LanguageNo.ToString());
                         }
                     }
                 }
@@ -9617,6 +9652,7 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("GRIDSR");
             listOfKeyWords.Add("GRIDMR");
             listOfKeyWords.Add("GRIDNUM");
+            listOfKeyWords.Add("GRIDALPHA");
             listOfKeyWords.Add("MEDIA");
             listOfKeyWords.Add("ALPHALIST");
             listOfKeyWords.Add("NUMLIST");
