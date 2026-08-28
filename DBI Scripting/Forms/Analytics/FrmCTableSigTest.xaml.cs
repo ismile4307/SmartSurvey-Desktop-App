@@ -760,6 +760,9 @@ namespace DBI_Scripting.Forms.Analytics
         // Proportion z-test for percentage data rows (Yes/No, TOP 2 BOX, etc.)
         private double ZScore(int n1, int n2, double p1, double p2)
         {
+            p1 *= Math.Abs(p1) <= 1 ? 100 : 1;
+            p2 *= Math.Abs(p2) <= 1 ? 100 : 1;
+
             if (n1 == 0 || n2 == 0) return 0;
             double r1 = p1 / 100.0, r2 = p2 / 100.0;
             double denom = Math.Sqrt((r1 * (1 - r1)) / n1 + (r2 * (1 - r2)) / n2);

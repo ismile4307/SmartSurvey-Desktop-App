@@ -2309,6 +2309,14 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"MAXVALUEOF\[[a-zA-Z]+[a-zA-Z0-9]+\]").Success)
+                                {
+                                    myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                                }
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"MAXVALUEINDEXOF\[[a-zA-Z]+[a-zA-Z0-9]+\]").Success)
+                                {
+                                    myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                                }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[2].Trim() + ", Should be [Number to Number]");
 
                             }
@@ -2606,6 +2614,14 @@ namespace DBI_Scripting.Forms.Scripting
                         //*INCLUDE VarName LclDataOf[project_code,qid,fltQid,fltValue] or LclDataOf[project_code,qid]
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"MAXVALUEOF\[[a-zA-Z]+[a-zA-Z0-9]+\]").Success)
+                    {
+                        myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                    }
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"MAXVALUEINDEXOF\[[a-zA-Z]+[a-zA-Z0-9]+\]").Success)
+                    {
+                        myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                    }
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + abc[2].Trim() + ", Should be [Number to Number]");
 
                 }
@@ -2745,10 +2761,10 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     myQuestion.QType = "32"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
-                //else if (myText.ToUpper().Trim().Contains("*SCALE10"))
-                //{
-                //    myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-                //}
+                else if (myText.ToUpper().Trim().Contains("*NPS"))
+                {
+                    myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                }
                 else if (myText.ToUpper().Trim().Contains("*GRIDMR"))
                 {
                     myQuestion.QType = "8"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -5028,10 +5044,10 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     myQuestion.QType = "32"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
-                //else if (myText.ToUpper().Trim().Contains("*SCALE10"))
-                //{
-                //    myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
-                //}
+                else if (myText.ToUpper().Trim().Contains("*NPS"))
+                {
+                    myQuestion.QType = "61"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                }
                 else if (myText.ToUpper().Trim().Contains("*GRIDMR"))
                 {
                     myQuestion.QType = "8"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -9776,7 +9792,7 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("ENDREC");
             listOfKeyWords.Add("EXTCAMERA");
             listOfKeyWords.Add("PSCALE");
-            //listOfKeyWords.Add("SCALE10");
+            listOfKeyWords.Add("NPS");
 
             listOfKeyWords.Add("ADDRESS1");
             listOfKeyWords.Add("ADDRESS2");

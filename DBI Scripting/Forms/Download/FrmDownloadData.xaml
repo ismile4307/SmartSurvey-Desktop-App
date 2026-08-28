@@ -176,7 +176,6 @@
                     <Label Grid.Column="0" Content="Project Name :" Style="{StaticResource FieldLabel}"/>
                     <ComboBox Grid.Column="1" x:Name="comProjectName"
                               VerticalContentAlignment="Center"
-                              SelectionChanged="comProjectName_SelectionChanged"
                               DropDownClosed="comProjectName_DropDownClosed"/>
                     <Label Grid.Column="3" Content="Date From :" Style="{StaticResource FieldLabel}"/>
                     <DatePicker Grid.Column="4" x:Name="dtpDateFrom" VerticalContentAlignment="Center"/>
@@ -272,9 +271,6 @@
                                 Click="btnExit_Click"/>
                     </StackPanel>
                 </Grid>
-
-                <!-- Hidden — kept for code-behind compatibility -->
-                <TextBox x:Name="txtServerAddress" Visibility="Collapsed"/>
 
             </Grid>
         </Border>

@@ -378,6 +378,8 @@ namespace DBI_Scripting.Classes
             listOfFunctionName.Add("STRINGOF");
             listOfFunctionName.Add("SVRDATAOF");
             listOfFunctionName.Add("LCLDATAOF");
+            listOfFunctionName.Add("MAXVALUEOF");
+            listOfFunctionName.Add("MAXVALUEINDEXOF");
         }
 
     }

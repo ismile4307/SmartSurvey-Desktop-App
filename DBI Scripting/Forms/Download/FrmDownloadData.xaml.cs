@@ -31,6 +31,14 @@ namespace DBI_Scripting.Forms
         // ─── Cancel support ──────────────────────────────────────────────────
         private CancellationTokenSource _cts;
 
+        // ─── HTTP constants ──────────────────────────────────────────────────
+        private const int HttpTimeoutMs   = 300_000; // 5 minutes per request
+        private const int RetryAttempts   = 3;
+        private const int RetryDelayMs    = 3_000;   // 3 seconds between retries
+        private const long AnsPageSize    = 10_000;
+        private const long RespPageSize   = 5_000;
+        private const long OePageSize     = 5_000;
+
         public FrmDownloadData()
         {
             InitializeComponent();
@@ -44,16 +52,14 @@ namespace DBI_Scripting.Forms
             ServicePointManager.SecurityProtocol  = SecurityProtocolType.Tls12;
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
-            txtServerAddress.Text = StaticClass.SERVER_URL + "/deskapi/";
-
             PopulateCombos();
 
-            dtpDateFrom.SelectedDate = DateTime.Today;
-            dtpDateTo.SelectedDate   = DateTime.Today;
-            comInterviewType.Text        = "Final Interviews";
-            comConsiderDate.Text         = "Sync Date";
-            comFileType.Text             = "Excel";
-            chkDownloadScript.IsChecked  = true;
+            dtpDateFrom.SelectedDate    = DateTime.Today;
+            dtpDateTo.SelectedDate      = DateTime.Today;
+            comInterviewType.Text       = "Final Interviews";
+            comConsiderDate.Text        = "Sync Date";
+            comFileType.Text            = "Excel";
+            chkDownloadScript.IsChecked = true;
 
             await LoadProjectsAsync();
         }
@@ -116,7 +122,7 @@ namespace DBI_Scripting.Forms
             }
             catch (Exception ex)
             {
-                Log("Project load failed: " + ex.Message);
+                Log("Project load failed: " + GetFullMessage(ex));
             }
             finally
             {
@@ -124,11 +130,24 @@ namespace DBI_Scripting.Forms
             }
         }
 
-        // ─── HTTP helper (async POST via WebClient) ──────────────────────────
+        // ─── HTTP helpers ────────────────────────────────────────────────────
+
+        // WebClient subclass that applies a per-request timeout.
+        private sealed class TimeoutWebClient : WebClient
+        {
+            private readonly int _timeoutMs;
+            public TimeoutWebClient(int timeoutMs) { _timeoutMs = timeoutMs; }
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                WebRequest req = base.GetWebRequest(address);
+                if (req != null) req.Timeout = _timeoutMs;
+                return req;
+            }
+        }
 
         private static async Task<string> PostAsync(string url, string body, CancellationToken ct)
         {
-            using (var wc = new WebClient())
+            using (var wc = new TimeoutWebClient(HttpTimeoutMs))
             {
                 wc.Encoding = Encoding.UTF8;
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
@@ -137,11 +156,64 @@ namespace DBI_Scripting.Forms
             }
         }
 
+        // Retries PostAsync up to RetryAttempts times on transient failure.
+        private async Task<string> PostWithRetryAsync(string url, string body, CancellationToken ct)
+        {
+            Exception lastEx = null;
+            for (int attempt = 1; attempt <= RetryAttempts; attempt++)
+            {
+                ct.ThrowIfCancellationRequested();
+                try
+                {
+                    return await PostAsync(url, body, ct);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw; // user-initiated cancel — do not retry
+                }
+                catch (Exception ex)
+                {
+                    lastEx = ex;
+                    if (attempt < RetryAttempts)
+                    {
+                        Log($"Attempt {attempt}/{RetryAttempts} failed: {GetFullMessage(ex)} — retrying in {RetryDelayMs / 1000}s...");
+                        await Task.Delay(RetryDelayMs, ct);
+                    }
+                }
+            }
+            throw new Exception(
+                $"Request failed after {RetryAttempts} attempts. Last error: {GetFullMessage(lastEx)}", lastEx);
+        }
+
+        // Builds a URL-encoded POST body from the common download parameters.
+        private static string BuildRequestBody(string startDate, string endDate,
+            string dateType, string projectCode, string interviewType)
+        {
+            return "startDate="      + Uri.EscapeDataString(startDate)
+                 + "&endDate="       + Uri.EscapeDataString(endDate)
+                 + "&dateType="      + Uri.EscapeDataString(dateType)
+                 + "&projectCode="   + Uri.EscapeDataString(projectCode)
+                 + "&interviewType=" + Uri.EscapeDataString(interviewType);
+        }
+
         private static DataTable ParseJson(string json)
         {
             if (string.IsNullOrWhiteSpace(json)) return new DataTable();
             return JsonConvert.DeserializeObject(json, typeof(DataTable)) as DataTable
                    ?? new DataTable();
+        }
+
+        // Walks the full InnerException chain and returns a single readable message.
+        private static string GetFullMessage(Exception ex)
+        {
+            var sb = new StringBuilder();
+            while (ex != null)
+            {
+                sb.Append(ex.Message);
+                ex = ex.InnerException;
+                if (ex != null) sb.Append(" → ");
+            }
+            return sb.ToString();
         }
 
         // ─── Download phases ─────────────────────────────────────────────────
@@ -152,7 +224,7 @@ namespace DBI_Scripting.Forms
             Log("Downloading project script from server...");
             string source = StaticClass.SERVER_URL + "/scripts/" + dbName;
             if (File.Exists(databasePath)) File.Delete(databasePath);
-            using (var wc = new WebClient())
+            using (var wc = new TimeoutWebClient(HttpTimeoutMs))
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 ct.Register(() => wc.CancelAsync());
@@ -166,14 +238,25 @@ namespace DBI_Scripting.Forms
         {
             Log("Downloading respondents...");
             SetStatus("Phase 1/3 — Respondents");
-            string body = "startDate=" + startDate + "&endDate=" + endDate
-                        + "&dateType=" + dateType + "&projectCode=" + projectCode
-                        + "&interviewType=" + interviewType;
-            string json = await PostAsync(
-                StaticClass.SERVER_URL + "/deskapi/respondentbyproject.php", body, ct);
-            DataTable dt = ParseJson(json);
-            if (dt.Rows.Count > 0) _dt1.Merge(dt);
-            Log("Respondents: " + _dt1.Rows.Count + " record(s).");
+            long offset = 0;
+            long batchCount;
+            int page = 1;
+            do
+            {
+                ct.ThrowIfCancellationRequested();
+                string body = BuildRequestBody(startDate, endDate, dateType, projectCode, interviewType)
+                            + "&myOffset=" + Uri.EscapeDataString(offset.ToString());
+                string json = await PostWithRetryAsync(
+                    StaticClass.SERVER_URL + "/deskapi/respondentbyproject.php", body, ct);
+                DataTable dt = ParseJson(json);
+                batchCount = dt.Rows.Count;
+                if (batchCount > 0) _dt1.Merge(dt);
+                offset += batchCount;
+                Log($"Respondents page {page}: {_dt1.Rows.Count} record(s) so far...");
+                page++;
+            }
+            while (batchCount == RespPageSize);
+            Log($"Respondents complete: {_dt1.Rows.Count} total record(s).");
         }
 
         private async Task DownloadAnswersAsync(string startDate, string endDate,
@@ -187,20 +270,19 @@ namespace DBI_Scripting.Forms
             do
             {
                 ct.ThrowIfCancellationRequested();
-                string body = "startDate=" + startDate + "&endDate=" + endDate
-                            + "&dateType=" + dateType + "&projectCode=" + projectCode
-                            + "&myOffset=" + offset + "&interviewType=" + interviewType;
-                string json = await PostAsync(
+                string body = BuildRequestBody(startDate, endDate, dateType, projectCode, interviewType)
+                            + "&myOffset=" + Uri.EscapeDataString(offset.ToString());
+                string json = await PostWithRetryAsync(
                     StaticClass.SERVER_URL + "/deskapi/answerbyproject.php", body, ct);
                 DataTable dt = ParseJson(json);
                 batchCount = dt.Rows.Count;
                 if (batchCount > 0) _dt2.Merge(dt);
                 offset += batchCount;
-                Log("Answers page " + page + ": " + _dt2.Rows.Count + " row(s) so far...");
+                Log($"Answers page {page}: {_dt2.Rows.Count} row(s) so far...");
                 page++;
             }
-            while (batchCount == 10000);
-            Log("Answers complete: " + _dt2.Rows.Count + " total row(s).");
+            while (batchCount == AnsPageSize);
+            Log($"Answers complete: {_dt2.Rows.Count} total row(s).");
         }
 
         private async Task DownloadOpenEndedAsync(string startDate, string endDate,
@@ -208,14 +290,25 @@ namespace DBI_Scripting.Forms
         {
             Log("Downloading open-ended responses...");
             SetStatus("Phase 3/3 — Open-Ended");
-            string body = "startDate=" + startDate + "&endDate=" + endDate
-                        + "&dateType=" + dateType + "&projectCode=" + projectCode
-                        + "&interviewType=" + interviewType;
-            string json = await PostAsync(
-                StaticClass.SERVER_URL + "/deskapi/openendedbyproject.php", body, ct);
-            DataTable dt = ParseJson(json);
-            if (dt.Rows.Count > 0) _dt3.Merge(dt);
-            Log("Open-ended: " + _dt3.Rows.Count + " record(s).");
+            long offset = 0;
+            long batchCount;
+            int page = 1;
+            do
+            {
+                ct.ThrowIfCancellationRequested();
+                string body = BuildRequestBody(startDate, endDate, dateType, projectCode, interviewType)
+                            + "&myOffset=" + Uri.EscapeDataString(offset.ToString());
+                string json = await PostWithRetryAsync(
+                    StaticClass.SERVER_URL + "/deskapi/openendedbyproject.php", body, ct);
+                DataTable dt = ParseJson(json);
+                batchCount = dt.Rows.Count;
+                if (batchCount > 0) _dt3.Merge(dt);
+                offset += batchCount;
+                Log($"Open-ended page {page}: {_dt3.Rows.Count} record(s) so far...");
+                page++;
+            }
+            while (batchCount == OePageSize);
+            Log($"Open-ended complete: {_dt3.Rows.Count} total record(s).");
         }
 
         // ─── Execute handler ─────────────────────────────────────────────────
@@ -224,25 +317,33 @@ namespace DBI_Scripting.Forms
         {
             if (!ValidateInputs()) return;
 
+            string projectName = comProjectName.Text;
+
+            if (!_projectDbMap.TryGetValue(projectName, out string dbName) ||
+                !_projectCodeMap.TryGetValue(projectName, out string projectCode))
+            {
+                MessageBox.Show("Project data not loaded. Please wait for projects to finish loading.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             _cts = new CancellationTokenSource();
             CancellationToken ct = _cts.Token;
 
             btnExecute.IsEnabled = false;
             btnCancel.IsEnabled  = true;
+            btnExit.IsEnabled    = false;
             progressBar1.Value   = 0;
             txtLog.Clear();
 
-            string projectName    = comProjectName.Text;
-            string dbName         = _projectDbMap[projectName];
-            string tempPath       = @"C:\Temp";
+            string tempPath      = @"C:\Temp";
             Directory.CreateDirectory(tempPath);
-            string databasePath   = Path.Combine(tempPath, dbName);
-            string startDate      = dtpDateFrom.SelectedDate.Value.ToString("yyyy-MM-dd");
-            string endDate        = dtpDateTo.SelectedDate.Value.ToString("yyyy-MM-dd");
-            string dateType       = _dateTypeMap[comConsiderDate.Text];
-            string projectCode    = _projectCodeMap[projectName];
-            string interviewType  = _interviewTypeMap[comInterviewType.Text];
-            string format         = comFileType.Text;
+            string databasePath  = Path.Combine(tempPath, dbName);
+            string startDate     = dtpDateFrom.SelectedDate.Value.ToString("yyyy-MM-dd");
+            string endDate       = dtpDateTo.SelectedDate.Value.ToString("yyyy-MM-dd");
+            string dateType      = _dateTypeMap[comConsiderDate.Text];
+            string interviewType = _interviewTypeMap[comInterviewType.Text];
+            string format        = comFileType.Text;
 
             try
             {
@@ -289,14 +390,16 @@ namespace DBI_Scripting.Forms
             }
             catch (Exception ex)
             {
-                Log("Error: " + ex.Message);
-                MessageBox.Show("Error: " + ex.Message, "Error",
+                string fullMsg = GetFullMessage(ex);
+                Log("Error: " + fullMsg);
+                MessageBox.Show("Error: " + fullMsg, "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
                 btnExecute.IsEnabled = true;
                 btnCancel.IsEnabled  = false;
+                btnExit.IsEnabled    = true;
             }
         }
 
@@ -307,7 +410,7 @@ namespace DBI_Scripting.Forms
             Log("Cancelling...");
         }
 
-        // ─── Export (Phase 2 cleanup) ─────────────────────────────────────────
+        // ─── Export ──────────────────────────────────────────────────────────
 
         private void ExportData(string format, string databasePath, string projectName)
         {
@@ -323,8 +426,8 @@ namespace DBI_Scripting.Forms
             try
             {
                 SetStatus("Building columns...");
-                List<string> columns      = sql.getTableColumnReport();
-                List<List<string>> data   = sql.getTableDataReport(columns, _dt1, _dt2, _dt3, progressBar1);
+                List<string> columns    = sql.getTableColumnReport();
+                List<List<string>> data = sql.getTableDataReport(columns, _dt1, _dt2, _dt3, progressBar1);
 
                 if (format == "Excel")
                     ExportToExcel(columns, data);
@@ -374,11 +477,12 @@ namespace DBI_Scripting.Forms
 
         private void ExportToCsv(List<string> columns, List<List<string>> data)
         {
-            // OE sheet still goes to a companion Excel file
+            // Open-ended data goes to a companion Excel file
             SetStatus("Writing OE Excel...");
             Microsoft.Office.Interop.Excel.Application xlApp  = null;
             Microsoft.Office.Interop.Excel.Workbook    xlBook = null;
             object miss = System.Reflection.Missing.Value;
+            string xlsxPath = Path.ChangeExtension(txtSaveLocation.Text, ".xlsx");
             try
             {
                 xlApp  = new Microsoft.Office.Interop.Excel.Application();
@@ -386,10 +490,9 @@ namespace DBI_Scripting.Forms
                 var wsOE = (Microsoft.Office.Interop.Excel.Worksheet)xlBook.Worksheets.get_Item(1);
                 wsOE.Name = "Openended";
                 WriteOeSheet(wsOE);
-                string xlsxPath = Path.ChangeExtension(txtSaveLocation.Text, ".xlsx");
                 xlBook.SaveAs(xlsxPath,
                     Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookDefault);
-                Log("OE saved: " + xlsxPath);
+                Log("Open-ended saved to: " + xlsxPath);
             }
             finally
             {
@@ -403,7 +506,11 @@ namespace DBI_Scripting.Forms
             SetStatus("Writing CSV...");
             string csvPath = Path.ChangeExtension(txtSaveLocation.Text, ".csv");
             SaveToCsvStream(columns, data, csvPath);
-            Log("CSV saved: " + csvPath);
+            Log("CSV saved to: " + csvPath);
+            MessageBox.Show(
+                "Two files were created:\n\n• Data (CSV): " + csvPath +
+                "\n• Open-ended: " + xlsxPath,
+                "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         // ─── Sheet writers ───────────────────────────────────────────────────
@@ -441,7 +548,7 @@ namespace DBI_Scripting.Forms
             const int batchSize = 500;
 
             progressBar1.Minimum = 0;
-            progressBar1.Maximum = totalRows;
+            progressBar1.Maximum = 100;
             progressBar1.Value   = 0;
 
             for (int rowStart = 0; rowStart < totalRows; rowStart += batchSize)
@@ -461,7 +568,7 @@ namespace DBI_Scripting.Forms
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(startCell);
 
                 int done = rowStart + batch;
-                progressBar1.Value = done;
+                progressBar1.Value = totalRows > 0 ? (int)((double)done / totalRows * 100) : 100;
                 SetStatus("Writing rows " + done + " / " + totalRows + "...");
                 DoEvents();
             }
@@ -471,7 +578,7 @@ namespace DBI_Scripting.Forms
 
         // ─── CSV helpers ─────────────────────────────────────────────────────
 
-        public static void SaveToCsvStream(
+        private static void SaveToCsvStream(
             List<string> columnName, List<List<string>> tableData, string filePath)
         {
             using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
@@ -524,20 +631,18 @@ namespace DBI_Scripting.Forms
 
             if (dlg.ShowDialog() == true)
             {
-                string dir     = Path.GetDirectoryName(dlg.FileName);
+                string dir      = Path.GetDirectoryName(dlg.FileName);
                 string nameOnly = Path.GetFileNameWithoutExtension(dlg.FileName);
-                string ext     = Path.GetExtension(dlg.FileName);
-                string suffix  = dtpDateFrom.SelectedDate?.ToString("yyyyMMdd")
-                               + "_" + dtpDateTo.SelectedDate?.ToString("yyyyMMdd");
+                string ext      = Path.GetExtension(dlg.FileName);
+                string suffix   = dtpDateFrom.SelectedDate?.ToString("yyyyMMdd")
+                                + "_" + dtpDateTo.SelectedDate?.ToString("yyyyMMdd");
                 txtSaveLocation.Text = Path.Combine(dir, nameOnly + "_" + suffix + ext);
                 Properties.Settings.Default.StartupPath = dir;
                 Properties.Settings.Default.Save();
             }
         }
 
-        // ─── Project combo handlers ──────────────────────────────────────────
-
-        private void comProjectName_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
+        // ─── Project combo handler ───────────────────────────────────────────
 
         private void comProjectName_DropDownClosed(object sender, EventArgs e)
         {
@@ -552,11 +657,25 @@ namespace DBI_Scripting.Forms
 
         // ─── Utility ─────────────────────────────────────────────────────────
 
+        // Converts a server date string (DD-MM-YYYY or other parseable formats) to
+        // an ISO yyyy-MM-dd string that DateTime.TryParse() can always handle.
         private static string ConvertDateFormat(string raw)
         {
             if (string.IsNullOrEmpty(raw)) return "";
-            string[] p = raw.Split('-');
-            return p.Length == 3 ? p[1] + "-" + p[0] + "-" + p[2] : raw;
+
+            // Primary: server sends DD-MM-YYYY
+            if (DateTime.TryParseExact(raw, "dd-MM-yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out DateTime d))
+                return d.ToString("yyyy-MM-dd");
+
+            // Fallback: anything else parseable
+            if (DateTime.TryParse(raw,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out d))
+                return d.ToString("yyyy-MM-dd");
+
+            return "";
         }
 
         private static string Clean(string s)

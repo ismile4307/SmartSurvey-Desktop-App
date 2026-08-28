@@ -73,7 +73,9 @@
       "Bash(powershell -Command \"\nGet-Item 'E:/MR Tools/SmartSurvey - ss/DBI Scripting/bin/Debug/x64/SQLite.Interop.dll' | Get-ItemProperty -Name Zone.Identifier -ErrorAction SilentlyContinue\nGet-Item 'E:/MR Tools/SmartSurvey - ss/DBI Scripting/bin/Debug/x86/SQLite.Interop.dll' | Get-ItemProperty -Name Zone.Identifier -ErrorAction SilentlyContinue\nGet-Item 'E:/MR Tools/SmartSurvey - ss/DBI Scripting/bin/Debug/System.Data.SQLite.dll' | Get-ItemProperty -Name Zone.Identifier -ErrorAction SilentlyContinue\n\")",
       "Bash(powershell -Command \"Get-Item 'E:/MR Tools/SmartSurvey - ss/DBI Scripting/bin/Debug/x64/SQLite.Interop.dll' | Get-ItemProperty -Name Zone.Identifier -ErrorAction SilentlyContinue\")",
       "Bash(powershell -Command \"Get-Content -Stream Zone.Identifier 'E:/MR Tools/SmartSurvey - ss/DBI Scripting/bin/Debug/x64/SQLite.Interop.dll' -ErrorAction SilentlyContinue\")",
-      "Bash(grep -v \"//\")"
+      "Bash(grep -v \"//\")",
+      "Bash(find 'E:\\\\MR Tools\\\\SmartSurvey - ss\\\\DBI Scripting' -name *.cs -path */Model/* -o -name GridInfo*)",
+      "Bash(powershell -Command \"\n\\\\$dll = Get-ChildItem -Path 'E:\\\\MR Tools\\\\SmartSurvey - ss' -Recurse -Filter 'System.Data.SQLite.dll' | Select-Object -First 1 -ExpandProperty FullName\nAdd-Type -Path \\\\$dll\n\\\\$conn = New-Object System.Data.SQLite.SQLiteConnection\\('Data Source=''E:\\\\MR Tools\\\\SmartSurvey - ss\\\\DBI Scripting\\\\bin\\\\Debug\\\\ShellDB\\\\SYSHELDB.db'';Version=3;'\\)\n\\\\$conn.Open\\(\\)\n\\\\$cmd = \\\\$conn.CreateCommand\\(\\)\n\\\\$cmd.CommandText = \\\\\"SELECT sql FROM sqlite_master WHERE type='table' AND name='T_QType'\\\\\"\n\\\\$result = \\\\$cmd.ExecuteScalar\\(\\)\n\\\\$conn.Close\\(\\)\nWrite-Output \\\\$result\n\")"
     ]
   }
 }
