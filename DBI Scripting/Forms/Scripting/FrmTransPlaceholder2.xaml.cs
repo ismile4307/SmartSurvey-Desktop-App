@@ -546,7 +546,7 @@ namespace DBI_Scripting.Forms.Scripting
 
 
                     #region Prepare QUESTION
-                    if (strline.Split(' ')[0].ToUpper() == "*QUESTION" && !strline.Contains("*DUMMY2") && !strline.Contains("*DUMMY1"))
+                    if (strline.Split(' ')[0].ToUpper() == "*QUESTION" && !strline.Contains("*DUMMY1"))
                     {
 
                         string[] word = strline.Split('*');
