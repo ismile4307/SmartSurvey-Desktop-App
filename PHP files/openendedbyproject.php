@@ -1,34 +1,22 @@
 <?php
-    //open connection to mysql db
-    $connection = mysqli_connect("localhost","survfiqz_ismile","Arnisha@4307#","survfiqz_surveyhive") or die("Error " . mysqli_error($connection));
+require __DIR__ . '/deskapi_common.php';
 
-    //fetch table rows from mysql db
-   $startDate = $_POST['startDate'] . " 00:00:00";
-   $endDate = $_POST['endDate'] . " 23:59:59";
-   $dateType= $_POST['dateType'];
-   $projectCode= $_POST['projectCode'];
-   $interviewType=$_POST['interviewType'];
+$connection = desk_connect();
+$p = desk_params($connection);
 
-   IF ($dateType=="1"){
-   $query = "SELECT open_endeds_".$projectCode.".`id` , open_endeds_".$projectCode.".`interview_info_id` , open_endeds_".$projectCode.".`project_id` , open_endeds_".$projectCode.".`respondent_id` , open_endeds_".$projectCode.".`q_id` , open_endeds_".$projectCode.".`attribute_value` , open_endeds_".$projectCode.".`response` , open_endeds_".$projectCode.".`response_type` , open_endeds_".$projectCode.".`created_at` , open_endeds_".$projectCode.".`deleted_at`
-			FROM  open_endeds_".$projectCode."  INNER JOIN interview_infos_".$projectCode." ON open_endeds_".$projectCode.".`interview_info_id` = interview_infos_".$projectCode.".`id`
-          	WHERE  interview_infos_".$projectCode.".project_id=".$projectCode." AND interview_infos_".$projectCode.".survey_start_at BETWEEN '".$startDate."' AND '".$endDate."' AND interview_infos_".$projectCode.".intv_type='".$interviewType."' AND interview_infos_".$projectCode.".`status`!='4' AND interview_infos_".$projectCode.".deleted_at IS NULL";
-          }else{
-            $query = "SELECT open_endeds_".$projectCode.".`id` , open_endeds_".$projectCode.".`interview_info_id` , open_endeds_".$projectCode.".`project_id` , open_endeds_".$projectCode.".`respondent_id` , open_endeds_".$projectCode.".`q_id` , open_endeds_".$projectCode.".`attribute_value` , open_endeds_".$projectCode.".`response` , open_endeds_".$projectCode.".`response_type` , open_endeds_".$projectCode.".`created_at` , open_endeds_".$projectCode.".`deleted_at`
-      FROM  open_endeds_".$projectCode." INNER JOIN interview_infos_".$projectCode." ON open_endeds_".$projectCode.".`interview_info_id` = interview_infos_".$projectCode.".`id`
-            WHERE  interview_infos_".$projectCode.".project_id=".$projectCode." AND interview_infos_".$projectCode.".created_at BETWEEN '".$startDate."' AND '".$endDate."' AND interview_infos_".$projectCode.".intv_type='".$interviewType."' AND interview_infos_".$projectCode.".`status`!='4' AND interview_infos_".$projectCode.".deleted_at IS NULL";
-          }
+$o  = 'open_endeds_' . $p['projectCode'];
+$ii = 'interview_infos_' . $p['projectCode'];
 
-   $result = mysqli_query($connection, $query) or die("Error in Selecting " . mysqli_error($connection));
+$query = "SELECT $o.`id`, $o.`interview_info_id`, $o.`project_id`, $o.`respondent_id`, $o.`q_id`, $o.`attribute_value`,
+                 $o.`response`, $o.`response_type`, $o.`created_at`, $o.`deleted_at`
+          FROM $o INNER JOIN $ii ON $o.`interview_info_id` = $ii.`id`
+          WHERE " . desk_interview_filter($p);
 
-    //create an array
-    $emparray = array();
-    while($row =mysqli_fetch_assoc($result))
-    {
-        $emparray[] = $row;
-    }
-    echo json_encode($emparray);
+if ($p['keyset']) {
+    $query .= " AND $o.`id` > " . $p['lastId'] . " ORDER BY $o.`id` LIMIT " . $p['pageSize'];
+} else {
+    $query .= " ORDER BY $o.`id`";   // older clients: everything in one response, as before
+}
 
-    //close the db connection
-    mysqli_close($connection);
-?>
+desk_stream_json($connection, $query);
+mysqli_close($connection);

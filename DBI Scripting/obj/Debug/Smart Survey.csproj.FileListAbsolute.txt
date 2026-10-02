@@ -438,3 +438,5 @@ E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\System.Data.SQLite.dll
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\System.Data.SQLite.xml
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\bin\Debug\SQLite.Interop.dll
 E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Smart Survey_Content.g.cs
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Analytics\FrmCheckData.baml
+E:\MR Tools\SmartSurvey - ss\DBI Scripting\obj\Debug\Forms\Analytics\FrmCheckData.g.cs

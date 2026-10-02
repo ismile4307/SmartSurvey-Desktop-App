@@ -134,6 +134,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\Analytics\FrmCheckData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\Analytics\FrmCTableSigTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -381,6 +385,9 @@
     </Compile>
     <Compile Include="Forms\Analytics\FrmCTableLink2.xaml.cs">
       <DependentUpon>FrmCTableLink2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Analytics\FrmCheckData.xaml.cs">
+      <DependentUpon>FrmCheckData.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Analytics\FrmCTableSigTest.xaml.cs">
       <DependentUpon>FrmCTableSigTest.xaml</DependentUpon>

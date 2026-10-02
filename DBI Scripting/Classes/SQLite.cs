@@ -17,7 +17,7 @@ namespace DBI_Scripting.Classes
 
         public SQLiteConnection Qconnection;
 
-        private List<string> listOfMSQuestion = new List<string>();
+        private HashSet<string> listOfMSQuestion = new HashSet<string>();
         private List<string> listOfSRQuestion = new List<string>();
         private List<String> listOfResponseTypeQId = new List<String>();
         private List<String> listOfMRGridQId = new List<String>();
@@ -212,10 +212,7 @@ namespace DBI_Scripting.Classes
             if (AttributeId != "")
                 QId = AttributeId;
 
-            SQLiteDataAdapter dadpt1 = new SQLiteDataAdapter("SELECT * FROM T_OptAttribute where ProjectId=" + ProjectId + " AND QId ='" + QId + "'", Qconnection);
-            DataSet ds = new DataSet();
-            dadpt1.Fill(ds, "Table1");
-            return ds.Tables["Table1"];
+            return lookupRows("T_OptAttribute", ref optAttributeCache, ProjectId, QId);
         }
 
         private DataTable getGridAttributeNumber(string ProjectId, string QId, string AttributeId)
@@ -223,10 +220,37 @@ namespace DBI_Scripting.Classes
             if (AttributeId != "")
                 QId = AttributeId;
 
-            SQLiteDataAdapter dadpt1 = new SQLiteDataAdapter("SELECT * FROM T_GridInfo where ProjectId=" + ProjectId + " AND QId ='" + QId + "'", Qconnection);
-            DataSet ds = new DataSet();
-            dadpt1.Fill(ds, "Table1");
-            return ds.Tables["Table1"];
+            return lookupRows("T_GridInfo", ref gridInfoCache, ProjectId, QId);
+        }
+
+        // T_OptAttribute / T_GridInfo have no indexes, so one query per question meant a full
+        // table scan per question. Each table is now read once and grouped by (ProjectId, QId),
+        // keeping the table's row order — the same rows, in the same order, as the old queries.
+        private Dictionary<string, DataTable> optAttributeCache, gridInfoCache;
+
+        private DataTable lookupRows(string table, ref Dictionary<string, DataTable> cache, string projectId, string qId)
+        {
+            if (cache == null)
+            {
+                var all = new DataTable();
+                using (var dadpt = new SQLiteDataAdapter("SELECT * FROM " + table, Qconnection))
+                    dadpt.Fill(all);
+
+                cache = new Dictionary<string, DataTable>();
+                cache[""] = all.Clone();   // shared empty result
+                DataColumn cProject = all.Columns["ProjectId"], cQId = all.Columns["QId"];
+                foreach (DataRow r in all.Rows)
+                {
+                    string key = Convert.ToString(r[cProject]) + "\u0001" + Convert.ToString(r[cQId]);
+                    DataTable group;
+                    if (!cache.TryGetValue(key, out group))
+                        cache.Add(key, group = all.Clone());
+                    group.ImportRow(r);
+                }
+            }
+
+            DataTable rows;
+            return cache.TryGetValue(projectId.Trim() + "\u0001" + qId, out rows) ? rows : cache[""];
         }
 
         public List<string> getTableColumnReport()
@@ -392,325 +416,201 @@ namespace DBI_Scripting.Classes
             //}
         }
 
+        /// <summary>Message of the last failure inside getTableDataReport (which returns null on failure).</summary>
+        public string LastError { get; private set; }
+
+        /// <summary>
+        /// Builds one output row per interview (respondents INNER JOIN answers, ordered by
+        /// interview id, q_order, resp_order), plus open-ended answers in the *_OE columns.
+        /// Answers and open-ended rows are grouped by interview once up front, so the cost is
+        /// linear in the data size instead of (interviews x open-ended rows).
+        /// Returns null on failure; see LastError.
+        /// </summary>
         public List<List<string>> getTableDataReport(List<string> columnName, DataTable dtTInterviewInfo, DataTable dtTRespAnswer, DataTable dtTRespOpenended, ProgressBar myProgressBar)
         {
+            LastError = null;
             try
             {
-                List<string> columnData = new List<string>();
-                List<List<string>> listOfColumnData = new List<List<string>>();
-                SQLiteDataAdapter dadpt;
-
-                Dictionary<string, string> dicFieldNameResponse = new Dictionary<string, string>();
-
-                Dictionary<string, string> dicFieldNameOpenResponse = new Dictionary<string, string>();
-
-                string priorRespId = "0";
-                string priorAutoId = "0";
-
-                //                if (TypeOfReport == "1")
-                //                    dadpt = new SQLiteDataAdapter(@"SELECT T_InterviewInfo.RespondentId, T_InterviewInfo.Latitude, T_InterviewInfo.Longitude, T_InterviewInfo.SurveyDateTime, T_InterviewInfo.SurveyEndTime, T_InterviewInfo.LengthOfIntv, T_InterviewInfo.Intv_Type, 
-                //                                                  T_InterviewInfo.FICode,T_InterviewInfo.FSCode,T_InterviewInfo.AccompaniedBy, T_InterviewInfo.BackCheckedBy, T_InterviewInfo.Status, T_InterviewInfo.TabId, T_RespAnswer.QId, 
-                //                                                  T_RespAnswer.Response, T_RespAnswer.qElapsedTime, T_RespAnswer.rOrderTag FROM T_InterviewInfo 
-                //                                                  INNER JOIN T_RespAnswer ON (T_InterviewInfo.ProjectId = T_RespAnswer.ProjectId) AND (T_InterviewInfo.AutoId = T_RespAnswer.IntvInfoId)
-                //                                                  WHERE T_InterviewInfo.Intv_Type='1' AND (T_InterviewInfo.Status='1' OR T_InterviewInfo.Status='3') AND T_InterviewInfo.DeletedAt='' ORDER BY T_InterviewInfo.AutoId, T_RespAnswer.qOrderTag, T_RespAnswer.rOrderTag;", Aconnection);
-                //                else if (TypeOfReport == "2")
-                //                    dadpt = new SQLiteDataAdapter(@"SELECT T_InterviewInfo.RespondentId, T_InterviewInfo.Latitude, T_InterviewInfo.Longitude, T_InterviewInfo.SurveyDateTime, T_InterviewInfo.SurveyEndTime, T_InterviewInfo.LengthOfIntv, T_InterviewInfo.Intv_Type, 
-                //                                                  T_InterviewInfo.FICode,T_InterviewInfo.FSCode,T_InterviewInfo.AccompaniedBy, T_InterviewInfo.BackCheckedBy, T_InterviewInfo.Status, T_InterviewInfo.TabId, T_RespAnswer.QId, 
-                //                                                  T_RespAnswer.Response, T_RespAnswer.qElapsedTime, T_RespAnswer.rOrderTag FROM T_InterviewInfo 
-                //                                                  INNER JOIN T_RespAnswer ON (T_InterviewInfo.ProjectId = T_RespAnswer.ProjectId) AND (T_InterviewInfo.AutoId = T_RespAnswer.IntvInfoId)
-                //                                                  WHERE T_InterviewInfo.Intv_Type='1' AND T_InterviewInfo.Status='2' AND T_InterviewInfo.DeletedAt='' ORDER BY T_InterviewInfo.AutoId, T_RespAnswer.qOrderTag, T_RespAnswer.rOrderTag;", Aconnection);
-                //                else if (TypeOfReport == "3")
-                //                    dadpt = new SQLiteDataAdapter(@"SELECT T_InterviewInfo.RespondentId, T_InterviewInfo.Latitude, T_InterviewInfo.Longitude, T_InterviewInfo.SurveyDateTime, T_InterviewInfo.SurveyEndTime, T_InterviewInfo.LengthOfIntv, T_InterviewInfo.Intv_Type, 
-                //                                                  T_InterviewInfo.FICode,T_InterviewInfo.FSCode,T_InterviewInfo.AccompaniedBy, T_InterviewInfo.BackCheckedBy, T_InterviewInfo.Status, T_InterviewInfo.TabId, T_RespAnswer.QId, 
-                //                                                  T_RespAnswer.Response, T_RespAnswer.qElapsedTime, T_RespAnswer.rOrderTag FROM T_InterviewInfo 
-                //                                                  INNER JOIN T_RespAnswer ON (T_InterviewInfo.ProjectId = T_RespAnswer.ProjectId) AND (T_InterviewInfo.AutoId = T_RespAnswer.IntvInfoId)
-                //                                                  WHERE T_InterviewInfo.Intv_Type='1' AND T_InterviewInfo.Status='2' AND T_InterviewInfo.DeletedAt='' ORDER BY T_InterviewInfo.AutoId, T_RespAnswer.qOrderTag, T_RespAnswer.rOrderTag;", Aconnection);
-                //                else
-                //                    dadpt = new SQLiteDataAdapter(@"SELECT T_InterviewInfo.RespondentId, T_InterviewInfo.Latitude, T_InterviewInfo.Longitude, T_InterviewInfo.SurveyDateTime, T_InterviewInfo.SurveyEndTime, T_InterviewInfo.LengthOfIntv, T_InterviewInfo.Intv_Type, 
-                //                                                  T_InterviewInfo.FICode,T_InterviewInfo.FSCode,T_InterviewInfo.AccompaniedBy, T_InterviewInfo.BackCheckedBy, T_InterviewInfo.Status, T_InterviewInfo.TabId, T_RespAnswer.QId, 
-                //                                                  T_RespAnswer.Response, T_RespAnswer.qElapsedTime, T_RespAnswer.rOrderTag FROM T_InterviewInfo 
-                //                                                  INNER JOIN T_RespAnswer ON (T_InterviewInfo.ProjectId = T_RespAnswer.ProjectId) AND (T_InterviewInfo.AutoId = T_RespAnswer.IntvInfoId)
-                //                                                  WHERE T_InterviewInfo.Intv_Type='1' AND (T_InterviewInfo.Status='1' OR T_InterviewInfo.Status='3') AND T_InterviewInfo.DeletedAt='' ORDER BY T_InterviewInfo.AutoId, T_RespAnswer.qOrderTag, T_RespAnswer.rOrderTag;", Aconnection);
-
-
-                //TInterviewInfo.Columns[0].DataType = typeof(Int64);
-                //TRespAnswer.Columns[1].DataType = typeof(Int64);
-                //TRespAnswer.Columns[0].DataType = typeof(Int64);
-                //TRespAnswer.Columns[0].DataType = typeof(Int64);
-
-                DataTable TInterviewInfo = dtTInterviewInfo.Clone();
-                TInterviewInfo.Columns["id"].DataType = typeof(Int64);
-
-                DataTable TRespAnswer = dtTRespAnswer.Clone();
-                TRespAnswer.Columns["interview_info_id"].DataType = typeof(Int64);
-                TRespAnswer.Columns["resp_order"].DataType = typeof(Int64);
-                TRespAnswer.Columns["q_order"].DataType = typeof(Int64);
-
-                foreach (DataRow row in dtTInterviewInfo.Rows)
-                {
-                    TInterviewInfo.ImportRow(row);
-                }
-                foreach (DataRow row in dtTRespAnswer.Rows)
-                {
-                    TRespAnswer.ImportRow(row);
-                }
-
-                var result = from T_InterviewInfo in TInterviewInfo.AsEnumerable()
-                             join T_RespAnswer in TRespAnswer.AsEnumerable() on T_InterviewInfo.Field<Int64>("id") equals T_RespAnswer.Field<Int64>("interview_info_id")
-                             orderby (Int64)T_InterviewInfo["id"], (Int64)T_RespAnswer["q_order"], (Int64)T_RespAnswer["resp_order"]
-                             select new
-                             {
-                                 AutoId = (Int64)T_InterviewInfo["id"],
-                                 RespondentId = (string)T_InterviewInfo["respondent_id"],
-
-                                 name_resp = (string)T_InterviewInfo["name_resp"],
-                                 mobile_resp = (string)T_InterviewInfo["mobile_resp"],
-
-                                 Latitude = (string)T_InterviewInfo["latitude"],
-                                 Longitude = (string)T_InterviewInfo["longitude"],
-                                 SurveyDateTime = (string)T_InterviewInfo["survey_start_at"],
-                                 SurveyEndTime = (string)T_InterviewInfo["survey_end_at"],
-                                 LengthOfIntv = (string)T_InterviewInfo["length_of_intv"],
-                                 intv_type = (string)T_InterviewInfo["intv_type"],
-                                 FICode = (string)T_InterviewInfo["fi_code"],
-                                 FSCode = (string)T_InterviewInfo["fs_code"],
-                                 AccompaniedBy = (string)T_InterviewInfo["accompanied_by"],
-                                 BackCheckedBy = (string)T_InterviewInfo["back_checked_by"],
-                                 ScriptVersion = (string)T_InterviewInfo["script_version"],
-                                 SyncDataTime = (string)T_InterviewInfo["created_at"],
-                                 status = (string)T_InterviewInfo["status"],
-                                 field_ex2 = (string)T_InterviewInfo["field_ex2"],
-                                 intv_info9 = (string)T_InterviewInfo["intv_info9"],
-                                 TabId = (string)T_InterviewInfo["tab_id"],
-                                 QId = (string)T_RespAnswer["q_id"],
-                                 Response = (string)T_RespAnswer["response"],
-                                 qElapsedTime = (string)T_RespAnswer["q_elapsed_time"],
-                                 rOrderTag = ((Int64)T_RespAnswer["resp_order"]).ToString()
-                             };
-
-
-                //DataSet ds = new DataSet();
-                //dadpt.Fill(ds, "Table1");
-
-                //if (result.Count<.Rows.Count > 0)
-                //{
-
-                string interview_id = "";
-
-                //myProgressBar.Minimum = 0;
-                //myProgressBar.Maximum = TInterviewInfo.Rows.Count * TRespAnswer.Rows.Count;
-                int p = 0;
-                foreach (var dr in result)
-                {
-                    p++;
-                    //myProgressBar.Value = p;
-
-                    //if (dr["RespondentId"].ToString()=="5")
-                    //{
-                    //    MessageBox.Show("");
-                    //}
-                    //if (priorRespId != dr.RespondentId.ToString())
-                    if (priorAutoId != dr.AutoId.ToString())
-                    {
-                        //if (priorRespId != "0")
-                        if (priorAutoId != "0")
-                        {
-                            //Update the response with openended value
-
-                            //This is only for taking openended data 
-
-                            Dictionary<String, String> dicOpenendedQIDvsResponse = getOpenendedForReport(priorAutoId, dtTRespOpenended);
-
-                            ////////////////////if (dicOpenendedQIDvsResponse.Count > 0)
-                            ////////////////////{
-                            ////////////////////    foreach (KeyValuePair<string, string> pair in dicOpenendedQIDvsResponse)
-                            ////////////////////    {
-                            ////////////////////        if (dicFieldNameResponse.ContainsKey(pair.Key))
-                            ////////////////////        {
-                            ////////////////////            string s_temp = dicFieldNameResponse[pair.Key] + pair.Value;
-                            ////////////////////            dicFieldNameResponse.Remove(pair.Key);
-                            ////////////////////            dicFieldNameResponse.Add(pair.Key, s_temp);
-                            ////////////////////        }
-                            ////////////////////    }
-                            ////////////////////}
-
-                            //**********************************************
-
-
-
-                            for (int i = 0; i < columnName.Count; i++)
-                            {
-                                if (dicFieldNameResponse.ContainsKey(columnName[i]))
-                                    columnData.Add(dicFieldNameResponse[columnName[i]]);
-                                else if (dicOpenendedQIDvsResponse.ContainsKey(columnName[i]))
-                                    columnData.Add(dicOpenendedQIDvsResponse[columnName[i]]);
-                                else
-                                    columnData.Add("");
-                            }
-
-                            listOfColumnData.Add(columnData);
-                        }
-                        columnData = new List<string>();
-
-                        dicFieldNameResponse.Clear();
-
-
-                        //priorRespId = dr.RespondentId.ToString();
-                        priorAutoId = dr.AutoId.ToString();
-                        interview_id = priorAutoId;
-                        dicFieldNameResponse.Add("Id", dr.AutoId.ToString());
-                        dicFieldNameResponse.Add("RespondentId", dr.RespondentId.ToString());
-                        dicFieldNameResponse.Add("name_resp", dr.name_resp.ToString());
-                        dicFieldNameResponse.Add("mobile_resp", dr.mobile_resp.ToString());
-                        //dicFieldNameResponse.Add("Centre", dr.Centre.ToString());
-                        dicFieldNameResponse.Add("Latitude", dr.Latitude.ToString());
-                        dicFieldNameResponse.Add("Longitude", dr.Longitude.ToString());
-                        dicFieldNameResponse.Add("SurveyDateTime", dr.SurveyDateTime.ToString());
-                        dicFieldNameResponse.Add("SurveyEndTime", dr.SurveyEndTime.ToString());
-                        dicFieldNameResponse.Add("LengthOfIntv", dr.LengthOfIntv.ToString());
-                        dicFieldNameResponse.Add("FICode", dr.FICode.ToString());
-                        dicFieldNameResponse.Add("FSCode", dr.FSCode.ToString());
-                        dicFieldNameResponse.Add("AccompaniedBy", dr.AccompaniedBy.ToString());
-                        dicFieldNameResponse.Add("BackCheckedBy", dr.BackCheckedBy.ToString());
-                        dicFieldNameResponse.Add("ScriptVersion", dr.ScriptVersion.ToString());
-                        dicFieldNameResponse.Add("SyncDateTime", dr.SyncDataTime.ToString());
-
-                        dicFieldNameResponse.Add("Intv_Type", dr.intv_type.ToString());
-                        dicFieldNameResponse.Add("Status", dr.status.ToString());
-                        dicFieldNameResponse.Add("intv_info9", dr.intv_info9.ToString());
-                        dicFieldNameResponse.Add("TabId", dr.TabId.ToString());
-
-                        dicFieldNameResponse.Add(dr.QId.ToString(), dr.Response.ToString());
-                        //dicFieldNameResponse.Add(dr.QId.ToString(), dr.qElapsedTime.ToString());
-
-
-                        /// This is for if first question is a form question
-                        if (!listOfMSQuestion.Contains(dr.QId.ToString()))
-                        {
-                            if (dicFieldNameResponse.ContainsKey(dr.QId.ToString()) == false)
-                                dicFieldNameResponse.Add(dr.QId.ToString(), dr.Response.ToString());
-                        }
-                        else
-                        {
-                            if (dicFieldNameResponse.ContainsKey(dr.QId.ToString() + "_" + dr.rOrderTag.ToString()) == false)
-                                dicFieldNameResponse.Add(dr.QId.ToString() + "_" + dr.rOrderTag.ToString(), dr.Response.ToString());
-                        }
-                    }
-                    else
-                    {
-                        if (!listOfMSQuestion.Contains(dr.QId.ToString()))
-                        {
-                            if (dicFieldNameResponse.ContainsKey(dr.QId.ToString()) == false)
-                                dicFieldNameResponse.Add(dr.QId.ToString(), dr.Response.ToString());
-                            else
-                            {
-                                //if (dr.QId.ToString() == "Q3a")
-                                //{
-                                //    string s_temp = dicFieldNameResponse[dr.QId.ToString()] + " ; " + dr.Response.ToString();
-                                //    dicFieldNameResponse.Remove(dr.QId.ToString());
-                                //    dicFieldNameResponse.Add(dr.QId.ToString(), s_temp);
-                                //}
-                                //else
-                                //{
-                                if (dicFieldNameResponse[dr.QId.ToString()] != dr.Response.ToString())  //If redundent data exist (that is error)
-                                {
-                                    string s_temp = dicFieldNameResponse[dr.QId.ToString()] + dr.Response.ToString();
-                                    dicFieldNameResponse.Remove(dr.QId.ToString());
-                                    dicFieldNameResponse.Add(dr.QId.ToString(), s_temp);
-                                }
-                                //}
-                            }
-
-                        }
-                        else
-                        {
-
-                            //T_RespAnswer.rOrderTag
-                            if (dicFieldNameResponse.ContainsKey(dr.QId.ToString() + "_" + dr.rOrderTag.ToString()) == false)
-                                dicFieldNameResponse.Add(dr.QId.ToString() + "_" + dr.rOrderTag.ToString(), dr.Response.ToString());
-                        }
-                    }
-                }
-
-                //This is only for taking openended data 
-
-                Dictionary<String, String> dicOpenendedQIDvsResponse2 = getOpenendedForReport(priorAutoId, dtTRespOpenended);
-
-                ////////////////////////if (dicOpenendedQIDvsResponse2.Count > 0)
-                ////////////////////////{
-                ////////////////////////    foreach (KeyValuePair<string, string> pair in dicOpenendedQIDvsResponse2)
-                ////////////////////////    {
-                ////////////////////////        if (dicFieldNameResponse.ContainsKey(pair.Key))
-                ////////////////////////        {
-                ////////////////////////            string s_temp = dicFieldNameResponse[pair.Key] + pair.Value;
-                ////////////////////////            dicFieldNameResponse.Remove(pair.Key);
-                ////////////////////////            dicFieldNameResponse.Add(pair.Key, s_temp);
-                ////////////////////////        }
-                ////////////////////////    }
-                ////////////////////////}
-
-                //This is for the last respondent;
-                for (int i = 0; i < columnName.Count; i++)
-                {
-                    if (dicFieldNameResponse.ContainsKey(columnName[i]))
-                        columnData.Add(dicFieldNameResponse[columnName[i]]);
-                    else if (dicOpenendedQIDvsResponse2.ContainsKey(columnName[i]))
-                        columnData.Add(dicOpenendedQIDvsResponse2[columnName[i]]);
-                    else
-                        columnData.Add("");
-                }
-
-                listOfColumnData.Add(columnData);
-                //}
-                Qconnection.Close();
-                return listOfColumnData;
+                return buildReportRows(columnName, dtTInterviewInfo, dtTRespAnswer, dtTRespOpenended);
             }
             catch (Exception ex)
             {
-                //MessageBox.Show(ex.Message);
+                LastError = ex.Message;
                 return null;
+            }
+            finally
+            {
+                Qconnection.Close();
             }
         }
 
-        private Dictionary<String, String> getOpenendedForReport(string AutoId, DataTable dtTRespOpenended)
+        private struct ReportAnswer
         {
-            Dictionary<String, String> dicOpenendedQIDvsResponse = new Dictionary<String, String>();
+            public long QOrder, ROrder;
+            public int Seq;
+            public string QId, Response;
+        }
 
-            //SQLiteDataAdapter dadpt = new SQLiteDataAdapter(@"SELECT * FROM T_RespOpenended WHERE  RespondentId=" + RespondentId + " AND OEResponseType='2';", Aconnection);
-            // && T_RespOpenended.Field<string>("response_type") == "2"
+        private List<List<string>> buildReportRows(List<string> columnName, DataTable dtTInterviewInfo, DataTable dtTRespAnswer, DataTable dtTRespOpenended)
+        {
+            var listOfColumnData = new List<List<string>>();
+            if (dtTInterviewInfo == null || dtTRespAnswer == null ||
+                dtTInterviewInfo.Rows.Count == 0 || dtTRespAnswer.Rows.Count == 0)
+                return listOfColumnData;
 
-            var result1 = from T_RespOpenended in dtTRespOpenended.AsEnumerable()
-                          where T_RespOpenended.Field<string>("interview_info_id") == AutoId
-                          select new
-                          {
-                              RespondentId = (string)T_RespOpenended["respondent_id"],
-                              QId = (string)T_RespOpenended["q_id"],
-                              AttributeValue = (string)T_RespOpenended["attribute_value"],
-                              OpenendedResp = (string)T_RespOpenended["response"],
-                              OEResponseType = (string)T_RespOpenended["response_type"]
-                          };
-
-
-            foreach (var dr in result1)
+            // ---- interviews, ordered by numeric id (first copy wins if the server sent duplicates)
+            DataColumnCollection ic = dtTInterviewInfo.Columns;
+            DataColumn cId = ic["id"];
+            var interviews = new SortedDictionary<long, DataRow>();
+            foreach (DataRow r in dtTInterviewInfo.Rows)
             {
-
-                if (!dicOpenendedQIDvsResponse.ContainsKey(dr.QId.ToString() + "_" + dr.AttributeValue + "_OE"))
-                {
-                    dicOpenendedQIDvsResponse.Add(dr.QId.ToString()+"_"+dr.AttributeValue+"_OE", dr.OpenendedResp.ToString());
-                }
-                else
-                {
-                    //Actually this is an error
-                    string s_temp = dicOpenendedQIDvsResponse[dr.QId.ToString() + "_" + dr.AttributeValue + "_OE"] + dr.OpenendedResp.ToString();
-                    dicOpenendedQIDvsResponse.Remove(dr.QId.ToString() + "_" + dr.AttributeValue + "_OE");
-                    dicOpenendedQIDvsResponse.Add(dr.QId.ToString() + "_" + dr.AttributeValue + "_OE", s_temp);
-                }
-
-
-
+                long id = toLong(r, cId);
+                if (!interviews.ContainsKey(id)) interviews.Add(id, r);
             }
 
-            return dicOpenendedQIDvsResponse;
+            // ---- answers grouped by interview id
+            DataColumnCollection ac = dtTRespAnswer.Columns;
+            DataColumn aIntv = ac["interview_info_id"], aQId = ac["q_id"], aResp = ac["response"],
+                       aQOrder = ac["q_order"], aROrder = ac["resp_order"];
+            var answersByInterview = new Dictionary<long, List<ReportAnswer>>();
+            int seq = 0;
+            foreach (DataRow r in dtTRespAnswer.Rows)
+            {
+                long intvId = toLong(r, aIntv);
+                if (!interviews.ContainsKey(intvId)) continue;   // inner join
+                List<ReportAnswer> list;
+                if (!answersByInterview.TryGetValue(intvId, out list))
+                    answersByInterview.Add(intvId, list = new List<ReportAnswer>());
+                list.Add(new ReportAnswer
+                {
+                    QOrder = toLong(r, aQOrder),
+                    ROrder = toLong(r, aROrder),
+                    Seq = seq++,
+                    QId = str(r, aQId),
+                    Response = str(r, aResp)
+                });
+            }
+
+            // ---- open-ended grouped by interview id: "QId_AttributeValue_OE" -> response
+            var oeByInterview = new Dictionary<string, Dictionary<string, string>>();
+            if (dtTRespOpenended != null && dtTRespOpenended.Rows.Count > 0)
+            {
+                DataColumnCollection oc = dtTRespOpenended.Columns;
+                DataColumn oIntv = oc["interview_info_id"], oQId = oc["q_id"], oAttr = oc["attribute_value"], oResp = oc["response"];
+                foreach (DataRow r in dtTRespOpenended.Rows)
+                {
+                    if (oIntv == null || r.IsNull(oIntv)) continue;
+                    string intvKey = Convert.ToString(r[oIntv]);
+                    Dictionary<string, string> dic;
+                    if (!oeByInterview.TryGetValue(intvKey, out dic))
+                        oeByInterview.Add(intvKey, dic = new Dictionary<string, string>());
+
+                    string key = str(r, oQId) + "_" + str(r, oAttr) + "_OE";
+                    string prior;
+                    // A duplicate is actually an error in the data; keep both texts as before.
+                    dic[key] = dic.TryGetValue(key, out prior) ? prior + str(r, oResp) : str(r, oResp);
+                }
+            }
+            var noOpenended = new Dictionary<string, string>();
+
+            // ---- interview-level fields: output name -> source column
+            var metaFields = new[]
+            {
+                new KeyValuePair<string, string>("RespondentId", "respondent_id"),
+                new KeyValuePair<string, string>("name_resp", "name_resp"),
+                new KeyValuePair<string, string>("mobile_resp", "mobile_resp"),
+                new KeyValuePair<string, string>("Latitude", "latitude"),
+                new KeyValuePair<string, string>("Longitude", "longitude"),
+                new KeyValuePair<string, string>("SurveyDateTime", "survey_start_at"),
+                new KeyValuePair<string, string>("SurveyEndTime", "survey_end_at"),
+                new KeyValuePair<string, string>("LengthOfIntv", "length_of_intv"),
+                new KeyValuePair<string, string>("FICode", "fi_code"),
+                new KeyValuePair<string, string>("FSCode", "fs_code"),
+                new KeyValuePair<string, string>("AccompaniedBy", "accompanied_by"),
+                new KeyValuePair<string, string>("BackCheckedBy", "back_checked_by"),
+                new KeyValuePair<string, string>("ScriptVersion", "script_version"),
+                new KeyValuePair<string, string>("SyncDateTime", "created_at"),
+                new KeyValuePair<string, string>("Intv_Type", "intv_type"),
+                new KeyValuePair<string, string>("Status", "status"),
+                new KeyValuePair<string, string>("field_ex2", "field_ex2"),
+                new KeyValuePair<string, string>("intv_info9", "intv_info9"),
+                new KeyValuePair<string, string>("TabId", "tab_id")
+            };
+            DataColumn[] metaColumns = metaFields.Select(m => ic[m.Value]).ToArray();
+
+            var dicFieldNameResponse = new Dictionary<string, string>();
+            foreach (KeyValuePair<long, DataRow> intv in interviews)
+            {
+                List<ReportAnswer> answers;
+                if (!answersByInterview.TryGetValue(intv.Key, out answers)) continue;   // inner join
+
+                answers.Sort((x, y) =>
+                {
+                    int c = x.QOrder.CompareTo(y.QOrder);
+                    if (c == 0) c = x.ROrder.CompareTo(y.ROrder);
+                    return c != 0 ? c : x.Seq.CompareTo(y.Seq);   // stable, like the old LINQ orderby
+                });
+
+                dicFieldNameResponse.Clear();
+                string autoId = intv.Key.ToString();
+                dicFieldNameResponse["Id"] = autoId;
+                for (int m = 0; m < metaFields.Length; m++)
+                    dicFieldNameResponse[metaFields[m].Key] = str(intv.Value, metaColumns[m]);
+
+                bool firstAnswer = true;
+                foreach (ReportAnswer a in answers)
+                {
+                    if (firstAnswer)
+                    {
+                        // The old code always stored the first answer under its plain QId as well.
+                        if (!dicFieldNameResponse.ContainsKey(a.QId))
+                            dicFieldNameResponse.Add(a.QId, a.Response);
+                        firstAnswer = false;
+                    }
+
+                    if (!listOfMSQuestion.Contains(a.QId))
+                    {
+                        string prior;
+                        if (!dicFieldNameResponse.TryGetValue(a.QId, out prior))
+                            dicFieldNameResponse.Add(a.QId, a.Response);
+                        else if (prior != a.Response)   // redundant data (that is an error) - keep both, as before
+                            dicFieldNameResponse[a.QId] = prior + a.Response;
+                    }
+                    else
+                    {
+                        string key = a.QId + "_" + a.ROrder;
+                        if (!dicFieldNameResponse.ContainsKey(key))
+                            dicFieldNameResponse.Add(key, a.Response);
+                    }
+                }
+
+                Dictionary<string, string> oe;
+                if (!oeByInterview.TryGetValue(autoId, out oe)) oe = noOpenended;
+
+                var columnData = new List<string>(columnName.Count);
+                foreach (string col in columnName)
+                {
+                    string v;
+                    if (dicFieldNameResponse.TryGetValue(col, out v) || oe.TryGetValue(col, out v))
+                        columnData.Add(v);
+                    else
+                        columnData.Add("");
+                }
+                listOfColumnData.Add(columnData);
+            }
+
+            return listOfColumnData;
+        }
+
+        private static string str(DataRow r, DataColumn c)
+        {
+            return c == null || r.IsNull(c) ? "" : Convert.ToString(r[c]);
+        }
+
+        private static long toLong(DataRow r, DataColumn c)
+        {
+            long v;
+            return long.TryParse(str(r, c).Trim(), out v) ? v : 0;
         }
 
         //public SQLiteDataReader getDataTableOpenended()

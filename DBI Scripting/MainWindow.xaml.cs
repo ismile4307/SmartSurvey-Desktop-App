@@ -220,6 +220,12 @@ namespace DBI_Scripting
             myFrmAnalysisTable.ShowDialog();
         }
 
+        private void btnCheckData_Click(object sender, RoutedEventArgs e)
+        {
+            FrmCheckData frmCheckData = new FrmCheckData();
+            frmCheckData.ShowDialog();
+        }
+
         private void btnCumulativeSyntax_Click(object sender, RoutedEventArgs e)
         {
             FrmSummaryTableSyntax frm = new FrmSummaryTableSyntax();

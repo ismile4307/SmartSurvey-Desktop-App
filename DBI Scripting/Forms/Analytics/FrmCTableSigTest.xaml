@@ -186,7 +186,7 @@
                                    FontSize="11" Foreground="#555" TextTrimming="CharacterEllipsis"/>
 
                         <!-- Buttons -->
-                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">                               
                             <Button x:Name="btnHelpS1" Content="Help"
                                     Width="78" Height="32" Margin="0,0,8,0"
                                     Style="{StaticResource SecondaryBtn}"
@@ -346,6 +346,8 @@
                                TextTrimming="CharacterEllipsis"
                                Margin="0,0,230,0"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <RadioButton x:Name="rdoProportion" Content="With % sign  " IsChecked="True" Height="18"/>
+                        <RadioButton x:Name="rdoProportion2" Content="Without % sign  " IsChecked="False" Height="18"/>
                         <Button x:Name="btnHelpS2" Content="Help"
                                 Width="78" Height="34" Margin="0,0,8,0"
                                 Style="{StaticResource SecondaryBtn}"

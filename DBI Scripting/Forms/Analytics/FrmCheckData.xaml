@@ -1,0 +1,313 @@
+<Window x:Class="DBI_Scripting.Forms.Analytics.FrmCheckData"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Check Data"
+        Height="700" Width="980"
+        MinHeight="560" MinWidth="780"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        Loaded="Window_Loaded"
+        Icon="/Smart Survey;component/Images/download_48.png"
+        Background="#EEF0F4">
+
+    <Window.Resources>
+
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="#2563AE"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#1A4F8C"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#153E70"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#93B4D4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="#E5E7EB"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#D1D5DB"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#C0C5CC"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#F3F4F6"/>
+                                <Setter TargetName="bd" Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SuccessBtn" TargetType="Button">
+            <Setter Property="Background" Value="#16A34A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#15803D"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#166534"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#86EFAC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SectionBorder" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.08" Direction="270"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#1E3A5F"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="4,0"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Config panel -->
+            <RowDefinition Height="Auto"/>  <!-- Buttons + progress -->
+            <RowDefinition Height="100"/>   <!-- Log -->
+            <RowDefinition Height="*"/>     <!-- Results -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- SECTION 1 : Configuration                                       -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Style="{StaticResource SectionBorder}">
+            <StackPanel>
+                <TextBlock Text="Configuration" Style="{StaticResource SectionHeader}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Project -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Project" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox x:Name="cmbProject" Grid.Row="0" Grid.Column="1"
+                              SelectionChanged="cmbProject_SelectionChanged"/>
+
+                    <!-- Excel File -->
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Excel Data File" Style="{StaticResource FieldLabel}"/>
+                    <Grid Grid.Row="2" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="txtExcelPath" Grid.Column="0" IsReadOnly="True" Background="#F9FAFB"
+                                 VerticalContentAlignment="Center"/>
+                        <Button x:Name="btnBrowse" Content="Browse…" Grid.Column="1"
+                                Margin="8,0,0,0" Padding="14,0" Height="28"
+                                Style="{StaticResource SecondaryBtn}" Click="btnBrowse_Click"/>
+                    </Grid>
+
+                    <!-- Options -->
+                    <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                        <CheckBox x:Name="chkRedownload" IsChecked="True" VerticalAlignment="Center"
+                                  Margin="0,0,0,0">
+                            <TextBlock Text="Re-download script from server" VerticalAlignment="Center" FontSize="12"/>
+                        </CheckBox>
+                        <TextBlock Text="  (uncheck to use cached C:\Temp\ script)"
+                                   VerticalAlignment="Center" FontSize="11" Foreground="#6B7280"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- SECTION 2 : Action bar                                          -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <Grid Grid.Row="1" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="btnProcess" Content="  Process  " Grid.Column="0"
+                    Height="30" Style="{StaticResource PrimaryBtn}"
+                    Margin="0,0,8,0" Click="btnProcess_Click"/>
+            <Button x:Name="btnCancel" Content="  Cancel  " Grid.Column="1"
+                    Height="30" Style="{StaticResource SecondaryBtn}"
+                    IsEnabled="False" Click="btnCancel_Click"/>
+            <ProgressBar x:Name="prgProgress" Grid.Column="2" Height="6"
+                         VerticalAlignment="Center" Margin="10,0,0,0"
+                         Foreground="#2563AE" Background="#E5E7EB"/>
+        </Grid>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- SECTION 3 : Log                                                 -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="2" Style="{StaticResource SectionBorder}" Padding="8">
+            <TextBox x:Name="txtLog" IsReadOnly="True" Background="Transparent"
+                     BorderThickness="0" FontFamily="Consolas" FontSize="11"
+                     Foreground="#374151" VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto" TextWrapping="NoWrap"/>
+        </Border>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- SECTION 4 : Results                                             -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <Border Grid.Row="3" Style="{StaticResource SectionBorder}" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Results header bar -->
+                <DockPanel Grid.Row="0" Margin="14,10,14,8">
+                    <TextBlock Text="Check Results" Style="{StaticResource SectionHeader}" Margin="0"
+                               VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                    <Button x:Name="btnExport" Content="  Export to Excel  " DockPanel.Dock="Right"
+                            Height="26" Padding="10,0" Style="{StaticResource SuccessBtn}"
+                            IsEnabled="False" Click="btnExport_Click"/>
+                    <TextBlock x:Name="lblCount" DockPanel.Dock="Right" Margin="0,0,16,0"
+                               VerticalAlignment="Center" FontSize="12" Foreground="#6B7280"/>
+                </DockPanel>
+
+                <!-- Data grid -->
+                <DataGrid x:Name="dgResults" Grid.Row="1"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="#F3F4F6"
+                          AlternatingRowBackground="#F9FAFB"
+                          Background="White"
+                          RowHeaderWidth="0"
+                          FontSize="12"
+                          SelectionMode="Single"
+                          BorderThickness="0"
+                          Margin="0,0,0,0">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F1F5F9"/>
+                            <Setter Property="Foreground" Value="#1E3A5F"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Padding" Value="10,6"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Height" Value="26"/>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Padding" Value="10,4"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Padding="{TemplateBinding Padding}"
+                                                Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.CellStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Respondent ID" Binding="{Binding RespondentId}" Width="130"/>
+                        <DataGridTextColumn Header="Q ID"          Binding="{Binding QId}"          Width="80"/>
+                        <DataGridTextColumn Header="Check Type"    Binding="{Binding CheckType}"    Width="170"/>
+                        <DataGridTextColumn Header="Issue"         Binding="{Binding Issue}"         Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>

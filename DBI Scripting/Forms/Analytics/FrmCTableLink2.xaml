@@ -279,10 +279,6 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- Hidden button — kept for code-behind compatibility -->
-                <Button x:Name="btnDeleteDummyRow" Visibility="Collapsed"
-                        Click="btnDeleteDummyRow_Click"/>
-
             </Grid>
         </Border>
     </Grid>

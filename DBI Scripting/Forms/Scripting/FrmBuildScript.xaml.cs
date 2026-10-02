@@ -95,6 +95,11 @@ namespace DBI_Scripting.Forms.Scripting
         Boolean preparedScript = false;
         String scriptFilePath = "";
 
+        // Incremented once per *REPEAT *ROT block encountered during a build.
+        // Provides the auto-assigned *BLOCK number written to ResumeQntrJump for
+        // every question generated inside a *REPEAT *ROT expansion.
+        private int _repeatRotBlockNo = 0;
+
         String silentRecording = "";
 
         // All QIds registered during the current build — used for {QId} / {QId.N} validation
@@ -187,7 +192,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                 #region Define local variables
                 checkLogicalExp = new CheckLogicalExp();
-
+                _repeatRotBlockNo = 0; // reset for each build run
 
                 projectInfoScript = new ProjectInfoScript();
                 dicListNameVsList = new Dictionary<string, List<AttributeMain>>();
@@ -497,6 +502,11 @@ namespace DBI_Scripting.Forms.Scripting
                             }
                             string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
 
+                            // Detect *ROT after the closing bracket: "*REPEAT [source] *ROT"
+                            // Uses a word-boundary regex to avoid matching *ROTATION or *QROT.
+                            string afterBracket = strline.Substring(bEnd + 1).Trim();
+                            bool repeatRot = Regex.IsMatch(afterBracket, @"(?:^|\s)\*ROT(?:\s|$)", RegexOptions.IgnoreCase);
+
                             // collect buffer until *ENDREPEAT (track actual file line numbers)
                             List<string> repeatBuffer = new List<string>();
                             List<int> repeatLineNums = new List<int>();
@@ -519,8 +529,12 @@ namespace DBI_Scripting.Forms.Scripting
                             // build iteration list and expand
                             List<string> iterationList = BuildRepeatIterationList(repeatSource, txtWriter, dicLine[i + 1]);
                             if (iterationList != null && iterationList.Count > 0)
+                            {
+                                int rotBlockNo = repeatRot ? ++_repeatRotBlockNo : 0;
                                 ExpandRepeatBlockEnglish(repeatBuffer, repeatLineNums, iterationList,
-                                    listOfQuestionIdForDupliCheck, listOfGridListForDupliCheck, txtWriter);
+                                    listOfQuestionIdForDupliCheck, listOfGridListForDupliCheck, txtWriter,
+                                    repeatRot, rotBlockNo);
+                            }
 
                             strline = lines[i]; // i → *ENDREPEAT line
                         }
@@ -529,87 +543,67 @@ namespace DBI_Scripting.Forms.Scripting
                         #region Prepare QUESTION
                         if (strline.Split(' ')[0].ToUpper() == "*QUESTION")
                         {
-                            //Pronab added for repeat
-                            List<AttributeMain> listOfAttributeTemp = new List<AttributeMain>();
-                            bool hasRepeat = false;
-                            string[] word = strline.Split('*');
-                            for (int n = 1; n < word.Length; n++)
-                            {
-                                string myText = "*" + word[n];
-
-                                if (myText.ToUpper().Trim().Contains("*REPEAT"))
-                                {
-                                    string[] xyz = word[n].Trim().Split(' ');
-                                    if (xyz.Length == 2)
-                                    {
-                                        string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
-                                        if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
-                                        {
-                                            if (!dicQidVsAttributeList.ContainsKey(abc[1].Trim()))
-                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " *REPEAT references unknown QId '" + abc[1].Trim() + "'");
-                                            else
-                                                listOfAttributeTemp = dicQidVsAttributeList[abc[1].Trim()];
-                                        }
-                                    }
-                                    hasRepeat = true;
-                                }
-                                else
-                                {
-                                    hasRepeat = false;
-                                }
-                            }
-
-                            if (hasRepeat)
-                            {
-                                int iStart = i;
-                                for (int k = 0; k < listOfAttributeTemp.Count; k++)
-                                {
-                                    if (listOfAttributeTemp[k].AttributeEnglish.Contains("None"))
-                                        break;
-
-                                    AttributeMain attributeMainR = new AttributeMain();
-                                    attributeMainR.AttributeEnglish = listOfAttributeTemp[k].AttributeEnglish;
-                                    attributeMainR.AttributeValue = listOfAttributeTemp[k].AttributeValue;
-
-                                    currentQuestion = new Question();
-
-                                    List<LogicalSyntax> listOfLogicalSyntaxTemp = new List<LogicalSyntax>();
-                                    List<Question> listOfQuestionTemp = new List<Question>();
-                                    Question currentQuestionTemp = new Question();
-
-                                    Dictionary<String, List<AttributeMain>> dicQidVsAttributeListTemp = new Dictionary<String, List<AttributeMain>>();
-                                    List<AttributeFilter> listOfAttributeFilterTemp = new List<AttributeFilter>();
-
-                                    i = iStart;
-
-                                    i = this.prepareQuestion(lines, i, listOfQuestionIdForDupliCheck, listOfGridListForDupliCheck, listOfLogicalSyntaxTemp, listOfQuestionTemp, currentQuestionTemp, dicQidVsAttributeListTemp, listOfAttributeFilterTemp, txtWriter, dicLine, attributeMainR);
-                                    strline = lines[i];
-
-                                    for (int x = 0; x < listOfLogicalSyntaxTemp.Count; x++)
-                                    {
-                                        listOfLogicalSyntax.Add(listOfLogicalSyntaxTemp[x]);
-                                    }
-
-                                    for (int x = 0; x < listOfQuestionTemp.Count; x++)
-                                    {
-                                        listOfQuestion.Add(listOfQuestionTemp[x]);
-                                    }
-                                    currentQuestion = listOfQuestionTemp[0];
-                                    //currentQuestion = currentQuestionTemp;
-
-                                    foreach (KeyValuePair<String, List<AttributeMain>> pair in dicQidVsAttributeListTemp)
-                                    {
-                                        dicQidVsAttributeList.Add(pair.Key, pair.Value);
-                                    }
-
-
-                                    for (int x = 0; x < listOfAttributeFilterTemp.Count; x++)
-                                    {
-                                        listOfAttributeFilter.Add(listOfAttributeFilterTemp[x]);
-                                    }
-                                }
-                            } //Pronab end End Repeat
-                            else
+                            // Inline *QUESTION *REPEAT [QId] mechanism (Pronab) — superseded by the
+                            // block-level *REPEAT [source] ... *ENDREPEAT approach and commented out.
+                            // Bug in hasRepeat detection (else-reset) was also fixed in case this is
+                            // ever re-enabled; see prepareQuestionForLanguage for the same pattern.
+                            //
+                            //List<AttributeMain> listOfAttributeTemp = new List<AttributeMain>();
+                            //bool hasRepeat = false;
+                            //string[] word = strline.Split('*');
+                            //for (int n = 1; n < word.Length; n++)
+                            //{
+                            //    string myText = "*" + word[n];
+                            //    if (myText.ToUpper().Trim().Contains("*REPEAT"))
+                            //    {
+                            //        string[] xyz = word[n].Trim().Split(' ');
+                            //        if (xyz.Length == 2)
+                            //        {
+                            //            string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
+                            //            if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
+                            //            {
+                            //                if (!dicQidVsAttributeList.ContainsKey(abc[1].Trim()))
+                            //                    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " *REPEAT references unknown QId '" + abc[1].Trim() + "'");
+                            //                else
+                            //                    listOfAttributeTemp = dicQidVsAttributeList[abc[1].Trim()];
+                            //            }
+                            //        }
+                            //        hasRepeat = true;
+                            //        // Bug fix: no "else hasRepeat = false" here — that reset the flag
+                            //        // whenever *REPEAT was not the last token on the line.
+                            //    }
+                            //}
+                            //if (hasRepeat)
+                            //{
+                            //    int iStart = i;
+                            //    for (int k = 0; k < listOfAttributeTemp.Count; k++)
+                            //    {
+                            //        if (listOfAttributeTemp[k].AttributeEnglish.Contains("None"))
+                            //            break;
+                            //        AttributeMain attributeMainR = new AttributeMain();
+                            //        attributeMainR.AttributeEnglish = listOfAttributeTemp[k].AttributeEnglish;
+                            //        attributeMainR.AttributeValue = listOfAttributeTemp[k].AttributeValue;
+                            //        currentQuestion = new Question();
+                            //        List<LogicalSyntax> listOfLogicalSyntaxTemp = new List<LogicalSyntax>();
+                            //        List<Question> listOfQuestionTemp = new List<Question>();
+                            //        Question currentQuestionTemp = new Question();
+                            //        Dictionary<String, List<AttributeMain>> dicQidVsAttributeListTemp = new Dictionary<String, List<AttributeMain>>();
+                            //        List<AttributeFilter> listOfAttributeFilterTemp = new List<AttributeFilter>();
+                            //        i = iStart;
+                            //        i = this.prepareQuestion(lines, i, listOfQuestionIdForDupliCheck, listOfGridListForDupliCheck, listOfLogicalSyntaxTemp, listOfQuestionTemp, currentQuestionTemp, dicQidVsAttributeListTemp, listOfAttributeFilterTemp, txtWriter, dicLine, attributeMainR);
+                            //        strline = lines[i];
+                            //        for (int x = 0; x < listOfLogicalSyntaxTemp.Count; x++)
+                            //            listOfLogicalSyntax.Add(listOfLogicalSyntaxTemp[x]);
+                            //        for (int x = 0; x < listOfQuestionTemp.Count; x++)
+                            //            listOfQuestion.Add(listOfQuestionTemp[x]);
+                            //        currentQuestion = listOfQuestionTemp[0];
+                            //        foreach (KeyValuePair<String, List<AttributeMain>> pair in dicQidVsAttributeListTemp)
+                            //            dicQidVsAttributeList.Add(pair.Key, pair.Value);
+                            //        for (int x = 0; x < listOfAttributeFilterTemp.Count; x++)
+                            //            listOfAttributeFilter.Add(listOfAttributeFilterTemp[x]);
+                            //    }
+                            //}
+                            //else  ← removed; block below is now the only path
                             {
                                 currentQuestion = new Question();
 
@@ -703,36 +697,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage1.Count)
-                                    {
-                                        if (linesLanguage1[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage1[i]);
-                                        repeatLineNums.Add(dicLine[i + ln1 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 1 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln1);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 1, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 1 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage1, ref i, ln1, 1, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -780,36 +745,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage2.Count)
-                                    {
-                                        if (linesLanguage2[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage2[i]);
-                                        repeatLineNums.Add(dicLine[i + ln2 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 2 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln2);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 2, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 2 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage2, ref i, ln2, 2, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -858,36 +794,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage3.Count)
-                                    {
-                                        if (linesLanguage3[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage3[i]);
-                                        repeatLineNums.Add(dicLine[i + ln3 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 3 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln3);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 3, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 3 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage3, ref i, ln3, 3, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -935,36 +842,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage4.Count)
-                                    {
-                                        if (linesLanguage4[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage4[i]);
-                                        repeatLineNums.Add(dicLine[i + ln4 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 4 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln4);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 4, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 4 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage4, ref i, ln4, 4, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -1011,36 +889,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage5.Count)
-                                    {
-                                        if (linesLanguage5[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage5[i]);
-                                        repeatLineNums.Add(dicLine[i + ln5 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 5 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln5);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 5, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 5 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage5, ref i, ln5, 5, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -1087,36 +936,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage6.Count)
-                                    {
-                                        if (linesLanguage6[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage6[i]);
-                                        repeatLineNums.Add(dicLine[i + ln6 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 6 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln6);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 6, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 6 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage6, ref i, ln6, 6, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -1163,36 +983,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage7.Count)
-                                    {
-                                        if (linesLanguage7[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage7[i]);
-                                        repeatLineNums.Add(dicLine[i + ln7 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 7 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln7);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 7, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 7 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage7, ref i, ln7, 7, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -1239,36 +1030,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage8.Count)
-                                    {
-                                        if (linesLanguage8[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage8[i]);
-                                        repeatLineNums.Add(dicLine[i + ln8 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 8 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln8);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 8, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 8 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage8, ref i, ln8, 8, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -1316,36 +1078,7 @@ namespace DBI_Scripting.Forms.Scripting
 
                             #region Prepare REPEAT BLOCK
                             if (strline.Trim().Split(' ')[0].ToUpper() == "*REPEAT")
-                            {
-                                int bStart = strline.IndexOf('[');
-                                int bEnd = strline.IndexOf(']');
-                                if (bStart >= 0 && bEnd > bStart)
-                                {
-                                    string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
-                                    List<string> repeatBuffer = new List<string>();
-                                    List<int> repeatLineNums = new List<int>();
-                                    bool foundEnd = false;
-                                    i++;
-                                    while (i < linesLanguage9.Count)
-                                    {
-                                        if (linesLanguage9[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
-                                        { foundEnd = true; break; }
-                                        repeatBuffer.Add(linesLanguage9[i]);
-                                        repeatLineNums.Add(dicLine[i + ln9 + 1]);
-                                        i++;
-                                    }
-                                    if (!foundEnd)
-                                        txtWriter.WriteLine("*REPEAT block in Language 9 not closed with *ENDREPEAT");
-                                    else
-                                    {
-                                        List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln9);
-                                        if (iterList != null && iterList.Count > 0)
-                                            ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, 9, txtWriter);
-                                    }
-                                }
-                                else
-                                    txtWriter.WriteLine("*REPEAT syntax invalid in Language 9 — missing [source]");
-                            }
+                                CollectAndExpandLanguageRepeatBlock(linesLanguage9, ref i, ln9, 9, dicLine, txtWriter);
                             #endregion
 
                         }
@@ -2287,6 +2020,10 @@ namespace DBI_Scripting.Forms.Scripting
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                                 }
+                                else if (Regex.Match(abc[2].Trim().ToUpper(), @"RESPPANELINFOOF\[NAME]").Success || Regex.Match(abc[2].Trim().ToUpper(), @"RESPPANELINFOOF\[MOBILE]").Success || Regex.Match(abc[2].Trim().ToUpper(), @"RESPPANELINFOOF\[ADDRESS]").Success)
+                                {
+                                    myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                                }
                                 else if (Regex.Match(abc[2].Trim().ToUpper(), @"POSTCODEVALUEOF\[[a-zA-Z]+[a-zA-Z.0-9]+(,\d+)\]").Success)
                                 {
                                     myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
@@ -2590,6 +2327,10 @@ namespace DBI_Scripting.Forms.Scripting
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
                     }
+                    else if (Regex.Match(abc[2].Trim().ToUpper(), @"RESPPANELINFOOF\[NAME]").Success || Regex.Match(abc[2].Trim().ToUpper(), @"RESPPANELINFOOF\[MOBILE]").Success || Regex.Match(abc[2].Trim().ToUpper(), @"RESPPANELINFOOF\[ADDRESS]").Success)
+                    {
+                        myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
+                    }
                     else if (Regex.Match(abc[2].Trim().ToUpper(), @"POSTCODEVALUEOF\[[a-zA-Z]+[a-zA-Z.0-9]+(,\d+)\]").Success)
                     {
                         myAutoResponse.ThenValue = IncludeExclude + "[" + abc[2].Trim() + "]";
@@ -2774,6 +2515,8 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.QType = "9"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*RECORDING"))
                 { myQuestion.QType = "10"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*CAPTUREVIDEO"))
+                { myQuestion.QType = "11"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*ALPHALIST"))
                 { myQuestion.QType = "12"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*NUMLIST") && !myText.ToUpper().Trim().Contains("*NUMLISTTOTAL"))
@@ -3050,6 +2793,10 @@ namespace DBI_Scripting.Forms.Scripting
                 else if (myText.ToUpper().Trim().Contains("*SHOWASFORM"))
                 {
                     myQuestion.NumberOfColumn = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                }
+                else if (myText.ToUpper().Trim().Contains("*SHOWASCARD"))
+                {
+                    myQuestion.NumberOfColumn = "4"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
                 else if (myText.ToUpper().Trim().Contains("*ADDSEARCH"))
                 {
@@ -4360,106 +4107,30 @@ namespace DBI_Scripting.Forms.Scripting
 
         private int prepareQuestionForLanguage(List<String> linesLanguageX, int i, TextWriter txtWriter, Dictionary<int, int> dicLine, int ln1, int languageNo)
         {
-            //Pronab added for repeat
-            List<AttributeMain> listOfAttributeTempLanX = new List<AttributeMain>();
+            // Inline *QUESTION *REPEAT [QId] mechanism (Pronab) — never implemented for language
+            // sections and superseded by block-level *REPEAT [source] ... *ENDREPEAT. Commented out
+            // for consistency with the English pass; see ExpandRepeatBlockLanguage for the canonical approach.
+            //
+            //List<AttributeMain> listOfAttributeTempLanX = new List<AttributeMain>();
+            //Dictionary<string, List<AttributeMain>> dicQidVsAttributeListLanX =
+            //    languageNo == 1 ? dicQidVsAttributeListLan1 : ... : dicQidVsAttributeListLan9;
+            //bool hasRepeat = false;
+            //for (int n = 1; n < word.Length; n++)
+            //{
+            //    if (myText.ToUpper().Trim().Contains("*REPEAT"))
+            //    {
+            //        ... hasRepeat detection — implementation was never written for any language ...
+            //        hasRepeat = true;
+            //    }
+            //}
+            //if (hasRepeat) { /* implementation was never written */ }
+            //else  ← removed; block below is now the only path
 
             List<string> listOfQuestionIdForDupliCheckLanX = new List<string>();
             List<string> listOfGridListForDupliCheckLanX = new List<string>();
 
-
-            bool hasRepeat = false;
-
             String strline = linesLanguageX[i];
-
             string[] word = strline.Split('*');
-
-            //Pronab
-            for (int n = 1; n < word.Length; n++)
-            {
-                if (!listOfKeyWords.Contains(word[n].ToUpper().Trim().Split(' ')[0].Trim()))
-                    txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invalid Token : " + word[n].ToUpper().Trim().Split(' ')[0].Trim());
-
-                string myText = "*" + word[n];
-
-
-                if (myText.ToUpper().Trim().Contains("*REPEAT"))
-                {
-                    string[] xyz = word[n].Trim().Split(' ');
-                    if (xyz.Length == 2)
-                    {
-                        string[] abc = xyz[1].Trim().Split(new Char[] { '[', ']' });
-                        if (Regex.Match(abc[1].Trim(), "^[a-zA-Z0-9]+$").Success)
-                        {
-                            if (!dicQidVsAttributeListLan1.ContainsKey(abc[1].Trim()))
-                                txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " *REPEAT references unknown QId '" + abc[1].Trim() + "'");
-                            else
-                                listOfAttributeTempLanX = dicQidVsAttributeListLan1[abc[1].Trim()];
-                        }
-                    }
-                    hasRepeat = true;
-                }
-                else
-                {
-                    hasRepeat = false;
-                }
-
-            }
-
-
-            if (hasRepeat)
-            {
-                //int iStart = i;
-                //for (int k = 0; k < listOfAttributeTempLan1.Count; k++)
-                //{
-                //    if (listOfAttributeTempLan1[k].AttributeValue.Contains("99")) //Pronab Need to work on this for local language
-                //        break;
-
-
-                //    AttributeMain attributeMainR = new AttributeMain();
-                //    attributeMainR.AttributeEnglish = listOfAttributeTempLan1[k].AttributeEnglish;
-                //    attributeMainR.AttributeValue = listOfAttributeTempLan1[k].AttributeValue;
-
-                //    currentQuestion = new Question();
-
-                //    List<LogicalSyntax> listOfLogicalSyntaxTemp = new List<LogicalSyntax>();
-                //    List<Question> listOfQuestionTemp = new List<Question>();
-                //    Question currentQuestionTemp = new Question();
-
-                //    Dictionary<String, List<AttributeMain>> dicQidVsAttributeListTempLan1 = new Dictionary<String, List<AttributeMain>>();
-                //    List<AttributeFilter> listOfAttributeFilterTempLan1 = new List<AttributeFilter>();
-
-                //    i = iStart;
-
-                //    i = this.prepareQuestionLan1(linesLanguage1, i, listOfQuestionIdForDupliCheckLan1, listOfGridListForDupliCheckLan1, listOfLogicalSyntaxTemp, listOfQuestionTemp, currentQuestionTemp, dicQidVsAttributeListTempLan1, listOfAttributeFilterTempLan1, txtWriter, dicLine, attributeMainR, ln1);
-                //    strline = linesLanguage1[i];
-
-                //    for (int x = 0; x < listOfLogicalSyntaxTemp.Count; x++)
-                //    {
-                //        listOfLogicalSyntax.Add(listOfLogicalSyntaxTemp[x]);
-                //    }
-
-                //    for (int x = 0; x < listOfQuestionTemp.Count; x++)
-                //    {
-                //        listOfQuestionLan1.Add(listOfQuestionTemp[x]);
-                //    }
-                //    currentQuestion = listOfQuestionTemp[0];
-                //    //currentQuestion = currentQuestionTemp;
-
-                //    foreach (KeyValuePair<String, List<AttributeMain>> pair in dicQidVsAttributeListTempLan1)
-                //    {
-                //        dicQidVsAttributeListLan1.Add(pair.Key, pair.Value);
-                //    }
-
-
-                //    for (int x = 0; x < listOfAttributeFilterTempLan1.Count; x++)
-                //    {
-                //        listOfAttributeFilter.Add(listOfAttributeFilterTempLan1[x]);
-                //    }
-
-                //}
-
-            }//Pronab
-            else
             {
                 AttributeMain attributeMain1 = new AttributeMain();
                 AttributeMain attributeMain2 = new AttributeMain();
@@ -4543,6 +4214,8 @@ namespace DBI_Scripting.Forms.Scripting
                     else if (myText.ToUpper().Trim().Contains("*TIME"))
                     { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                     else if (myText.ToUpper().Trim().Contains("*CAPTUREIMAGE"))
+                    { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
+                    else if (myText.ToUpper().Trim().Contains("*CAPTUREVIDEO"))
                     { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
                     else if (myText.ToUpper().Trim().Contains("*NUMLISTTOTAL"))
                     { txtWriter.WriteLine("Line : " + dicLine[i + ln1 + 1] + " Invlaid Syntax, " + word[n].Trim() + " Should not exist"); }
@@ -5057,6 +4730,8 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.QType = "9"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*RECORDING"))
                 { myQuestion.QType = "10"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*CAPTUREVIDEO"))
+                { myQuestion.QType = "11"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*ALPHALIST"))
                 { myQuestion.QType = "12"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*NUMLIST") && !myText.ToUpper().Trim().Contains("*NUMLISTTOTAL"))
@@ -5342,6 +5017,10 @@ namespace DBI_Scripting.Forms.Scripting
                 else if (myText.ToUpper().Trim().Contains("*SHOWASFORM"))
                 {
                     myQuestion.NumberOfColumn = "3"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                }
+                else if (myText.ToUpper().Trim().Contains("*SHOWASCARD"))
+                {
+                    myQuestion.NumberOfColumn = "4"; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                 }
                 else if (myText.ToUpper().Trim().Contains("*ADDSEARCH"))
                 {
@@ -9710,6 +9389,7 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("DATE");
             listOfKeyWords.Add("TIME");
             listOfKeyWords.Add("CAPTUREIMAGE");
+            listOfKeyWords.Add("CAPTUREVIDEO");
             listOfKeyWords.Add("NUMLISTTOTAL");
             listOfKeyWords.Add("AUTOCOMPLETE");
             listOfKeyWords.Add("AUTOCOMPLETELIST");
@@ -9726,6 +9406,7 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("NONEXTBTN");
             listOfKeyWords.Add("INCLUDEGRIDLIST");
             listOfKeyWords.Add("SHOWASFORM");
+            listOfKeyWords.Add("SHOWASCARD");
             listOfKeyWords.Add("DIRIMAGE");
             listOfKeyWords.Add("SHOWASNUMTEXT");
             //listOfKeyWords.Add("KEEPDOWNLOAD");
@@ -10074,6 +9755,13 @@ namespace DBI_Scripting.Forms.Scripting
         /// Builds the iteration value list for a *REPEAT block.
         /// source is either "1 TO 10" (numeric range) or a *QUESTION QId.
         /// Returns null and writes an error if the source is invalid.
+        /// <para>
+        /// Design note: when source is a QId, iteration values are always taken from the
+        /// English attribute dictionary (<c>dicQidVsAttributeList</c>), even when this method
+        /// is called from a language section.  This is intentional — the attribute codes
+        /// (stored in <c>AttributeValue</c>) are language-neutral numeric or short-code values
+        /// that are the same regardless of language, so there is no need for per-language lookup.
+        /// </para>
         /// </summary>
         private List<string> BuildRepeatIterationList(string source, TextWriter txtWriter, int lineNo)
         {
@@ -10095,7 +9783,9 @@ namespace DBI_Scripting.Forms.Scripting
                 return result;
             }
 
-            // *QUESTION QId source
+            // QId source — always resolved from the English dictionary.
+            // AttributeValue is a language-neutral code (e.g. "1", "2", "BR") so the
+            // English dictionary is the correct single source of truth for all languages.
             string qid = source.Trim();
             if (!dicQidVsAttributeList.ContainsKey(qid))
             {
@@ -10123,6 +9813,16 @@ namespace DBI_Scripting.Forms.Scripting
         ///         inside the block (e.g. *IF [Brand?R=1]) validate correctly.
         /// Pass 2: substitutes ?R with each iteration value and feeds lines through
         ///         the existing parsers unchanged.
+        /// <para>
+        /// When <paramref name="repeatRot"/> is true (*REPEAT [source] *ROT), each
+        /// generated question is automatically assigned:
+        ///   • HasMessageLogic = iteration index (1-based) — acts as *GROUPROT, ties
+        ///     same-position iterations across multiple *REPEAT *ROT blocks.
+        ///   • ResumeQntrJump = <paramref name="blockNo"/> — acts as *BLOCK, uniquely
+        ///     identifies this *REPEAT *ROT block among all others in the script.
+        /// If a question already carries an explicit *GROUPROT or *BLOCK/*JUMPFOR value
+        /// the explicit value is kept and a warning is written to the build log.
+        /// </para>
         /// </summary>
         private void ExpandRepeatBlockEnglish(
             List<string> repeatBuffer,
@@ -10130,7 +9830,9 @@ namespace DBI_Scripting.Forms.Scripting
             List<string> iterationList,
             List<string> listOfQuestionIdForDupliCheck,
             List<string> listOfGridListForDupliCheck,
-            TextWriter txtWriter)
+            TextWriter txtWriter,
+            bool repeatRot = false,
+            int blockNo = 0)
         {
             // Pass 1 — pre-register QIds that are genuinely new to this block.
             //
@@ -10167,8 +9869,10 @@ namespace DBI_Scripting.Forms.Scripting
             }
 
             // Pass 2 — expand and parse each iteration
+            int iterIdx = 0;
             foreach (string iterVal in iterationList)
             {
+                iterIdx++;
                 List<string> expandedLines = new List<string>();
                 foreach (string bl in repeatBuffer)
                     expandedLines.Add(bl.Replace("?R", iterVal));
@@ -10248,6 +9952,29 @@ namespace DBI_Scripting.Forms.Scripting
                             lsTemp, qTemp, cqTemp, attrTemp, filterTemp, txtWriter, dicLineLocal);
 
                         foreach (LogicalSyntax ls in lsTemp) listOfLogicalSyntax.Add(ls);
+
+                        // *REPEAT *ROT — inject GROUPROT (iterIdx) and BLOCK (blockNo)
+                        // into every question produced by this iteration.
+                        if (repeatRot)
+                        {
+                            foreach (Question q in qTemp)
+                            {
+                                if (string.IsNullOrEmpty(q.HasMessageLogic))
+                                    q.HasMessageLogic = iterIdx.ToString();
+                                else
+                                    txtWriter.WriteLine("*REPEAT *ROT: question '" + q.QId
+                                        + "' has explicit *GROUPROT " + q.HasMessageLogic
+                                        + " — kept, auto iteration-group " + iterIdx + " not applied");
+
+                                if (string.IsNullOrEmpty(q.ResumeQntrJump))
+                                    q.ResumeQntrJump = blockNo.ToString();
+                                else
+                                    txtWriter.WriteLine("*REPEAT *ROT: question '" + q.QId
+                                        + "' has explicit *BLOCK/*JUMPFOR " + q.ResumeQntrJump
+                                        + " — kept, auto block " + blockNo + " not applied");
+                            }
+                        }
+
                         foreach (Question q in qTemp) listOfQuestion.Add(q);
                         if (qTemp.Count > 0) currentQuestion = qTemp[0];
                         foreach (KeyValuePair<string, List<AttributeMain>> pair in attrTemp)
@@ -10256,6 +9983,46 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Collects the *REPEAT buffer for a language section and expands it.
+        /// Extracted to eliminate the 9× copy-paste of identical collect+expand logic.
+        /// Advances <paramref name="i"/> to the *ENDREPEAT line on success.
+        /// </summary>
+        private void CollectAndExpandLanguageRepeatBlock(
+            List<string> linesLang, ref int i, int ln, int languageNo,
+            Dictionary<int, int> dicLine, TextWriter txtWriter)
+        {
+            string strline = linesLang[i];
+            int bStart = strline.IndexOf('[');
+            int bEnd = strline.IndexOf(']');
+            if (bStart >= 0 && bEnd > bStart)
+            {
+                string repeatSource = strline.Substring(bStart + 1, bEnd - bStart - 1).Trim();
+                List<string> repeatBuffer = new List<string>();
+                List<int> repeatLineNums = new List<int>();
+                bool foundEnd = false;
+                i++;
+                while (i < linesLang.Count)
+                {
+                    if (linesLang[i].Trim().Split(' ')[0].ToUpper() == "*ENDREPEAT")
+                    { foundEnd = true; break; }
+                    repeatBuffer.Add(linesLang[i]);
+                    repeatLineNums.Add(dicLine[i + ln + 1]);
+                    i++;
+                }
+                if (!foundEnd)
+                    txtWriter.WriteLine("*REPEAT block in Language " + languageNo + " not closed with *ENDREPEAT");
+                else
+                {
+                    List<string> iterList = BuildRepeatIterationList(repeatSource, txtWriter, ln);
+                    if (iterList != null && iterList.Count > 0)
+                        ExpandRepeatBlockLanguage(repeatBuffer, repeatLineNums, iterList, languageNo, txtWriter);
+                }
+            }
+            else
+                txtWriter.WriteLine("*REPEAT syntax invalid in Language " + languageNo + " — missing [source]");
         }
 
         /// <summary>
