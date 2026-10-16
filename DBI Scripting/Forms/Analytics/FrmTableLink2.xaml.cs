@@ -429,7 +429,8 @@ namespace DBI_Scripting.Forms.Analytics
 
                 // Effective content after DUMMY ROWs are treated as blank.
                 Func<int, string> eff = r => (r < 1 || r > lastRow || dummy[r]) ? null : text[r];
-                Func<int, bool> hasValue = r => r >= 1 && r <= lastRow && !dummy[r] && ab[r, 1] != null;
+                Func<int, bool> hasValue = r => r >= 1 && r <= lastRow && !dummy[r] && ab[r, 1] != null
+                    && Convert.ToString(ab[r, 1], CultureInfo.CurrentCulture).Trim().Length > 0;
 
                 if (standard && text[1] != null && text[1].StartsWith("Project : "))
                     throw new TableLinkException(
@@ -604,14 +605,11 @@ namespace DBI_Scripting.Forms.Analytics
                 if (inserts.Count > 0)
                     InsertRows(tableWs, inserts);
 
-                var dummyAddrs = new List<string>();
+                // Collect dummy row positions (ascending); actual deletion is deferred until after all
+                // Table-sheet writes so that newRow[r] addresses remain valid throughout.
+                var dummySortedPositions = new List<int>();
                 for (int r = 1; r <= lastRow; r++)
-                    if (dummy[r]) dummyAddrs.Add(newRow[r] + ":" + newRow[r]);
-                if (dummyAddrs.Count > 0)
-                {
-                    Report($"Clearing {dummyAddrs.Count} DUMMY ROW(s)...", 55, true);
-                    ForEachBatch(tableWs, dummyAddrs, rng => rng.ClearContents());
-                }
+                    if (dummy[r]) dummySortedPositions.Add(newRow[r]);
 
                 Report("Writing table titles and links...", 60, true);
                 WriteColumnA(tableWs, writes);
@@ -658,6 +656,22 @@ namespace DBI_Scripting.Forms.Analytics
                     tableWs.UsedRange.Font.Bold = false;
                     ForEachBatch(tableWs, titleRows.Select(r => "A" + r),
                                  rng => rng.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft);
+                }
+
+                // ---------------------------------------------------------- delete DUMMY ROWs
+                // Deferred to here so all Table-sheet writes used correct pre-deletion row numbers.
+                // Delete bottom-to-top so each deletion doesn't shift the rows still to be deleted.
+                // Then adjust each table's LinkRow so Index hyperlinks land on correct post-deletion rows.
+                if (dummySortedPositions.Count > 0)
+                {
+                    Report($"Deleting {dummySortedPositions.Count} DUMMY ROW(s)...", 82, true);
+                    var dummyAddrs = new List<string>();
+                    for (int i = dummySortedPositions.Count - 1; i >= 0; i--)
+                        dummyAddrs.Add(dummySortedPositions[i] + ":" + dummySortedPositions[i]);
+                    ForEachBatch(tableWs, dummyAddrs, rng => rng.EntireRow.Delete(Excel.XlDeleteShiftDirection.xlShiftUp));
+
+                    foreach (TableInfo tb in tables)
+                        tb.LinkRow -= dummySortedPositions.Count(dp => dp < tb.LinkRow);
                 }
 
                 // ---------------------------------------------------------- index sheet
