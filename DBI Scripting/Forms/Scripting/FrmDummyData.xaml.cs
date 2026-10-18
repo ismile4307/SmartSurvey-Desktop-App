@@ -447,6 +447,9 @@ namespace DBI_Scripting.Forms.Scripting
                 case "27":
                     return HandleGridNumber(qId, orderIdx, respondentId, dateTime, attrs);
 
+                case "29":
+                    return HandleGridNumberText(qId, orderIdx, respondentId, dateTime, attrs);
+
                 case "31":
                     return HandleScaleGrid(qId, orderIdx, respondentId, dateTime, attrs, 5);
 
@@ -785,6 +788,38 @@ namespace DBI_Scripting.Forms.Scripting
                 string subQId = $"{qId}_{attr["AttributeValue"]}";
                 WriteAnswer(rId, subQId, rng.Next(minVal, maxVal + 1).ToString(), dt, order, 1);
                 count++;
+            }
+            return count;
+        }
+
+        // ── QType 29  GridNumberString (number or text per column) ────────────────
+        // Column type comes from T_GridInfo.TakeOpenended: 4 = number (Min/MaxValue), 3 = text.
+        // One answer per cell; rOrderTag = the column's AttributeOrder.
+        private int HandleGridNumberText(string qId, int order,
+            string rId, string dt, List<DataRow> attrs)
+        {
+            int count = 0;
+            foreach (var row in attrs)
+            {
+                var cols = GridOptions(row["LinkId2"].ToString());
+                string subQId = $"{qId}_{row["AttributeValue"]}";
+                foreach (var col in cols)
+                {
+                    string value;
+                    if (col["TakeOpenended"].ToString() == "4")
+                    {
+                        int minVal = ParseInt(col["MinValue"], 0);
+                        int maxVal = ParseInt(col["MaxValue"], 100);
+                        if (maxVal < minVal) maxVal = minVal + 10;
+                        value = rng.Next(minVal, maxVal + 1).ToString();
+                    }
+                    else
+                    {
+                        value = $"Sample text {row["AttributeValue"]}-{col["AttributeValue"]}";
+                    }
+                    WriteAnswer(rId, subQId, value, dt, order, ParseInt(col["AttributeOrder"], 1));
+                    count++;
+                }
             }
             return count;
         }

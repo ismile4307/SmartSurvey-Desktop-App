@@ -1573,85 +1573,68 @@ namespace DBI_Scripting.Forms.Scripting
                             }
                             else if (word[1].Contains("*"))
                             {
+                                // Every property after the label is handled, in any order and combination
+                                // (the old code only read the first one or two, so e.g. "*OPEN *MANDATORY"
+                                // lost *OPEN and a lone "*MIN n" was ignored).
                                 string[] myKey = word[1].Split('*');
-                                if (myKey.Length == 2)
-                                {
-                                    gridInfo.AttributeEnglish = myKey[0].Trim();
+                                gridInfo.AttributeEnglish = myKey[0].Trim();
+                                bool hasOpen = false;
+                                string cellType = null;   // *GRIDNUMTXT column type: "4" = number, "3" = text
 
-                                    if (myKey[1].ToUpper().Trim().Contains("OPEN"))
-                                        gridInfo.TakeOpenended = "1";
-                                    else if (myKey[1].ToUpper().Trim().Contains("NMUL"))
+                                for (int x = 1; x < myKey.Length; x++)
+                                {
+                                    string prop = myKey[x].Trim();
+                                    string[] parts = prop.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    string propName = parts.Length > 0 ? parts[0].ToUpper() : "";
+
+                                    if (propName == "OPEN")
+                                        hasOpen = true;
+                                    else if (propName == "NMUL")
                                         gridInfo.IsExclusive = "1";
-                                    else if (myKey[1].ToUpper().Trim().Contains("MANDATORY"))
+                                    else if (propName == "MANDATORY")
                                         gridInfo.ForceAndMsgOpt = "11";
-                                    else if (myKey[1].ToUpper().Trim().Contains("PICT"))
+                                    else if (propName == "NUMBER" || propName == "ALPHA")
                                     {
-                                        string[] xy = myKey[1].Trim().Split(' ');
+                                        if (cellType != null)
+                                            txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid attribute " + word[0].Trim() + " can be either *NUMBER or *ALPHA, not both");
+                                        cellType = propName == "NUMBER" ? "4" : "3";
+                                    }
+                                    else if (propName == "PICT" || propName == "VIDEO")
+                                    {
+                                        string[] xy = prop.Split(' ');
                                         if (xy.Length == 2)
                                         {
-                                            //listOfQuestionProperties.Add(xy[0].ToUpper().Trim());
-
                                             string[] xyz = xy[1].Split('"');
                                             if (xyz.Length != 3)
-                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
+                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[1]);
                                             else
                                                 gridInfo.ForceAndMsgOpt = xyz[1].Trim();
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *PICT is invalid ");
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *" + propName + " is invalid ");
                                     }
-                                    else if (myKey[1].ToUpper().Trim().Contains("VIDEO"))
+                                    else if (propName == "MIN" || propName == "MAX")
                                     {
-                                        string[] xy = myKey[1].Trim().Split(' ');
-                                        if (xy.Length == 2)
+                                        if (parts.Length >= 2)
                                         {
-                                            //listOfQuestionProperties.Add(xy[0].ToUpper().Trim());
-
-                                            string[] xyz = xy[1].Split('"');
-                                            if (xyz.Length != 3)
-                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
-                                            else
-                                                gridInfo.ForceAndMsgOpt = xyz[1].Trim();
+                                            if (Regex.Match(parts[1].Trim(), @"^\d+$").Success || Regex.Match(parts[1].Trim(), @"^\d.+$").Success)
+                                            {
+                                                if (propName == "MIN") gridInfo.MinValue = parts[1].Trim();
+                                                else gridInfo.MaxValue = parts[1].Trim();
+                                            }
+                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + parts[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *VIDEO is invalid ");
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *" + propName + " is invalid ");
                                     }
                                 }
-                                else if (myKey.Length > 2)
-                                {
-                                    gridInfo.AttributeEnglish = myKey[0].Trim();
 
-                                    for (int x = 1; x < myKey.Length; x++)
-                                    {
-                                        if (("*" + myKey[1]).ToUpper().Trim().Contains("*MIN"))
-                                        {
-                                            string[] xyz = myKey[1].Split(' ');
-                                            if (xyz.Length >= 2)
-                                            {
-                                                if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
-                                                    gridInfo.MinValue = xyz[1].Trim();
-                                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
-                                        }
-                                        else if (("*" + myKey[2]).ToUpper().Trim().Contains("*MAX"))
-                                        {
-                                            string[] xyz = myKey[2].Split(' ');
-                                            if (xyz.Length >= 2)
-                                            {
-                                                if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
-                                                    gridInfo.MaxValue = xyz[1].Trim();
-                                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
-                                            }
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *Max is invalid ");
-                                        }
-                                        else if (("*" + myKey[2]).ToUpper().Trim().Contains("*MANDATORY"))
-                                        {
-                                            gridInfo.ForceAndMsgOpt = "11";
-                                        }
-                                    }
+                                if (hasOpen && cellType != null)
+                                    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid attribute " + word[0].Trim() + " cannot combine *OPEN with *NUMBER/*ALPHA");
+                                gridInfo.TakeOpenended = cellType ?? (hasOpen ? "1" : null);
 
-
-                                }
-                                else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is incorrect");
+                                if (gridInfo.AttributeEnglish == "")
+                                    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is incorrect");
+                                if (cellType == "3" && (!string.IsNullOrEmpty(gridInfo.MinValue) || !string.IsNullOrEmpty(gridInfo.MaxValue)))
+                                    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid attribute " + word[0].Trim() + " : *MIN/*MAX can only be used with *NUMBER");
                             }
 
 
@@ -2550,12 +2533,18 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.QType = "24"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*DRAGDROP"))
                 { myQuestion.QType = "26"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*GRIDNUMTXT"))
+                {
+                    // Grid with a number or text cell per column (column type from *NUMBER / *ALPHA on the grid list)
+                    myQuestion.QType = "29"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                    qTypeForGridQid = 8;
+                }
                 else if (myText.ToUpper().Trim().Contains("*GRIDNUM"))
                 {
                     myQuestion.QType = "27"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
                 }
-                else if (myText.ToUpper().Trim().Contains("*GRIDALPHA"))
+                else if (myText.ToUpper().Trim().Contains("*GRIDTXT"))
                 {
                     myQuestion.QType = "28"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
@@ -3300,7 +3289,7 @@ namespace DBI_Scripting.Forms.Scripting
                                     }
                                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                                 }
-                                else if (myQuestion.QType == "27" || myQuestion.QType == "28")
+                                else if (myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                                 {
                                     if (currentGridListName != "")
                                     {
@@ -3616,7 +3605,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                             }
-                            else if (myQuestion.QType == "27" || myQuestion.QType == "28")
+                            else if (myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                             {
                                 if (currentGridListName != "")
                                 {
@@ -3674,7 +3663,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " list unavailable");
                             }
-                            else if (myQuestion.QType == "27" || myQuestion.QType == "28")
+                            else if (myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                             {
                                 if (currentGridListName != "")
                                 {
@@ -4091,6 +4080,8 @@ namespace DBI_Scripting.Forms.Scripting
                 }
             }
 
+            checkGridColumnTypes(myQuestion, listOfAttributeMain, txtWriter);
+
             if (myQuestion.QId != null)
                 dicQidVsAttributeListTemp.Add(myQuestion.QId, listOfAttributeMain);
             else
@@ -4104,6 +4095,36 @@ namespace DBI_Scripting.Forms.Scripting
 
         }
 
+
+        /// <summary>
+        /// *GRIDNUMTXT (QType 29): every column of its grid list must be typed with *NUMBER
+        /// (T_GridInfo.TakeOpenended = 4) or *ALPHA (TakeOpenended = 3). Grid lists that carry those
+        /// types are reserved for *GRIDNUMTXT, so other grid questions never see TakeOpenended 3/4.
+        /// </summary>
+        private void checkGridColumnTypes(Question myQuestion, List<AttributeMain> listOfAttributeMain, TextWriter txtWriter)
+        {
+            var checkedLists = new HashSet<string>();
+            foreach (AttributeMain attr in listOfAttributeMain)
+            {
+                if (string.IsNullOrEmpty(attr.LinkId2) || !checkedLists.Add(attr.LinkId2)) continue;
+                List<GridInfo> columns;
+                if (!dicGridListNameVsList.TryGetValue(attr.LinkId2, out columns)) continue;
+
+                foreach (GridInfo col in columns)
+                {
+                    bool typed = col.TakeOpenended == "3" || col.TakeOpenended == "4";
+                    if (myQuestion.QType == "29" && !typed)
+                        txtWriter.WriteLine("Question : " + myQuestion.QId + "  GRIDNUMTXT grid list \"" + attr.LinkId2 + "\" attribute "
+                                            + col.AttributeValue + " (" + col.AttributeEnglish + ") must have *NUMBER or *ALPHA");
+                    else if (myQuestion.QType != "29" && typed)
+                    {
+                        txtWriter.WriteLine("Question : " + myQuestion.QId + "  grid list \"" + attr.LinkId2
+                                            + "\" has *NUMBER/*ALPHA attributes, which can only be used by *GRIDNUMTXT questions");
+                        break;
+                    }
+                }
+            }
+        }
 
         private int prepareQuestionForLanguage(List<String> linesLanguageX, int i, TextWriter txtWriter, Dictionary<int, int> dicLine, int ln1, int languageNo)
         {
@@ -4765,12 +4786,18 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.QType = "24"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*DRAGDROP"))
                 { myQuestion.QType = "26"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
+                else if (myText.ToUpper().Trim().Contains("*GRIDNUMTXT"))
+                {
+                    // Grid with a number or text cell per column (column type from *NUMBER / *ALPHA on the grid list)
+                    myQuestion.QType = "29"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                    qTypeForGridQid = 8;
+                }
                 else if (myText.ToUpper().Trim().Contains("*GRIDNUM"))
                 {
                     myQuestion.QType = "27"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
                 }
-                else if (myText.ToUpper().Trim().Contains("*GRIDALPHA"))
+                else if (myText.ToUpper().Trim().Contains("*GRIDTXT"))
                 {
                     myQuestion.QType = "28"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
@@ -5485,7 +5512,7 @@ namespace DBI_Scripting.Forms.Scripting
                                     }
                                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " List unavailable");
                                 }
-                                else if (myQuestion.QType == "27" || myQuestion.QType == "28")
+                                else if (myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                                 {
                                     if (currentGridListName != "")
                                     {
@@ -5798,7 +5825,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
                             }
-                            else if (myQuestion.QType == "27" || myQuestion.QType == "28")
+                            else if (myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                             {
                                 if (currentGridListName != "")
                                 {
@@ -5856,7 +5883,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 }
                                 else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid list unavailable");
                             }
-                            else if (myQuestion.QType == "27" || myQuestion.QType == "28")
+                            else if (myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                             {
                                 if (currentGridListName != "")
                                 {
@@ -6272,6 +6299,8 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                 }
             }
+
+            checkGridColumnTypes(myQuestion, listOfAttributeMain, txtWriter);
 
             if (myQuestion.QId != null)
                 dicQidVsAttributeListTemp.Add(myQuestion.QId, listOfAttributeMain);
@@ -9382,7 +9411,8 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("GRIDSR");
             listOfKeyWords.Add("GRIDMR");
             listOfKeyWords.Add("GRIDNUM");
-            listOfKeyWords.Add("GRIDALPHA");
+            listOfKeyWords.Add("GRIDTXT");
+            listOfKeyWords.Add("GRIDNUMTXT");
             listOfKeyWords.Add("MEDIA");
             listOfKeyWords.Add("ALPHALIST");
             listOfKeyWords.Add("NUMLIST");
