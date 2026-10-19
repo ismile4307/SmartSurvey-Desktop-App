@@ -140,10 +140,16 @@ namespace DBI_Scripting.Classes
 
                 return responseFromServer;
             }
+            catch (WebException ex) when (ex.Response != null)
+            {
+                // Server returned a non-2xx status — read and return the body (usually JSON)
+                using (var stream = ex.Response.GetResponseStream())
+                using (var reader = new StreamReader(stream, Encoding.UTF8))
+                    return reader.ReadToEnd();
+            }
             catch (Exception ex)
             {
-                return ex.Message;
-                //MessageBox.Show(ex.Message);   
+                throw;
             }
         }
     }

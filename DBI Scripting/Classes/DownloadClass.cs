@@ -28,7 +28,15 @@ namespace DBI_Scripting.Classes
 
                 string data = myRequest.GetResponse().ToString();
 
-                DataTable dt1_temp = (DataTable)JsonConvert.DeserializeObject(data, (typeof(DataTable)));
+                DataTable dt1_temp;
+                try
+                {
+                    dt1_temp = (DataTable)JsonConvert.DeserializeObject(data, (typeof(DataTable)));
+                }
+                catch (Exception jsonEx)
+                {
+                    throw new Exception("Server response (not valid JSON): " + data, jsonEx);
+                }
 
                 if (dt1_temp != null)
                 {
