@@ -36,12 +36,16 @@ namespace DBI_Scripting.Classes
                 catch (WebException wex) when (wex.Response != null)
                 { httpResp = (HttpWebResponse)wex.Response; }
 
+                HttpStatusCode statusCode;
                 using (httpResp)
                 using (var reader = new StreamReader(httpResp.GetResponseStream(), Encoding.UTF8))
+                {
+                    statusCode = httpResp.StatusCode;
                     data = reader.ReadToEnd();
+                }
 
-                if (httpResp.StatusCode != HttpStatusCode.OK)
-                    throw new Exception($"Server returned {(int)httpResp.StatusCode}: {data}");
+                if (statusCode != HttpStatusCode.OK)
+                    throw new Exception($"Server returned {(int)statusCode}: {data}");
 
                 DataTable dt1_temp;
                 try
