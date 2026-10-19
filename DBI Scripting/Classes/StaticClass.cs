@@ -20,6 +20,8 @@ namespace DBI_Scripting.Classes
         public static String USER_TYPE_ID = "";
         public static String ORG_ID = "";
         public static String DESK_API_TOKEN = "";
+        public static String USER_EMAIL = "";
+        public static String USER_PASSCODE = "";
 
         public static bool success_check_user()
         {
@@ -51,6 +53,8 @@ namespace DBI_Scripting.Classes
                 return false;
             else
             {
+                USER_EMAIL   = userId;
+                USER_PASSCODE = passcode;
                 return user_check_status(userId, passcode);
             }
 

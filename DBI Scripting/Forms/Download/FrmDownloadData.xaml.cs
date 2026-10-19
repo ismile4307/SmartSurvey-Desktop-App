@@ -121,8 +121,8 @@ namespace DBI_Scripting.Forms
             try
             {
                 string url  = StaticClass.SERVER_URL + "/api/desk/login";
-                string body = "email="    + Uri.EscapeDataString(Properties.Settings.Default.UserId)
-                            + "&password=" + Uri.EscapeDataString(Properties.Settings.Default.Passcode);
+                string body = "email="    + Uri.EscapeDataString(StaticClass.USER_EMAIL)
+                            + "&password=" + Uri.EscapeDataString(StaticClass.USER_PASSCODE);
 
                 using (var wc = new TimeoutWebClient(HttpTimeoutMs))
                 {
