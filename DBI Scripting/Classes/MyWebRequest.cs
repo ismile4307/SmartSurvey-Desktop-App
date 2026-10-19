@@ -98,7 +98,12 @@ namespace DBI_Scripting.Classes
 
         public void SetHeader(string name, string value)
         {
-            request.Headers[name] = value;
+            // HttpWebRequest treats some headers as restricted properties
+            var http = request as HttpWebRequest;
+            if (http != null && name.Equals("Accept", StringComparison.OrdinalIgnoreCase))
+                http.Accept = value;
+            else
+                request.Headers[name] = value;
         }
 
         public string GetResponse()

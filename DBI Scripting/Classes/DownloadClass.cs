@@ -22,6 +22,7 @@ namespace DBI_Scripting.Classes
                 string body = "";   // no extra params — server uses the authenticated user's role
 
                 MyWebRequest myRequest = new MyWebRequest(url, "POST", body);
+                myRequest.SetHeader("Accept", "application/json");
                 if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
                     myRequest.SetHeader("Authorization", "Bearer " + StaticClass.DESK_API_TOKEN);
 
