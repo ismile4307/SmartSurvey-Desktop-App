@@ -261,6 +261,19 @@ namespace DBI_Scripting.Forms
                             throw new Exception("Could not sign in to the server API: " + tokenError, ex);
                     }
                 }
+                catch (WebException ex) when ((int?)(ex.Response as HttpWebResponse)?.StatusCode == 429)
+                {
+                    // Rate limited: wait as long as the server says (Retry-After), not the fixed delay.
+                    lastEx = ex;
+                    if (attempt < RetryAttempts)
+                    {
+                        int seconds;
+                        if (!int.TryParse(ex.Response.Headers["Retry-After"], out seconds)) seconds = 60;
+                        seconds = Math.Max(1, Math.Min(seconds, 120));
+                        Log($"Server is busy (too many requests) — waiting {seconds}s before retrying...");
+                        await Task.Delay(seconds * 1000, ct).ConfigureAwait(false);
+                    }
+                }
                 catch (Exception ex)
                 {
                     lastEx = ex;
