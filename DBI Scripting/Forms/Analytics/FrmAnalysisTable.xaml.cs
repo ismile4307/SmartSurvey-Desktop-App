@@ -2572,13 +2572,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Tables Observation nBlank");
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
@@ -2653,14 +2650,11 @@ namespace DBI_Scripting.Forms.Analytics
 
                         if (lstFilterCondition[i] == "")
                         {
-                            if (lstFilterLabel[i] != "All Respondents")
-                            {
-                                txt_writer.WriteLine("Compute aBase=1.");
-                                txt_writer.WriteLine("COUNT myCount= " + mrVarList + " (Missing).");
-                                txt_writer.WriteLine("if myCount=" + i_varCount.ToString() + " aBase=$Sysmis.");
-                                if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                                txt_writer.WriteLine("");
-                            }
+                            txt_writer.WriteLine("Compute aBase=1.");
+                            txt_writer.WriteLine("COUNT myCount= " + mrVarList + " (Missing).");
+                            txt_writer.WriteLine("if myCount=" + i_varCount.ToString() + " aBase=$Sysmis.");
+                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                            txt_writer.WriteLine("");
 
                             txt_writer.WriteLine("Tables Observation nBlank");
                             txt_writer.WriteLine("/Ptotal=t1 'Base'");
@@ -2739,13 +2733,10 @@ namespace DBI_Scripting.Forms.Analytics
                         txt_writer.WriteLine("COMPUTE m_" + lstVariableName[i] + "=" + lstVariableName[i] + ".");
                         txt_writer.WriteLine("");
 
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Tables Observation nBlank m_" + lstVariableName[i]);
                         txt_writer.WriteLine("/Ptotal=t1 'Base'");
@@ -2836,13 +2827,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
                         txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
@@ -2922,13 +2910,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         //txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+nBlank !Enddefine.");
                         //txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
@@ -3028,13 +3013,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         //txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+nBlank !Enddefine.");
                         //txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
@@ -3131,13 +3113,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
                         txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
@@ -3218,13 +3197,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Define @Row1() nBlank !Enddefine.");
                         txt_writer.WriteLine("Define @Row2() nBlank+xR1_" + lstVariableName[i] + "+xR2_" + lstVariableName[i] + "+xR3_" + lstVariableName[i] + " !Enddefine.");
@@ -3301,13 +3277,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
                         txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
@@ -3387,13 +3360,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Define @Row1() nBlank+xB1_" + lstVariableName[i] + "+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+nBlank+m_" + lstVariableName[i] + " !Enddefine.");
                         txt_writer.WriteLine("Define @Row2() nBlank+xT1_" + lstVariableName[i] + "+xT2_" + lstVariableName[i] + "+xT3_" + lstVariableName[i] + " !Enddefine.");
@@ -3473,13 +3443,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Define @Row1() nBlank+xB2_" + lstVariableName[i] + "+xB3_" + lstVariableName[i] + "+xB4_" + lstVariableName[i] + "+xB5_" + lstVariableName[i] + "+xB6_" + lstVariableName[i] + " !Enddefine.");
                         //txt_writer.WriteLine("Define @Row2() nBlank+T2_" + lstVariableName[i] + "+T3_" + lstVariableName[i] + "+T4_" + lstVariableName[i] + "+nBlank+SigTest+m_" + lstVariableName[i] + " !Enddefine.");
@@ -3564,13 +3531,10 @@ namespace DBI_Scripting.Forms.Analytics
 
                     if (lstFilterCondition[i] == "")
                     {
-                        if (lstFilterLabel[i] != "All Respondents")
-                        {
-                            txt_writer.WriteLine("Compute aBase=$Sysmis.");
-                            txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
-                            if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
-                            txt_writer.WriteLine("");
-                        }
+                        txt_writer.WriteLine("Compute aBase=$Sysmis.");
+                        txt_writer.WriteLine("if NOT Missing(" + lstVariableName[i] + ") aBase=1.");
+                        if (comAnalysisType.Text == "Weighted Analysis") txt_writer.WriteLine("Compute uBase=aBase.");
+                        txt_writer.WriteLine("");
 
                         txt_writer.WriteLine("Define @Row1() nBlank+xTPro_" + lstVariableName[i] + "+xTPas_" + lstVariableName[i] + "+xTDic_" + lstVariableName[i] + " !Enddefine.");
 
