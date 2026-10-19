@@ -113,8 +113,45 @@ namespace DBI_Scripting.Forms
             comFileType.Items.Add("CSV");
         }
 
+        private async Task AcquireDeskTokenAsync()
+        {
+            if (string.IsNullOrEmpty(StaticClass.USER_ID))
+                return;   // not logged in yet
+
+            try
+            {
+                string url  = StaticClass.SERVER_URL + "/api/desk/login";
+                string body = "email="    + Uri.EscapeDataString(Properties.Settings.Default.UserId)
+                            + "&password=" + Uri.EscapeDataString(Properties.Settings.Default.Passcode);
+
+                using (var wc = new TimeoutWebClient(HttpTimeoutMs))
+                {
+                    wc.Encoding = Encoding.UTF8;
+                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    string json = await wc.UploadStringTaskAsync(url, "POST", body).ConfigureAwait(false);
+
+                    var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    if (obj["success"]?.Value<bool>() == true)
+                    {
+                        StaticClass.DESK_API_TOKEN = obj["token"]?.Value<string>() ?? "";
+                        Log("API token acquired.");
+                    }
+                    else
+                    {
+                        Log("Warning: API token not acquired — " + (obj["message"]?.Value<string>() ?? "unknown"));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Warning: Could not acquire API token: " + ex.Message);
+                // Non-fatal — download will proceed without the new endpoints if token is missing
+            }
+        }
+
         private async Task LoadProjectsAsync()
         {
+            await AcquireDeskTokenAsync();
             Log("Connecting to server...");
             btnExecute.IsEnabled = false;
             try
@@ -169,6 +206,8 @@ namespace DBI_Scripting.Forms
                 {
                     http.ReadWriteTimeout = _timeoutMs;
                     http.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                    if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
+                        http.Headers["Authorization"] = "Bearer " + StaticClass.DESK_API_TOKEN;
                 }
                 return req;
             }
@@ -334,7 +373,7 @@ namespace DBI_Scripting.Forms
         private async Task<DataTable> DownloadTableAsync(string endpoint, string label, string baseBody,
             int pageSize, bool legacyPaged, Action<int> onCount, CancellationToken ct)
         {
-            string url = StaticClass.SERVER_URL + "/deskapi/" + endpoint;
+            string url = endpoint;   // callers now pass the full URL
             DataTable all = null;
             var seenIds = new HashSet<string>();
             long lastId = 0;
@@ -451,11 +490,12 @@ namespace DBI_Scripting.Forms
                     $"Downloading — respondents: {counters.Respondents:N0}, answers: {counters.Answers:N0}, open-ended: {counters.OpenEnded:N0}");
                 updateStatus();
 
-                Task<DataTable> tResp = DownloadTableAsync("respondentbyproject.php", "Respondents", baseBody,
+                string deskBase = StaticClass.SERVER_URL + "/api/desk/download/";
+                Task<DataTable> tResp = DownloadTableAsync(deskBase + "respondents", "Respondents", baseBody,
                     RespPageSize, false, n => { counters.Respondents = n; updateStatus(); }, ct);
-                Task<DataTable> tAns = DownloadTableAsync("answerbyproject.php", "Answers", baseBody,
-                    AnsPageSize, true, n => { counters.Answers = n; updateStatus(); }, ct);
-                Task<DataTable> tOe = DownloadTableAsync("openendedbyproject.php", "Open-ended", baseBody,
+                Task<DataTable> tAns = DownloadTableAsync(deskBase + "answers", "Answers", baseBody,
+                    AnsPageSize, false, n => { counters.Answers = n; updateStatus(); }, ct);
+                Task<DataTable> tOe = DownloadTableAsync(deskBase + "openended", "Open-ended", baseBody,
                     OePageSize, false, n => { counters.OpenEnded = n; updateStatus(); }, ct);
 
                 try

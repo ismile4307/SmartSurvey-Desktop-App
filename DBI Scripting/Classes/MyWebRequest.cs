@@ -105,6 +105,11 @@ namespace DBI_Scripting.Classes
 
         }
 
+        public void SetHeader(string name, string value)
+        {
+            request.Headers[name] = value;
+        }
+
         public string GetResponse()
         {
             try

@@ -18,7 +18,12 @@ namespace DBI_Scripting.Classes
             {
                 List<ProjectInfo> listOfProjectInfo = new List<ProjectInfo>();
 
-                MyWebRequest myRequest = new MyWebRequest(StaticClass.SERVER_URL + "/deskapi/getprojects.php", "POST", "UserId="+StaticClass.USER_ID+"&UserTypeId="+StaticClass.USER_TYPE_ID+"&OrganizationId="+StaticClass.ORG_ID);
+                string url  = StaticClass.SERVER_URL + "/api/desk/projects";
+                string body = "";   // no extra params — server uses the authenticated user's role
+
+                MyWebRequest myRequest = new MyWebRequest(url, "POST", body);
+                if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
+                    myRequest.SetHeader("Authorization", "Bearer " + StaticClass.DESK_API_TOKEN);
 
                 string data = myRequest.GetResponse().ToString();
 
@@ -28,27 +33,24 @@ namespace DBI_Scripting.Classes
                 {
                     for (int i = 0; i < dt1_temp.Rows.Count; i++)
                     {
-                        ProjectInfo myProjectInfo = new ProjectInfo(Convert.ToInt32(dt1_temp.Rows[i]["id"]),
-                                                                    dt1_temp.Rows[i]["project_name"].ToString(),
-                                                                    dt1_temp.Rows[i]["project_code"].ToString(),
-                                                                    dt1_temp.Rows[i]["script_name"].ToString(),
-                                                                    dt1_temp.Rows[i]["start_date"].ToString(),
-                                                                    dt1_temp.Rows[i]["status"].ToString()
-                                                                );
-
+                        ProjectInfo myProjectInfo = new ProjectInfo(
+                            Convert.ToInt32(dt1_temp.Rows[i]["id"]),
+                            dt1_temp.Rows[i]["project_name"].ToString(),
+                            dt1_temp.Rows[i]["project_code"].ToString(),
+                            dt1_temp.Rows[i]["script_name"].ToString(),
+                            dt1_temp.Rows[i]["start_date"].ToString(),
+                            dt1_temp.Rows[i]["status"].ToString()
+                        );
                         listOfProjectInfo.Add(myProjectInfo);
-
                     }
                 }
 
                 return listOfProjectInfo;
-            }catch(Exception ex)
-            {
-                //MessageBox.Show("Server connection failed");
-                return null;
-
             }
-
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

@@ -19,6 +19,7 @@ namespace DBI_Scripting.Classes
         public static String USER_ID = "";
         public static String USER_TYPE_ID = "";
         public static String ORG_ID = "";
+        public static String DESK_API_TOKEN = "";
 
         public static bool success_check_user()
         {
