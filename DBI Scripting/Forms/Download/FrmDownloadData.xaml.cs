@@ -37,8 +37,9 @@ namespace DBI_Scripting.Forms
         private const int RetryDelayMs  = 3_000;     // 3 seconds between retries
 
         // Page sizes used when the server supports id-based paging (new deskapi).
+        // The server caps a page at 10,000 rows (DeskDownloadController::MAX_PAGE_SIZE).
         private const int RespPageSize = 5_000;
-        private const int AnsPageSize  = 20_000;
+        private const int AnsPageSize  = 10_000;
         private const int OePageSize   = 10_000;
 
         // The old answerbyproject.php always returns pages of this size.
@@ -113,45 +114,8 @@ namespace DBI_Scripting.Forms
             comFileType.Items.Add("CSV");
         }
 
-        private async Task AcquireDeskTokenAsync()
-        {
-            if (string.IsNullOrEmpty(StaticClass.USER_ID))
-                return;   // not logged in yet
-
-            try
-            {
-                string url  = StaticClass.SERVER_URL + "/api/desk/login";
-                string body = "email="    + Uri.EscapeDataString(StaticClass.USER_EMAIL)
-                            + "&password=" + Uri.EscapeDataString(StaticClass.USER_PASSCODE);
-
-                using (var wc = new TimeoutWebClient(HttpTimeoutMs))
-                {
-                    wc.Encoding = Encoding.UTF8;
-                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                    string json = await wc.UploadStringTaskAsync(url, "POST", body).ConfigureAwait(false);
-
-                    var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
-                    if (obj.Value<bool>("success"))
-                    {
-                        StaticClass.DESK_API_TOKEN = obj.Value<string>("token") ?? "";
-                        Log("API token acquired.");
-                    }
-                    else
-                    {
-                        Log("Warning: API token not acquired — " + (obj.Value<string>("message") ?? "unknown"));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log("Warning: Could not acquire API token: " + ex.Message);
-                // Non-fatal — download will proceed without the new endpoints if token is missing
-            }
-        }
-
         private async Task LoadProjectsAsync()
         {
-            await AcquireDeskTokenAsync();
             Log("Connecting to server...");
             btnExecute.IsEnabled = false;
             try
@@ -206,6 +170,8 @@ namespace DBI_Scripting.Forms
                 {
                     http.ReadWriteTimeout = _timeoutMs;
                     http.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                    // Without this Laravel answers a bad token with a redirect to the web login page, not 401.
+                    http.Accept = "application/json";
                     if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
                         http.Headers["Authorization"] = "Bearer " + StaticClass.DESK_API_TOKEN;
                 }
@@ -268,12 +234,14 @@ namespace DBI_Scripting.Forms
         }
 
         // Retries PostAsync up to RetryAttempts times on transient failure.
+        // A 401 means the API token was revoked (same account logged in elsewhere): log in again and retry.
         private async Task<PostResult> PostWithRetryAsync(string url, string body, CancellationToken ct)
         {
             Exception lastEx = null;
             for (int attempt = 1; attempt <= RetryAttempts; attempt++)
             {
                 ct.ThrowIfCancellationRequested();
+                string tokenUsed = StaticClass.DESK_API_TOKEN;
                 try
                 {
                     return await PostAsync(url, body, ct).ConfigureAwait(false);
@@ -281,6 +249,17 @@ namespace DBI_Scripting.Forms
                 catch (OperationCanceledException)
                 {
                     throw; // user-initiated cancel — do not retry
+                }
+                catch (WebException ex) when ((ex.Response as HttpWebResponse)?.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    lastEx = ex;
+                    if (attempt < RetryAttempts)
+                    {
+                        Log("Server API session expired — signing in again...");
+                        string tokenError = await Task.Run(() => StaticClass.EnsureDeskToken(tokenUsed), ct).ConfigureAwait(false);
+                        if (tokenError != null)
+                            throw new Exception("Could not sign in to the server API: " + tokenError, ex);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -365,7 +344,7 @@ namespace DBI_Scripting.Forms
 
         /// <summary>
         /// Downloads one endpoint page by page into a single DataTable.
-        ///  - New server (X-Desk-Paging: keyset): pages by "id &gt; lastId", stops on a short page.
+        ///  - New server (X-Desk-Paging: keyset): pages by "id &gt; lastId", stops on an empty page.
         ///  - Old server: answers page by myOffset (10,000 rows); respondents / open-ended come in one response.
         /// Rows are de-duplicated by id, and a page that brings nothing new ends the loop,
         /// so an old server can never make this loop forever.
@@ -417,7 +396,8 @@ namespace DBI_Scripting.Forms
                 if (received == 0 || added == 0) break;
                 if (res.KeysetPaging)
                 {
-                    if (received < pageSize) break;
+                    // Keep paging until an empty page rather than stopping on a short one:
+                    // the server may cap pageSize below what we asked for.
                     lastId = maxId;
                 }
                 else

@@ -23,6 +23,67 @@ namespace DBI_Scripting.Classes
         public static String USER_EMAIL = "";
         public static String USER_PASSCODE = "";
 
+        private static readonly object _deskTokenLock = new object();
+
+        /// <summary>
+        /// Makes sure DESK_API_TOKEN holds a Sanctum token for the /api/desk/* endpoints.
+        /// Logs in with the saved credentials when there is no token yet, or when the current
+        /// token is staleToken (the one a request just got 401 with, e.g. because the same
+        /// account logged in on another PC and revoked it). Several requests failing together
+        /// pass the same staleToken, so only the first logs in again and the rest reuse its token.
+        /// Returns null on success, otherwise the reason the token could not be acquired.
+        /// Blocking call; safe from any thread.
+        /// </summary>
+        public static string EnsureDeskToken(string staleToken = null)
+        {
+            lock (_deskTokenLock)
+            {
+                if (!string.IsNullOrEmpty(DESK_API_TOKEN) && DESK_API_TOKEN != staleToken)
+                    return null;
+                if (string.IsNullOrEmpty(USER_EMAIL))
+                    return "not logged in";
+
+                try
+                {
+                    ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                    string body = "email="     + Uri.EscapeDataString(USER_EMAIL)
+                                + "&password=" + Uri.EscapeDataString(USER_PASSCODE);
+
+                    string json;
+                    using (var wc = new WebClient())
+                    {
+                        wc.Encoding = Encoding.UTF8;
+                        wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                        wc.Headers[HttpRequestHeader.Accept] = "application/json";
+                        try
+                        {
+                            json = wc.UploadString(SERVER_URL + "/api/desk/login", "POST", body);
+                        }
+                        catch (WebException wex) when (wex.Response != null)
+                        {
+                            // 401 carries {"success":false,"message":...}
+                            using (var reader = new StreamReader(wex.Response.GetResponseStream(), Encoding.UTF8))
+                                json = reader.ReadToEnd();
+                        }
+                    }
+
+                    var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    if (obj.Value<bool>("success"))
+                    {
+                        DESK_API_TOKEN = obj.Value<string>("token") ?? "";
+                        return DESK_API_TOKEN == "" ? "server returned an empty token" : null;
+                    }
+                    DESK_API_TOKEN = "";
+                    return obj.Value<string>("message") ?? "login rejected";
+                }
+                catch (Exception ex)
+                {
+                    DESK_API_TOKEN = "";
+                    return ex.Message;
+                }
+            }
+        }
+
         public static bool success_check_user()
         {
             string userId = "";
@@ -55,6 +116,7 @@ namespace DBI_Scripting.Classes
             {
                 USER_EMAIL   = userId;
                 USER_PASSCODE = passcode;
+                DESK_API_TOKEN = "";   // new credentials: the next desk API call logs in again
                 return user_check_status(userId, passcode);
             }
 

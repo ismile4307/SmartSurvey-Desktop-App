@@ -20,28 +20,20 @@ namespace DBI_Scripting.Classes
             {
                 List<ProjectInfo> listOfProjectInfo = new List<ProjectInfo>();
 
-                string url = StaticClass.SERVER_URL + "/api/desk/projects";
-
-                var req = (HttpWebRequest)WebRequest.Create(url);
-                req.Method      = "POST";
-                req.ContentType = "application/x-www-form-urlencoded";
-                req.Accept      = "application/json";
-                req.ContentLength = 0;
-                if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
-                    req.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + StaticClass.DESK_API_TOKEN);
-
-                string data;
-                HttpWebResponse httpResp;
-                try { httpResp = (HttpWebResponse)req.GetResponse(); }
-                catch (WebException wex) when (wex.Response != null)
-                { httpResp = (HttpWebResponse)wex.Response; }
+                string tokenError = StaticClass.EnsureDeskToken();
+                if (tokenError != null)
+                    throw new Exception("Could not sign in to the server API: " + tokenError);
 
                 HttpStatusCode statusCode;
-                using (httpResp)
-                using (var reader = new StreamReader(httpResp.GetResponseStream(), Encoding.UTF8))
+                string tokenUsed = StaticClass.DESK_API_TOKEN;
+                string data = postProjects(out statusCode);
+                if (statusCode == HttpStatusCode.Unauthorized)
                 {
-                    statusCode = httpResp.StatusCode;
-                    data = reader.ReadToEnd();
+                    // Token revoked (e.g. the same account logged in on another PC): log in again once.
+                    tokenError = StaticClass.EnsureDeskToken(tokenUsed);
+                    if (tokenError != null)
+                        throw new Exception("Could not sign in to the server API: " + tokenError);
+                    data = postProjects(out statusCode);
                 }
 
                 if (statusCode != HttpStatusCode.OK)
@@ -78,6 +70,31 @@ namespace DBI_Scripting.Classes
             catch (Exception ex)
             {
                 throw new Exception("getProjectInfoFromServer failed: " + ex.Message, ex);
+            }
+        }
+
+        private static string postProjects(out HttpStatusCode statusCode)
+        {
+            string url = StaticClass.SERVER_URL + "/api/desk/projects";
+
+            var req = (HttpWebRequest)WebRequest.Create(url);
+            req.Method      = "POST";
+            req.ContentType = "application/x-www-form-urlencoded";
+            req.Accept      = "application/json";
+            req.ContentLength = 0;
+            if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
+                req.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + StaticClass.DESK_API_TOKEN);
+
+            HttpWebResponse httpResp;
+            try { httpResp = (HttpWebResponse)req.GetResponse(); }
+            catch (WebException wex) when (wex.Response != null)
+            { httpResp = (HttpWebResponse)wex.Response; }
+
+            using (httpResp)
+            using (var reader = new StreamReader(httpResp.GetResponseStream(), Encoding.UTF8))
+            {
+                statusCode = httpResp.StatusCode;
+                return reader.ReadToEnd();
             }
         }
     }
