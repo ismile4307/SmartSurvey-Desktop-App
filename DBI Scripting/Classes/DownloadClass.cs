@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,16 +22,26 @@ namespace DBI_Scripting.Classes
 
                 string url = StaticClass.SERVER_URL + "/api/desk/projects";
 
+                var req = (HttpWebRequest)WebRequest.Create(url);
+                req.Method      = "POST";
+                req.ContentType = "application/x-www-form-urlencoded";
+                req.Accept      = "application/json";
+                req.ContentLength = 0;
+                if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
+                    req.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + StaticClass.DESK_API_TOKEN);
+
                 string data;
-                using (var wc = new WebClient())
-                {
-                    wc.Encoding = Encoding.UTF8;
-                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                    wc.Headers[HttpRequestHeader.Accept]      = "application/json";
-                    if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
-                        wc.Headers[HttpRequestHeader.Authorization] = "Bearer " + StaticClass.DESK_API_TOKEN;
-                    data = wc.UploadString(url, "POST", "");
-                }
+                HttpWebResponse httpResp;
+                try { httpResp = (HttpWebResponse)req.GetResponse(); }
+                catch (WebException wex) when (wex.Response != null)
+                { httpResp = (HttpWebResponse)wex.Response; }
+
+                using (httpResp)
+                using (var reader = new StreamReader(httpResp.GetResponseStream(), Encoding.UTF8))
+                    data = reader.ReadToEnd();
+
+                if (httpResp.StatusCode != HttpStatusCode.OK)
+                    throw new Exception($"Server returned {(int)httpResp.StatusCode}: {data}");
 
                 DataTable dt1_temp;
                 try
