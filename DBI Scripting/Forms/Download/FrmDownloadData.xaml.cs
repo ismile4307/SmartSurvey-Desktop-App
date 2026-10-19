@@ -194,6 +194,8 @@ namespace DBI_Scripting.Forms
                 wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
                 try
                 {
+                    // Token in the body as well: some Apache setups drop the Authorization header.
+                    body += "&" + StaticClass.DeskTokenField();
                     string text = await wc.UploadStringTaskAsync(url, "POST", body).ConfigureAwait(false);
                     string paging = wc.ResponseHeaders == null ? null : wc.ResponseHeaders[PagingHeader];
                     return new PostResult { Body = text, KeysetPaging = paging == "keyset" };

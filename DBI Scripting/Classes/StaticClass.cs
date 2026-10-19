@@ -70,7 +70,12 @@ namespace DBI_Scripting.Classes
                     var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
                     if (obj.Value<bool>("success"))
                     {
-                        DESK_API_TOKEN = obj.Value<string>("token") ?? "";
+                        // Sanctum tokens look like "{row id}|{secret}". The server's token table has no
+                        // auto-increment (every row id is 0), so a lookup by id finds the wrong row and
+                        // answers 401. Sending only the secret makes Sanctum look the token up by its hash.
+                        string token = obj.Value<string>("token") ?? "";
+                        int bar = token.IndexOf('|');
+                        DESK_API_TOKEN = bar >= 0 ? token.Substring(bar + 1) : token;
                         return DESK_API_TOKEN == "" ? "server returned an empty token" : null;
                     }
                     DESK_API_TOKEN = "";
@@ -82,6 +87,16 @@ namespace DBI_Scripting.Classes
                     return ex.Message;
                 }
             }
+        }
+
+        /// <summary>
+        /// "api_token=..." form field carrying DESK_API_TOKEN. Sent with every /api/desk/* request
+        /// next to the Authorization header, because some Apache setups strip that header;
+        /// the server's DeskTokenFromBody middleware falls back to this field.
+        /// </summary>
+        public static string DeskTokenField()
+        {
+            return "api_token=" + Uri.EscapeDataString(DESK_API_TOKEN ?? "");
         }
 
         public static bool success_check_user()

@@ -81,9 +81,14 @@ namespace DBI_Scripting.Classes
             req.Method      = "POST";
             req.ContentType = "application/x-www-form-urlencoded";
             req.Accept      = "application/json";
-            req.ContentLength = 0;
             if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
                 req.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + StaticClass.DESK_API_TOKEN);
+
+            // The token also goes in the body: some Apache setups drop the Authorization header.
+            byte[] body = Encoding.UTF8.GetBytes(StaticClass.DeskTokenField());
+            req.ContentLength = body.Length;
+            using (Stream s = req.GetRequestStream())
+                s.Write(body, 0, body.Length);
 
             HttpWebResponse httpResp;
             try { httpResp = (HttpWebResponse)req.GetResponse(); }
