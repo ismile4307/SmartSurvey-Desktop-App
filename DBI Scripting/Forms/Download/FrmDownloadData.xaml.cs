@@ -131,14 +131,14 @@ namespace DBI_Scripting.Forms
                     string json = await wc.UploadStringTaskAsync(url, "POST", body).ConfigureAwait(false);
 
                     var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
-                    if (obj["success"]?.Value<bool>() == true)
+                    if (obj.Value<bool>("success"))
                     {
-                        StaticClass.DESK_API_TOKEN = obj["token"]?.Value<string>() ?? "";
+                        StaticClass.DESK_API_TOKEN = obj.Value<string>("token") ?? "";
                         Log("API token acquired.");
                     }
                     else
                     {
-                        Log("Warning: API token not acquired — " + (obj["message"]?.Value<string>() ?? "unknown"));
+                        Log("Warning: API token not acquired — " + (obj.Value<string>("message") ?? "unknown"));
                     }
                 }
             }
