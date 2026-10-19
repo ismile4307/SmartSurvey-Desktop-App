@@ -49,7 +49,7 @@ namespace DBI_Scripting.Classes
             }
             catch (Exception ex)
             {
-                return null;
+                throw new Exception("getProjectInfoFromServer failed: " + ex.Message, ex);
             }
         }
     }
