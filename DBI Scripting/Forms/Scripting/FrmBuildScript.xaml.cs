@@ -1579,7 +1579,7 @@ namespace DBI_Scripting.Forms.Scripting
                                 string[] myKey = word[1].Split('*');
                                 gridInfo.AttributeEnglish = myKey[0].Trim();
                                 bool hasOpen = false;
-                                string cellType = null;   // *GRIDNUMTXT column type: "4" = number, "3" = text
+                                string cellType = null;   // *GRIDHYBRID column type: "4" = number, "3" = text
 
                                 for (int x = 1; x < myKey.Length; x++)
                                 {
@@ -2533,7 +2533,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.QType = "24"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*DRAGDROP"))
                 { myQuestion.QType = "26"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                else if (myText.ToUpper().Trim().Contains("*GRIDNUMTXT"))
+                else if (myText.ToUpper().Trim().Contains("*GRIDHYBRID"))
                 {
                     // Grid with a number or text cell per column (column type from *NUMBER / *ALPHA on the grid list)
                     myQuestion.QType = "29"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -2544,7 +2544,7 @@ namespace DBI_Scripting.Forms.Scripting
                     myQuestion.QType = "27"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
                 }
-                else if (myText.ToUpper().Trim().Contains("*GRIDTXT"))
+                else if (myText.ToUpper().Trim().Contains("*GRIDALPHA"))
                 {
                     myQuestion.QType = "28"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
@@ -4097,9 +4097,9 @@ namespace DBI_Scripting.Forms.Scripting
 
 
         /// <summary>
-        /// *GRIDNUMTXT (QType 29): every column of its grid list must be typed with *NUMBER
+        /// *GRIDHYBRID (QType 29): every column of its grid list must be typed with *NUMBER
         /// (T_GridInfo.TakeOpenended = 4) or *ALPHA (TakeOpenended = 3). Grid lists that carry those
-        /// types are reserved for *GRIDNUMTXT, so other grid questions never see TakeOpenended 3/4.
+        /// types are reserved for *GRIDHYBRID, so other grid questions never see TakeOpenended 3/4.
         /// </summary>
         private void checkGridColumnTypes(Question myQuestion, List<AttributeMain> listOfAttributeMain, TextWriter txtWriter)
         {
@@ -4114,12 +4114,12 @@ namespace DBI_Scripting.Forms.Scripting
                 {
                     bool typed = col.TakeOpenended == "3" || col.TakeOpenended == "4";
                     if (myQuestion.QType == "29" && !typed)
-                        txtWriter.WriteLine("Question : " + myQuestion.QId + "  GRIDNUMTXT grid list \"" + attr.LinkId2 + "\" attribute "
+                        txtWriter.WriteLine("Question : " + myQuestion.QId + "  GRIDHYBRID grid list \"" + attr.LinkId2 + "\" attribute "
                                             + col.AttributeValue + " (" + col.AttributeEnglish + ") must have *NUMBER or *ALPHA");
                     else if (myQuestion.QType != "29" && typed)
                     {
                         txtWriter.WriteLine("Question : " + myQuestion.QId + "  grid list \"" + attr.LinkId2
-                                            + "\" has *NUMBER/*ALPHA attributes, which can only be used by *GRIDNUMTXT questions");
+                                            + "\" has *NUMBER/*ALPHA attributes, which can only be used by *GRIDHYBRID questions");
                         break;
                     }
                 }
@@ -4786,7 +4786,7 @@ namespace DBI_Scripting.Forms.Scripting
                 { myQuestion.QType = "24"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
                 else if (myText.ToUpper().Trim().Contains("*DRAGDROP"))
                 { myQuestion.QType = "26"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim()); }
-                else if (myText.ToUpper().Trim().Contains("*GRIDNUMTXT"))
+                else if (myText.ToUpper().Trim().Contains("*GRIDHYBRID"))
                 {
                     // Grid with a number or text cell per column (column type from *NUMBER / *ALPHA on the grid list)
                     myQuestion.QType = "29"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
@@ -4797,7 +4797,7 @@ namespace DBI_Scripting.Forms.Scripting
                     myQuestion.QType = "27"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
                 }
-                else if (myText.ToUpper().Trim().Contains("*GRIDTXT"))
+                else if (myText.ToUpper().Trim().Contains("*GRIDALPHA"))
                 {
                     myQuestion.QType = "28"; QTypeCounter++; listOfQuestionProperties.Add(word[n].ToUpper().Trim());
                     qTypeForGridQid = 8;
@@ -9411,8 +9411,8 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("GRIDSR");
             listOfKeyWords.Add("GRIDMR");
             listOfKeyWords.Add("GRIDNUM");
-            listOfKeyWords.Add("GRIDTXT");
-            listOfKeyWords.Add("GRIDNUMTXT");
+            listOfKeyWords.Add("GRIDALPHA");
+            listOfKeyWords.Add("GRIDHYBRID");
             listOfKeyWords.Add("MEDIA");
             listOfKeyWords.Add("ALPHALIST");
             listOfKeyWords.Add("NUMLIST");
