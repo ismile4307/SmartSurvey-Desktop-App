@@ -13,6 +13,7 @@ namespace DBI_Scripting.Classes
     {
         private WebRequest request;
         private Stream dataStream;
+        private byte[] _pendingPostData;
 
         private string status;
 
@@ -78,24 +79,14 @@ namespace DBI_Scripting.Classes
 
                 // Use SecurityProtocolType.Ssl3 if needed for compatibility reasons
 
-                // Create POST data and convert it to a byte array.
-                string postData = data;
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                // Store POST data — written in GetResponse() so headers can still be set
+                _pendingPostData = Encoding.UTF8.GetBytes(data);
 
                 // Set the ContentType property of the WebRequest.
                 request.ContentType = "application/x-www-form-urlencoded";
 
                 // Set the ContentLength property of the WebRequest.
-                request.ContentLength = byteArray.Length;
-
-                // Get the request stream.
-                dataStream = request.GetRequestStream();
-
-                // Write the data to the request stream.
-                dataStream.Write(byteArray, 0, byteArray.Length);
-
-                // Close the Stream object.
-                dataStream.Close();
+                request.ContentLength = _pendingPostData.Length;
             }
             catch (Exception ex)
             {
@@ -114,6 +105,15 @@ namespace DBI_Scripting.Classes
         {
             try
             {
+                // Write deferred POST body now (after any SetHeader calls)
+                if (_pendingPostData != null)
+                {
+                    dataStream = request.GetRequestStream();
+                    dataStream.Write(_pendingPostData, 0, _pendingPostData.Length);
+                    dataStream.Close();
+                    _pendingPostData = null;
+                }
+
                 // Get the original response.
                 WebResponse response = request.GetResponse();
 
