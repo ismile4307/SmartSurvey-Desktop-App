@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,15 +19,18 @@ namespace DBI_Scripting.Classes
             {
                 List<ProjectInfo> listOfProjectInfo = new List<ProjectInfo>();
 
-                string url  = StaticClass.SERVER_URL + "/api/desk/projects";
-                string body = "";   // no extra params — server uses the authenticated user's role
+                string url = StaticClass.SERVER_URL + "/api/desk/projects";
 
-                MyWebRequest myRequest = new MyWebRequest(url, "POST", body);
-                myRequest.SetHeader("Accept", "application/json");
-                if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
-                    myRequest.SetHeader("Authorization", "Bearer " + StaticClass.DESK_API_TOKEN);
-
-                string data = myRequest.GetResponse().ToString();
+                string data;
+                using (var wc = new WebClient())
+                {
+                    wc.Encoding = Encoding.UTF8;
+                    wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                    wc.Headers[HttpRequestHeader.Accept]      = "application/json";
+                    if (!string.IsNullOrEmpty(StaticClass.DESK_API_TOKEN))
+                        wc.Headers[HttpRequestHeader.Authorization] = "Bearer " + StaticClass.DESK_API_TOKEN;
+                    data = wc.UploadString(url, "POST", "");
+                }
 
                 DataTable dt1_temp;
                 try
