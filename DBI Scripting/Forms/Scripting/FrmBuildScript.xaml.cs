@@ -2425,6 +2425,7 @@ namespace DBI_Scripting.Forms.Scripting
             int QTypeCounter = 0;
             List<string> listOfQuestionProperties = new List<string>();
             String currentGridListName = "";
+            bool hasOptional = false;   // *OPTIONAL on the question line (QType 11 / 16)
             String GridFilterQId = "";
             String GridFilterType = "";
             int qTypeForGridQid = 0;
@@ -2674,6 +2675,15 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *FONTSIZE is invalid ");
 
+                }
+                else if (myText.ToUpper().Trim() == "*OPTIONAL")
+                {
+                    // Capture image / video may be skipped: the app treats NoOfResponseMin = 0 as optional
+                    listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                    if (!string.IsNullOrEmpty(myQuestion.NoOfResponseMin) && myQuestion.NoOfResponseMin != "0")
+                        txtWriter.WriteLine("Line : " + dicLine[i + 1] + " *OPTIONAL cannot be combined with *MIN " + myQuestion.NoOfResponseMin);
+                    myQuestion.NoOfResponseMin = "0";
+                    hasOptional = true;
                 }
                 else if (myText.ToUpper().Trim().Contains("*MIN"))
                 {
@@ -4107,6 +4117,7 @@ namespace DBI_Scripting.Forms.Scripting
                 }
             }
 
+            checkOptionalMedia(myQuestion, hasOptional, txtWriter);
             checkGridColumnTypes(myQuestion, listOfAttributeMain, txtWriter);
 
             if (myQuestion.QId != null)
@@ -4128,6 +4139,20 @@ namespace DBI_Scripting.Forms.Scripting
         /// (T_GridInfo.TakeOpenended = 4) or *ALPHA (TakeOpenended = 3). Grid lists that carry those
         /// types are reserved for *GRIDHYBRID, so other grid questions never see TakeOpenended 3/4.
         /// </summary>
+        /// <summary>
+        /// *OPTIONAL makes a capture image (QType 16) or capture video (QType 11) question optional
+        /// (T_Question.NoOfResponseMin = 0). Checked once the whole question line is read, because
+        /// the type token may come after *OPTIONAL.
+        /// </summary>
+        private void checkOptionalMedia(Question myQuestion, bool hasOptional, TextWriter txtWriter)
+        {
+            if (!hasOptional) return;
+            if (myQuestion.QType != "11" && myQuestion.QType != "16")
+                txtWriter.WriteLine("Question : " + myQuestion.QId + "  *OPTIONAL can only be used with *CAPTUREIMAGE or *CAPTUREVIDEO");
+            else if (myQuestion.NoOfResponseMin != "0")
+                txtWriter.WriteLine("Question : " + myQuestion.QId + "  *OPTIONAL cannot be combined with *MIN " + myQuestion.NoOfResponseMin);
+        }
+
         private void checkGridColumnTypes(Question myQuestion, List<AttributeMain> listOfAttributeMain, TextWriter txtWriter)
         {
             if (myQuestion.QType == "29")
@@ -4708,6 +4733,7 @@ namespace DBI_Scripting.Forms.Scripting
             int QTypeCounter = 0;
             List<string> listOfQuestionProperties = new List<string>();
             String currentGridListName = "";
+            bool hasOptional = false;   // *OPTIONAL on the question line (QType 11 / 16)
             String GridFilterQId = "";
             String GridFilterType = "";
             int qTypeForGridQid = 0;
@@ -4954,6 +4980,15 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *FONTSIZE is invalid ");
 
+                }
+                else if (myText.ToUpper().Trim() == "*OPTIONAL")
+                {
+                    // Capture image / video may be skipped: the app treats NoOfResponseMin = 0 as optional
+                    listOfQuestionProperties.Add(word[n].ToUpper().Trim());
+                    if (!string.IsNullOrEmpty(myQuestion.NoOfResponseMin) && myQuestion.NoOfResponseMin != "0")
+                        txtWriter.WriteLine("Line : " + dicLine[i + 1] + " *OPTIONAL cannot be combined with *MIN " + myQuestion.NoOfResponseMin);
+                    myQuestion.NoOfResponseMin = "0";
+                    hasOptional = true;
                 }
                 else if (myText.ToUpper().Trim().Contains("*MIN"))
                 {
@@ -6353,6 +6388,7 @@ namespace DBI_Scripting.Forms.Scripting
                 }
             }
 
+            checkOptionalMedia(myQuestion, hasOptional, txtWriter);
             checkGridColumnTypes(myQuestion, listOfAttributeMain, txtWriter);
 
             if (myQuestion.QId != null)
@@ -9515,6 +9551,7 @@ namespace DBI_Scripting.Forms.Scripting
 
 
             listOfKeyWords.Add("MIN");
+            listOfKeyWords.Add("OPTIONAL");
             listOfKeyWords.Add("MAX");
             listOfKeyWords.Add("MANDATORY");
             listOfKeyWords.Add("COLUMN");

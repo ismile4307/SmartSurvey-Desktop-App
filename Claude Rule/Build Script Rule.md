@@ -208,7 +208,8 @@ Terminate Question not exist
 | `*NUMLIST` | 13 | Numeric list |
 | `*DATE` | 14 | Date |
 | `*TIME` | 15 | Time |
-| `*CAPTUREIMAGE` | 16 | Camera capture |
+| `*CAPTUREIMAGE` | 16 | Camera capture (image) |
+| `*CAPTUREVIDEO` | 11 | Camera capture (video) |
 | `*NUMLISTTOTAL` | 17 | Numeric list with total |
 | `*AUTOCOMPLETE` | 22 | Autocomplete |
 | `*AUTOCOMPLETEANS` | 23 | Autocomplete answer |
@@ -240,6 +241,7 @@ Terminate Question not exist
 | `*FONTSIZE n` | WrittenOEInPaper = n (numeric) |
 | `*MIN n` | NoOfResponseMin = n (numeric) |
 | `*MAX n` | NoOfResponseMax = n (numeric) |
+| `*OPTIONAL` | NoOfResponseMin = "0" — makes a `*CAPTUREIMAGE` / `*CAPTUREVIDEO` question optional (see below) |
 | `*COLUMN n` | NumberOfColumn = n (numeric) |
 | `*HORIZONTAL` | NumberOfColumn = "2" |
 | `*IMGADJBY n` | HasMediaPath = n (numeric) |
@@ -259,6 +261,20 @@ Terminate Question not exist
 | `*SHOWASNUMTEXT` | WrittenOEInPaper = "1" |
 | `*PICT "file"` | FilePath = "file" |
 | `*VIDEO "file"` | FilePath = "file" |
+
+### *OPTIONAL (capture image / video)
+
+```
+*QUESTION Q16 *CAPTUREIMAGE *OPTIONAL
+Q16. Take a photo of the shop front
+```
+
+- Only for `*CAPTUREIMAGE` (QType 16) and `*CAPTUREVIDEO` (QType 11); can be written anywhere on the question line.
+  - Error: `"Question : QId  *OPTIONAL can only be used with *CAPTUREIMAGE or *CAPTUREVIDEO"`
+- Writes `T_Question.NoOfResponseMin = "0"`. With nothing captured, the app offers *Capture now* / *Continue*; *Continue* saves the answer `Null` (test it with `ValueOf[Q16]=Null`).
+- Cannot be combined with `*MIN n` (n > 0). `*MAX n` still sets the file limit in gallery mode (`*DIRIMAGE`).
+  - Error: `"*OPTIONAL cannot be combined with *MIN n"`
+- The older form `*MIN 0` still works and means the same.
 
 ---
 
