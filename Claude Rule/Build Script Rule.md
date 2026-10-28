@@ -90,6 +90,10 @@ Language mapping in database:
 | `*MIN n` | MinValue = n (must match `^\d+$` or `^\d.+$`) |
 | `*MAX n` | MaxValue = n (must match `^\d+$` or `^\d.+$`) |
 
+- Properties can be combined in any order (e.g. `1:Name *ALPHA *MANDATORY`).
+- `*PICT` / `*VIDEO` and `*MANDATORY` share `ForceAndMsgOpt`: the first of them on the line keeps it.
+- When the list is used by a `*GRIDNUM` / `*GRIDALPHA` / `*GRIDHYBRID` question (`*USELIST`), a `*PICT` file moves to `Comments` (row image).
+
 > **Note:** Language sections (`*LIST` inside `@LANGUAGE` blocks) do **not** support attribute properties — only plain `numeric:label` pairs are allowed.
 
 ---
@@ -117,16 +121,18 @@ Language mapping in database:
 | `*OPEN` | TakeOpenended = "1" |
 | `*NMUL` | IsExclusive = "1" |
 | `*MANDATORY` | ForceAndMsgOpt = "11" |
-| `*PICT "file"` | FilePath via quoted syntax |
-| `*VIDEO "file"` | FilePath via quoted syntax |
+| `*PICT "file"` | Comments = file (column image; ForceAndMsgOpt stays free for `*MANDATORY`) |
+| `*VIDEO "file"` | ForceAndMsgOpt = file |
 | `*MIN n` | MinValue |
 | `*MAX n` | MaxValue |
-| `*NUMBER` | TakeOpenended = "4" — number column of a `*GRIDNUMTXT` question |
-| `*ALPHA` | TakeOpenended = "3" — text column of a `*GRIDNUMTXT` question |
+| `*NUMBER` | TakeOpenended = "4" — number column of a `*GRIDHYBRID` question |
+| `*ALPHA` | TakeOpenended = "3" — text column of a `*GRIDHYBRID` question |
+| `*SR *USEGRIDLIST "List"` | TakeOpenended = "5", IsExclusive = List — single-response (dropdown) column of a `*GRIDHYBRID` question |
 
 - Properties can be combined in any order (e.g. `3:Quantity *MANDATORY *NUMBER *MIN 1 *MAX 20`).
-- `*NUMBER` and `*ALPHA` cannot be used together, and neither can be combined with `*OPEN`.
-- On a `*NUMBER` column, `*MIN`/`*MAX` are the number validation range; they are not allowed on an `*ALPHA` column.
+- Only one of `*NUMBER`, `*ALPHA`, `*SR` per column; none of them can be combined with `*OPEN`, `*NMUL` or `*VIDEO`.
+- `*SR` needs `*USEGRIDLIST "List"`, and `*USEGRIDLIST` on a grid-list attribute needs `*SR`.
+- `*MIN`/`*MAX` are only allowed on a `*NUMBER` column, must both be given, and `*MIN` must not be greater than `*MAX`.
 
 > Language-section `*GRIDLIST` blocks do **not** allow attribute properties.
 
@@ -210,7 +216,7 @@ Terminate Question not exist
 | `*DRAGDROP` | 26 | Drag and drop |
 | `*GRIDNUM` | 27 | Grid numeric |
 | `*GRIDALPHA` | 28 | Grid text |
-| `*GRIDNUMTXT` | 29 | Grid with a number or text column per grid-list attribute (see §17a) |
+| `*GRIDHYBRID` | 29 | Grid with a text, number or single-response column per grid-list attribute (see §17a) |
 | `*SCALE7` | 32 | 7-point scale |
 | `*MAXDIFF` | 40 | MaxDiff |
 | `*GPS` | 41 | GPS location |
@@ -433,26 +439,40 @@ Question text may reference another question's answer using curly braces.
 
 ---
 
-## 17a. Grid Number/Text Question (*GRIDNUMTXT, QType 29) Rules
+## 17a. Grid Hybrid Question (*GRIDHYBRID, QType 29) Rules
 
 ```
-*GRIDLIST "NumTxtCols"
-1:Price (taka) *NUMBER *MIN 0 *MAX 500
-2:Shop name *ALPHA
-3:Quantity *MANDATORY *NUMBER *MIN 1 *MAX 20
+*GRIDLIST "ShopType"
+1:Supermarket
+2:Grocery
+3:Online
 
-*QUESTION Q10 *GRIDNUMTXT *USEGRIDLIST "NumTxtCols"
-Q10. For each brand, enter price, shop and quantity
-1:Brand A
-2:Brand B
+*GRIDLIST "PurchaseInfo"
+1:Brand name *ALPHA
+2:Quantity (kg) *NUMBER *MIN 0 *MAX 500
+3:Shop name *ALPHA *MANDATORY
+4:Shop type *SR *USEGRIDLIST "ShopType"
+
+*QUESTION Q20 *GRIDHYBRID *USEGRIDLIST "PurchaseInfo"
+Q20. For each item, tell me brand, quantity, shop and shop type
+1:Rice *MANDATORY
+2:Lentil
+3:Edible oil *PICT "oil.png"
 ```
 
-- Rows (question attributes) are stored like `*GRIDNUM` / `*GRIDALPHA`: `T_OptAttribute.LinkId1 = "29"`, `LinkId2 = grid list name`.
-- Columns (grid-list attributes) carry the cell type in `T_GridInfo.TakeOpenended`: `"4"` = number, `"3"` = text. Number validation uses the column's `MinValue` / `MaxValue`.
-- Every column of a `*GRIDNUMTXT` grid list must have `*NUMBER` or `*ALPHA`
-  - Error: `"Question : QId  GRIDNUMTXT grid list "X" attribute N (Label) must have *NUMBER or *ALPHA"`
-- A grid list with `*NUMBER` / `*ALPHA` columns can only be used by `*GRIDNUMTXT` questions
-  - Error: `"Question : QId  grid list "X" has *NUMBER/*ALPHA attributes, which can only be used by *GRIDNUMTXT questions"`
+- Rows (question attributes, or `*USELIST` items) are stored like `*GRIDNUM` / `*GRIDALPHA`: `T_OptAttribute.LinkId1 = "29"`, `LinkId2 = grid list name`.
+- Row `*PICT` for QType 27/28/29 goes to `T_OptAttribute.Comments` (the app reads the row image there); `ForceAndMsgOpt` only means mandatory (11).
+- Columns (grid-list attributes) carry the cell type in `T_GridInfo.TakeOpenended`: `"3"` = text, `"4"` = number (validated with the column's `MinValue` / `MaxValue`), `"5"` = single response.
+- A single-response column's options are the `*GRIDLIST` named in `IsExclusive`; the app shows them as a dropdown and saves the option code.
+- Every column of a `*GRIDHYBRID` grid list must have `*NUMBER`, `*ALPHA` or `*SR`
+  - Error: `"Question : QId  GRIDHYBRID grid list "X" attribute N (Label) must have *NUMBER, *ALPHA or *SR"`
+- The option list of an `*SR` column must exist (defined before the question) and have items
+  - Error: `"Question : QId  grid list "X" attribute N : *SR option list "L" does not exist (define it before the question)"`
+- A grid list with `*NUMBER` / `*ALPHA` / `*SR` columns can only be used by `*GRIDHYBRID` questions (for QType 7/8 the app treats any TakeOpenended value as "ask for open-ended")
+  - Error: `"Question : QId  grid list "X" has *NUMBER/*ALPHA/*SR attributes, which can only be used by *GRIDHYBRID questions"`
+- `*SHOWASCARD` (or `*COLUMN 4`) is not supported — use the table layout or `*SHOWASFORM`
+- A `*GRIDHYBRID` question must have at least one row
+- Answers: one `T_RespAnswer` record per filled cell — `QId_<row>`, `rOrderTag` = column code, `Response` = value (option code for `*SR` cells).
 - `T_QType` row (from `QType.ini`): `29  GridNumberString  1  1  29  3` (ResponseType 3 = grid, so data download builds `QId_row_col` columns).
 
 ---
@@ -491,7 +511,7 @@ For **grid lists**:
 ## 20. All Valid Script Keywords
 
 **Question type tokens:**
-`QUESTION, SR, MR, ALPHA, NUMBER, RANK, IMAGE, GRIDSR, GRIDMR, GRIDNUM, GRIDALPHA, GRIDNUMTXT, MEDIA, ALPHALIST, NUMLIST, DATE, TIME, CAPTUREIMAGE, NUMLISTTOTAL, AUTOCOMPLETE, AUTOCOMPLETELIST, AUTOCOMPLETEANS, DROPDOWN, DROPDOWNLIST, DRAGDROP, FORM, INFO, MAXDIFF, GPS, RECORDING, SCALE7, SCALE10, FIFS, END, TERMINATE`
+`QUESTION, SR, MR, ALPHA, NUMBER, RANK, IMAGE, GRIDSR, GRIDMR, GRIDNUM, GRIDALPHA, GRIDHYBRID, MEDIA, ALPHALIST, NUMLIST, DATE, TIME, CAPTUREIMAGE, NUMLISTTOTAL, AUTOCOMPLETE, AUTOCOMPLETELIST, AUTOCOMPLETEANS, DROPDOWN, DROPDOWNLIST, DRAGDROP, FORM, INFO, MAXDIFF, GPS, RECORDING, SCALE7, SCALE10, FIFS, END, TERMINATE`
 
 **Property / constraint tokens:**
 `IF, RANDOM, ROT, QROT, FROT, GROUPROT, BLOCK, GRANDOM, GROT, OTPGROUPROT, OTPROTGROUP, OTPROTGROUPROT, MIN, MAX, MANDATORY, COLUMN, INCLUDE, INCLUDEBYORDER, EXCLUDE, FILTER, GOTO, DELAY, EXCEPT, FONTSIZE, IMGADJBY, LAT, LON, COMPVAL`

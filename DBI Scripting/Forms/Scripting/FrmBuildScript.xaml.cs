@@ -1316,89 +1316,58 @@ namespace DBI_Scripting.Forms.Scripting
                             string[] myKey = word[1].Split('*');
                             if (myKey.Length > 1)
                             {
-                                //attributeMain.AttributeEnglish = myKey[0].Trim();
-
+                                // Every flag after the label is applied, in any order. The old loop only ever
+                                // read the first one or two flags, so "*ALPHA *MANDATORY" lost *MANDATORY.
+                                // *PICT / *VIDEO and *MANDATORY share ForceAndMsgOpt: the first of them keeps
+                                // it, which is what the old code did.
                                 for (int x = 1; x < myKey.Length; x++)
                                 {
-                                    if (("*" + myKey[1]).ToUpper().Trim().Contains("*OPEN"))
-                                    {
+                                    string prop = myKey[x].Trim();
+                                    string propName = prop.Split(' ')[0].ToUpper();
+
+                                    if (propName.StartsWith("OPEN"))
                                         attributeMain.TakeOpenended = "1";
-                                    }
-                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*ALPHA"))
-                                    {
+                                    else if (propName.StartsWith("ALPHA"))
                                         attributeMain.LinkId1 = "3";
-                                    }
-                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*NUMBER"))
-                                    {
+                                    else if (propName.StartsWith("NUMBER"))
                                         attributeMain.LinkId1 = "4";
-                                    }
-                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*NMUL"))
-                                    {
+                                    else if (propName.StartsWith("NMUL"))
                                         attributeMain.IsExclusive = "1";
-                                    }
-                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*MANDATORY"))
+                                    else if (propName.StartsWith("MANDATORY"))
                                     {
-                                        attributeMain.ForceAndMsgOpt = "11";
+                                        if (string.IsNullOrEmpty(attributeMain.ForceAndMsgOpt))
+                                            attributeMain.ForceAndMsgOpt = "11";
                                     }
-                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*PICT"))
+                                    else if (propName.StartsWith("PICT") || propName.StartsWith("VIDEO"))
                                     {
-                                        string[] xy = myKey[1].Trim().Split(' ');
+                                        string flag = propName.StartsWith("PICT") ? "PICT" : "VIDEO";
+                                        string[] xy = prop.Split(' ');
                                         if (xy.Length == 2)
                                         {
-                                            //listOfQuestionProperties.Add(xy[0].ToUpper().Trim());
-
                                             string[] xyz = xy[1].Split('"');
                                             if (xyz.Length != 3)
-                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
-                                            else
+                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[1]);
+                                            else if (string.IsNullOrEmpty(attributeMain.ForceAndMsgOpt))
                                                 attributeMain.ForceAndMsgOpt = xyz[1].Trim();
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *PICT is invalid ");
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *" + flag + " is invalid ");
                                     }
-                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*VIDEO"))
+                                    else if (propName.StartsWith("MIN") || propName.StartsWith("MAX"))
                                     {
-                                        string[] xy = myKey[1].Trim().Split(' ');
-                                        if (xy.Length == 2)
-                                        {
-                                            //listOfQuestionProperties.Add(xy[0].ToUpper().Trim());
-
-                                            string[] xyz = xy[1].Split('"');
-                                            if (xyz.Length != 3)
-                                                txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
-                                            else
-                                                attributeMain.ForceAndMsgOpt = xyz[1].Trim();
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *VIDEO is invalid ");
-                                    }
-                                    else if (("*" + myKey[1]).ToUpper().Trim().Contains("*MIN"))
-                                    {
-                                        string[] xyz = myKey[1].Split(' ');
+                                        bool isMin = propName.StartsWith("MIN");
+                                        string[] xyz = prop.Split(' ');
                                         if (xyz.Length >= 2)
                                         {
                                             if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
-                                                attributeMain.MinValue = xyz[1].Trim();
+                                            {
+                                                if (isMin) attributeMain.MinValue = xyz[1].Trim();
+                                                else attributeMain.MaxValue = xyz[1].Trim();
+                                            }
                                             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
                                         }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
-                                    }
-                                    else if (("*" + myKey[2]).ToUpper().Trim().Contains("*MAX"))
-                                    {
-                                        string[] xyz = myKey[2].Split(' ');
-                                        if (xyz.Length >= 2)
-                                        {
-                                            if (Regex.Match(xyz[1].Trim(), @"^\d+$").Success || Regex.Match(xyz[1].Trim(), @"^\d.+$").Success)
-                                                attributeMain.MaxValue = xyz[1].Trim();
-                                            else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Must be non negetive integer " + xyz[1].Trim());
-                                        }
-                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *Max is invalid ");
-                                    }
-                                    else if (("*" + myKey[2]).ToUpper().Trim().Contains("*MANDATORY"))
-                                    {
-                                        attributeMain.ForceAndMsgOpt = "11";
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *" + (isMin ? "MIN" : "Max") + " is invalid ");
                                     }
                                 }
-
-
                             }
                             else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is incorrect");
 
@@ -1578,8 +1547,9 @@ namespace DBI_Scripting.Forms.Scripting
                                 // lost *OPEN and a lone "*MIN n" was ignored).
                                 string[] myKey = word[1].Split('*');
                                 gridInfo.AttributeEnglish = myKey[0].Trim();
-                                bool hasOpen = false;
-                                string cellType = null;   // *GRIDHYBRID column type: "4" = number, "3" = text
+                                bool hasOpen = false, hasNmul = false, hasVideo = false, isSr = false;
+                                string cellType = null;     // *GRIDHYBRID column type: "4" = number, "3" = text, "5" = single response
+                                string optionList = null;   // *SR column: the *GRIDLIST holding its options
 
                                 for (int x = 1; x < myKey.Length; x++)
                                 {
@@ -1590,7 +1560,19 @@ namespace DBI_Scripting.Forms.Scripting
                                     if (propName == "OPEN")
                                         hasOpen = true;
                                     else if (propName == "NMUL")
+                                    {
+                                        hasNmul = true;
                                         gridInfo.IsExclusive = "1";
+                                    }
+                                    else if (propName == "SR")
+                                        isSr = true;
+                                    else if (propName == "USEGRIDLIST")
+                                    {
+                                        string[] xyz = prop.Split('"');
+                                        if (xyz.Length == 3 && Regex.Match(xyz[1].Trim(), "^[a-zA-Z0-9]+$").Success)
+                                            optionList = xyz[1].Trim();
+                                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *USEGRIDLIST is invalid, use *USEGRIDLIST \"ListName\"");
+                                    }
                                     else if (propName == "MANDATORY")
                                         gridInfo.ForceAndMsgOpt = "11";
                                     else if (propName == "NUMBER" || propName == "ALPHA")
@@ -1607,8 +1589,13 @@ namespace DBI_Scripting.Forms.Scripting
                                             string[] xyz = xy[1].Split('"');
                                             if (xyz.Length != 3)
                                                 txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[1]);
+                                            else if (propName == "PICT")
+                                                gridInfo.Comments = xyz[1].Trim();   // column image; ForceAndMsgOpt stays free for *MANDATORY
                                             else
+                                            {
+                                                hasVideo = true;
                                                 gridInfo.ForceAndMsgOpt = xyz[1].Trim();
+                                            }
                                         }
                                         else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *" + propName + " is invalid ");
                                     }
@@ -1627,14 +1614,46 @@ namespace DBI_Scripting.Forms.Scripting
                                     }
                                 }
 
-                                if (hasOpen && cellType != null)
-                                    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid attribute " + word[0].Trim() + " cannot combine *OPEN with *NUMBER/*ALPHA");
+                                string at = "Line : " + dicLine[i + 1] + " Grid attribute " + word[0].Trim();
+                                if (isSr)
+                                {
+                                    if (cellType != null)
+                                        txtWriter.WriteLine(at + " : *SR cannot be combined with *NUMBER/*ALPHA");
+                                    else if (optionList == null)
+                                        txtWriter.WriteLine(at + " : *SR needs *USEGRIDLIST \"ListName\" for its options");
+                                    else
+                                    {
+                                        cellType = "5";
+                                        gridInfo.IsExclusive = optionList;   // the app reads the option list name here
+                                    }
+                                }
+                                else if (optionList != null)
+                                    txtWriter.WriteLine(at + " : *USEGRIDLIST on a grid list attribute needs *SR");
+
+                                if (cellType != null || isSr)
+                                {
+                                    if (hasOpen) txtWriter.WriteLine(at + " cannot combine *OPEN with *NUMBER/*ALPHA/*SR");
+                                    if (hasNmul) txtWriter.WriteLine(at + " cannot combine *NMUL with *NUMBER/*ALPHA/*SR");
+                                    if (hasVideo) txtWriter.WriteLine(at + " cannot combine *VIDEO with *NUMBER/*ALPHA/*SR");
+                                }
                                 gridInfo.TakeOpenended = cellType ?? (hasOpen ? "1" : null);
 
                                 if (gridInfo.AttributeEnglish == "")
                                     txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Attribute label " + word[0].Trim() + " is incorrect");
-                                if (cellType == "3" && (!string.IsNullOrEmpty(gridInfo.MinValue) || !string.IsNullOrEmpty(gridInfo.MaxValue)))
-                                    txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Grid attribute " + word[0].Trim() + " : *MIN/*MAX can only be used with *NUMBER");
+
+                                bool hasMin = !string.IsNullOrEmpty(gridInfo.MinValue), hasMax = !string.IsNullOrEmpty(gridInfo.MaxValue);
+                                if ((cellType == "3" || cellType == "5") && (hasMin || hasMax))
+                                    txtWriter.WriteLine(at + " : *MIN/*MAX can only be used with *NUMBER");
+                                else if (cellType == "4" && hasMin != hasMax)
+                                    txtWriter.WriteLine(at + " : a *NUMBER column needs both *MIN and *MAX (the app checks the range only when both are given)");
+                                else if (cellType == "4" && hasMin)
+                                {
+                                    decimal minV, maxV;
+                                    if (decimal.TryParse(gridInfo.MinValue, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out minV)
+                                        && decimal.TryParse(gridInfo.MaxValue, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out maxV)
+                                        && minV > maxV)
+                                        txtWriter.WriteLine(at + " : *MIN " + gridInfo.MinValue + " is greater than *MAX " + gridInfo.MaxValue);
+                                }
                             }
 
 
@@ -3324,6 +3343,14 @@ namespace DBI_Scripting.Forms.Scripting
                                             myAttributeMain.AttributeLang9 = listOfAttributeTemp[x].AttributeLang9;
                                             myAttributeMain.AttributeLang10 = listOfAttributeTemp[x].AttributeLang10;
 
+                                            // Grid number/text rows: the app reads the row image from Comments,
+                                            // ForceAndMsgOpt only means mandatory (11)
+                                            if (!string.IsNullOrEmpty(myAttributeMain.ForceAndMsgOpt) && myAttributeMain.ForceAndMsgOpt != "11")
+                                            {
+                                                myAttributeMain.Comments = myAttributeMain.ForceAndMsgOpt;
+                                                myAttributeMain.ForceAndMsgOpt = "";
+                                            }
+
                                             listOfAttributeMain.Add(myAttributeMain);
                                             listOfAttributeMain[x].LinkId1 = myQuestion.QType;
                                             listOfAttributeMain[x].LinkId2 = currentGridListName;
@@ -3402,7 +3429,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                                 txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
                                                             else
                                                             {
-                                                                if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13")
+                                                                if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13" || myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                                                                     attributeMain.Comments = xyz[1].Trim();
                                                                 else
                                                                     attributeMain.ForceAndMsgOpt = xyz[1].Trim();
@@ -3873,7 +3900,7 @@ namespace DBI_Scripting.Forms.Scripting
                                             txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
                                         else
                                         {
-                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13")
+                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13" || myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                                                 attributeMain.Comments = xyz[1].Trim();
                                             else
                                                 attributeMain.ForceAndMsgOpt = xyz[1].Trim();
@@ -4103,6 +4130,14 @@ namespace DBI_Scripting.Forms.Scripting
         /// </summary>
         private void checkGridColumnTypes(Question myQuestion, List<AttributeMain> listOfAttributeMain, TextWriter txtWriter)
         {
+            if (myQuestion.QType == "29")
+            {
+                if (listOfAttributeMain.Count == 0)
+                    txtWriter.WriteLine("Question : " + myQuestion.QId + "  GRIDHYBRID question has no rows");
+                if (myQuestion.NumberOfColumn == "4")
+                    txtWriter.WriteLine("Question : " + myQuestion.QId + "  *SHOWASCARD (or *COLUMN 4) is not supported for *GRIDHYBRID");
+            }
+
             var checkedLists = new HashSet<string>();
             foreach (AttributeMain attr in listOfAttributeMain)
             {
@@ -4112,14 +4147,24 @@ namespace DBI_Scripting.Forms.Scripting
 
                 foreach (GridInfo col in columns)
                 {
-                    bool typed = col.TakeOpenended == "3" || col.TakeOpenended == "4";
+                    bool typed = col.TakeOpenended == "3" || col.TakeOpenended == "4" || col.TakeOpenended == "5";
                     if (myQuestion.QType == "29" && !typed)
                         txtWriter.WriteLine("Question : " + myQuestion.QId + "  GRIDHYBRID grid list \"" + attr.LinkId2 + "\" attribute "
-                                            + col.AttributeValue + " (" + col.AttributeEnglish + ") must have *NUMBER or *ALPHA");
+                                            + col.AttributeValue + " (" + col.AttributeEnglish + ") must have *NUMBER, *ALPHA or *SR");
+                    else if (myQuestion.QType == "29" && col.TakeOpenended == "5")
+                    {
+                        List<GridInfo> options;
+                        if (!dicGridListNameVsList.TryGetValue(col.IsExclusive ?? "", out options))
+                            txtWriter.WriteLine("Question : " + myQuestion.QId + "  grid list \"" + attr.LinkId2 + "\" attribute " + col.AttributeValue
+                                                + " : *SR option list \"" + col.IsExclusive + "\" does not exist (define it before the question)");
+                        else if (options.Count == 0)
+                            txtWriter.WriteLine("Question : " + myQuestion.QId + "  grid list \"" + attr.LinkId2 + "\" attribute " + col.AttributeValue
+                                                + " : *SR option list \"" + col.IsExclusive + "\" has no items");
+                    }
                     else if (myQuestion.QType != "29" && typed)
                     {
                         txtWriter.WriteLine("Question : " + myQuestion.QId + "  grid list \"" + attr.LinkId2
-                                            + "\" has *NUMBER/*ALPHA attributes, which can only be used by *GRIDHYBRID questions");
+                                            + "\" has *NUMBER/*ALPHA/*SR attributes, which can only be used by *GRIDHYBRID questions");
                         break;
                     }
                 }
@@ -5547,6 +5592,14 @@ namespace DBI_Scripting.Forms.Scripting
                                             myAttributeMain.AttributeLang9 = listOfAttributeTemp[x].AttributeLang9;
                                             myAttributeMain.AttributeLang10 = listOfAttributeTemp[x].AttributeLang10;
 
+                                            // Grid number/text rows: the app reads the row image from Comments,
+                                            // ForceAndMsgOpt only means mandatory (11)
+                                            if (!string.IsNullOrEmpty(myAttributeMain.ForceAndMsgOpt) && myAttributeMain.ForceAndMsgOpt != "11")
+                                            {
+                                                myAttributeMain.Comments = myAttributeMain.ForceAndMsgOpt;
+                                                myAttributeMain.ForceAndMsgOpt = "";
+                                            }
+
                                             listOfAttributeMain.Add(myAttributeMain);
                                             listOfAttributeMain[x].LinkId1 = myQuestion.QType;
                                             listOfAttributeMain[x].LinkId2 = currentGridListName;
@@ -5623,7 +5676,7 @@ namespace DBI_Scripting.Forms.Scripting
                                                             txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
                                                         else
                                                         {
-                                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13")
+                                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13" || myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                                                                 attributeMain.Comments = xyz[1].Trim();
                                                             else
                                                                 attributeMain.ForceAndMsgOpt = xyz[1].Trim();
@@ -6093,7 +6146,7 @@ namespace DBI_Scripting.Forms.Scripting
                                             txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Invlaid Syntax " + xy[2]);
                                         else
                                         {
-                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13")
+                                            if (myQuestion.QType == "17" || myQuestion.QType == "12" || myQuestion.QType == "13" || myQuestion.QType == "27" || myQuestion.QType == "28" || myQuestion.QType == "29")
                                                 attributeMain.Comments = xyz[1].Trim();
                                             else
                                                 attributeMain.ForceAndMsgOpt = xyz[1].Trim();

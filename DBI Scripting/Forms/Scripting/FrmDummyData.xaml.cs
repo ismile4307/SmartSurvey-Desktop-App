@@ -792,8 +792,9 @@ namespace DBI_Scripting.Forms.Scripting
             return count;
         }
 
-        // ── QType 29  GridNumberString (number or text per column) ────────────────
-        // Column type comes from T_GridInfo.TakeOpenended: 4 = number (Min/MaxValue), 3 = text.
+        // ── QType 29  GridHybrid (number, text or single response per column) ─────
+        // Column type comes from T_GridInfo.TakeOpenended: 4 = number (Min/MaxValue), 3 = text,
+        // 5 = single response (option list named in IsExclusive).
         // One answer per cell; rOrderTag = the column's AttributeOrder.
         private int HandleGridNumberText(string qId, int order,
             string rId, string dt, List<DataRow> attrs)
@@ -806,7 +807,15 @@ namespace DBI_Scripting.Forms.Scripting
                 foreach (var col in cols)
                 {
                     string value;
-                    if (col["TakeOpenended"].ToString() == "4")
+                    string cellType = col["TakeOpenended"].ToString();
+                    if (cellType == "5")
+                    {
+                        // Single response: a code from the *GRIDLIST named in IsExclusive
+                        var options = GridOptions(col["IsExclusive"].ToString().Trim());
+                        if (options.Count == 0) continue;
+                        value = options[rng.Next(options.Count)]["AttributeValue"].ToString();
+                    }
+                    else if (cellType == "4")
                     {
                         int minVal = ParseInt(col["MinValue"], 0);
                         int maxVal = ParseInt(col["MaxValue"], 100);
