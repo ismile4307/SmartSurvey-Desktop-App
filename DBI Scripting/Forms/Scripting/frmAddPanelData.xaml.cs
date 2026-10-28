@@ -428,6 +428,14 @@ namespace DBI_Scripting.Forms.Scripting
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate { }));
         }
 
+        private string UnwrapTsvField(string field)
+        {
+            field = field.Trim();
+            if (field.Length >= 2 && field.StartsWith("\"") && field.EndsWith("\""))
+                field = field.Substring(1, field.Length - 2).Replace("\"\"", "\"");
+            return field;
+        }
+
         private void load_AllData()
         {
             TextReader txtReader = new StreamReader(txtPath);
@@ -491,231 +499,231 @@ namespace DBI_Scripting.Forms.Scripting
             {
                 string[] word = strline.Split('\t');
 
-                lstOutletId.Add(word[0]);
-                lstOutletName.Add(word[1].Replace("'", "''").Trim());
+                lstOutletId.Add(UnwrapTsvField(word[0]));
+                lstOutletName.Add(UnwrapTsvField(word[1]).Replace("'", "''"));
 
                 if (word.Length > 2)
-                    lstPnlData3.Add(word[2].Replace("'", "''").Trim());
+                    lstPnlData3.Add(UnwrapTsvField(word[2]).Replace("'", "''"));
                 else
                     lstPnlData3.Add("");
 
                 if (word.Length > 3)
-                    lstPnlData4.Add(word[3].Replace("'", "''").Trim());
+                    lstPnlData4.Add(UnwrapTsvField(word[3]).Replace("'", "''"));
                 else
                     lstPnlData4.Add("");
                 if (word.Length > 4)
-                    lstPnlData5.Add(word[4].Replace("'", "''").Trim());
+                    lstPnlData5.Add(UnwrapTsvField(word[4]).Replace("'", "''"));
                 else
                     lstPnlData5.Add("");
                 if (word.Length > 5)
-                    lstPnlData6.Add(word[5].Replace("'", "''").Trim());
+                    lstPnlData6.Add(UnwrapTsvField(word[5]).Replace("'", "''"));
                 else
                     lstPnlData6.Add("");
                 if (word.Length > 6)
-                    lstPnlData7.Add(word[6].Replace("'", "''").Trim());
+                    lstPnlData7.Add(UnwrapTsvField(word[6]).Replace("'", "''"));
                 else
                     lstPnlData7.Add("");
                 if (word.Length > 7)
-                    lstPnlData8.Add(word[7].Replace("'", "''").Trim());
+                    lstPnlData8.Add(UnwrapTsvField(word[7]).Replace("'", "''"));
                 else
                     lstPnlData8.Add("");
                 if (word.Length > 8)
-                    lstPnlData9.Add(word[8].Replace("'", "''").Trim());
+                    lstPnlData9.Add(UnwrapTsvField(word[8]).Replace("'", "''"));
                 else
                     lstPnlData9.Add("");
                 if (word.Length > 9)
-                    lstPnlData10.Add(word[9].Replace("'", "''").Trim());
+                    lstPnlData10.Add(UnwrapTsvField(word[9]).Replace("'", "''"));
                 else
                     lstPnlData10.Add("");
                 if (word.Length > 10)
-                    lstPnlData11.Add(word[10].Replace("'", "''").Trim());
+                    lstPnlData11.Add(UnwrapTsvField(word[10]).Replace("'", "''"));
                 else
                     lstPnlData11.Add("");
                 if (word.Length > 11)
-                    lstPnlData12.Add(word[11].Replace("'", "''").Trim());
+                    lstPnlData12.Add(UnwrapTsvField(word[11]).Replace("'", "''"));
                 else
                     lstPnlData12.Add("");
                 if (word.Length > 12)
-                    lstPnlData13.Add(word[12].Replace("'", "''").Trim());
+                    lstPnlData13.Add(UnwrapTsvField(word[12]).Replace("'", "''"));
                 else
                     lstPnlData13.Add("");
                 if (word.Length > 13)
-                    lstPnlData14.Add(word[13].Replace("'", "''").Trim());
+                    lstPnlData14.Add(UnwrapTsvField(word[13]).Replace("'", "''"));
                 else
                     lstPnlData14.Add("");
                 if (word.Length > 14)
-                    lstPnlData15.Add(word[14].Replace("'", "''").Trim());
+                    lstPnlData15.Add(UnwrapTsvField(word[14]).Replace("'", "''"));
                 else
                     lstPnlData15.Add("");
                 if (word.Length > 15)
-                    lstPnlData16.Add(word[15].Replace("'", "''").Trim());
+                    lstPnlData16.Add(UnwrapTsvField(word[15]).Replace("'", "''"));
                 else
                     lstPnlData16.Add("");
                 if (word.Length > 16)
-                    lstPnlData17.Add(word[16].Replace("'", "''").Trim());
+                    lstPnlData17.Add(UnwrapTsvField(word[16]).Replace("'", "''"));
                 else
                     lstPnlData17.Add("");
                 if (word.Length > 17)
-                    lstPnlData18.Add(word[17].Replace("'", "''").Trim());
+                    lstPnlData18.Add(UnwrapTsvField(word[17]).Replace("'", "''"));
                 else
                     lstPnlData18.Add("");
                 if (word.Length > 18)
-                    lstPnlData19.Add(word[18].Replace("'", "''").Trim());
+                    lstPnlData19.Add(UnwrapTsvField(word[18]).Replace("'", "''"));
                 else
                     lstPnlData19.Add("");
 
                 if (word.Length > 19)
-                    lstPnlData20.Add(word[19].Replace("'", "''").Trim());
+                    lstPnlData20.Add(UnwrapTsvField(word[19]).Replace("'", "''"));
                 else
                     lstPnlData20.Add("");
 
                 if (word.Length > 20)
-                    lstPnlData21.Add(word[20].Replace("'", "''").Trim());
+                    lstPnlData21.Add(UnwrapTsvField(word[20]).Replace("'", "''"));
                 else
                     lstPnlData21.Add("");
 
                 if (word.Length > 21)
-                    lstPnlData22.Add(word[21].Replace("'", "''").Trim());
+                    lstPnlData22.Add(UnwrapTsvField(word[21]).Replace("'", "''"));
                 else
                     lstPnlData22.Add("");
 
                 if (word.Length > 22)
-                    lstPnlData23.Add(word[22].Replace("'", "''").Trim());
+                    lstPnlData23.Add(UnwrapTsvField(word[22]).Replace("'", "''"));
                 else
                     lstPnlData23.Add("");
 
                 if (word.Length > 23)
-                    lstPnlData24.Add(word[23].Replace("'", "''").Trim());
+                    lstPnlData24.Add(UnwrapTsvField(word[23]).Replace("'", "''"));
                 else
                     lstPnlData24.Add("");
 
                 if (word.Length > 24)
-                    lstPnlData25.Add(word[24].Replace("'", "''").Trim());
+                    lstPnlData25.Add(UnwrapTsvField(word[24]).Replace("'", "''"));
                 else
                     lstPnlData25.Add("");
 
                 if (word.Length > 25)
-                    lstPnlData26.Add(word[25].Replace("'", "''").Trim());
+                    lstPnlData26.Add(UnwrapTsvField(word[25]).Replace("'", "''"));
                 else
                     lstPnlData26.Add("");
 
                 if (word.Length > 26)
-                    lstPnlData27.Add(word[26].Replace("'", "''").Trim());
+                    lstPnlData27.Add(UnwrapTsvField(word[26]).Replace("'", "''"));
                 else
                     lstPnlData27.Add("");
 
                 if (word.Length > 27)
-                    lstPnlData28.Add(word[27].Replace("'", "''").Trim());
+                    lstPnlData28.Add(UnwrapTsvField(word[27]).Replace("'", "''"));
                 else
                     lstPnlData28.Add("");
 
                 if (word.Length > 28)
-                    lstPnlData29.Add(word[28].Replace("'", "''").Trim());
+                    lstPnlData29.Add(UnwrapTsvField(word[28]).Replace("'", "''"));
                 else
                     lstPnlData29.Add("");
 
                 if (word.Length > 29)
-                    lstPnlData30.Add(word[29].Replace("'", "''").Trim());
+                    lstPnlData30.Add(UnwrapTsvField(word[29]).Replace("'", "''"));
                 else
                     lstPnlData30.Add("");
 
                 if (word.Length > 30)
-                    lstPnlData31.Add(word[30].Replace("'", "''").Trim());
+                    lstPnlData31.Add(UnwrapTsvField(word[30]).Replace("'", "''"));
                 else
                     lstPnlData31.Add("");
 
                 if (word.Length > 31)
-                    lstPnlData32.Add(word[31].Replace("'", "''").Trim());
+                    lstPnlData32.Add(UnwrapTsvField(word[31]).Replace("'", "''"));
                 else
                     lstPnlData32.Add("");
 
                 if (word.Length > 32)
-                    lstPnlData33.Add(word[32].Replace("'", "''").Trim());
+                    lstPnlData33.Add(UnwrapTsvField(word[32]).Replace("'", "''"));
                 else
                     lstPnlData33.Add("");
 
                 if (word.Length > 33)
-                    lstPnlData34.Add(word[33].Replace("'", "''").Trim());
+                    lstPnlData34.Add(UnwrapTsvField(word[33]).Replace("'", "''"));
                 else
                     lstPnlData34.Add("");
 
                 if (word.Length > 34)
-                    lstPnlData35.Add(word[34].Replace("'", "''").Trim());
+                    lstPnlData35.Add(UnwrapTsvField(word[34]).Replace("'", "''"));
                 else
                     lstPnlData35.Add("");
 
                 if (word.Length > 35)
-                    lstPnlData36.Add(word[35].Replace("'", "''").Trim());
+                    lstPnlData36.Add(UnwrapTsvField(word[35]).Replace("'", "''"));
                 else
                     lstPnlData36.Add("");
 
                 if (word.Length > 36)
-                    lstPnlData37.Add(word[36].Replace("'", "''").Trim());
+                    lstPnlData37.Add(UnwrapTsvField(word[36]).Replace("'", "''"));
                 else
                     lstPnlData37.Add("");
 
                 if (word.Length > 37)
-                    lstPnlData38.Add(word[37].Replace("'", "''").Trim());
+                    lstPnlData38.Add(UnwrapTsvField(word[37]).Replace("'", "''"));
                 else
                     lstPnlData38.Add("");
 
                 if (word.Length > 38)
-                    lstPnlData39.Add(word[38].Replace("'", "''").Trim());
+                    lstPnlData39.Add(UnwrapTsvField(word[38]).Replace("'", "''"));
                 else
                     lstPnlData39.Add("");
 
                 if (word.Length > 39)
-                    lstPnlData40.Add(word[39].Replace("'", "''").Trim());
+                    lstPnlData40.Add(UnwrapTsvField(word[39]).Replace("'", "''"));
                 else
                     lstPnlData40.Add("");
 
                 if (word.Length > 40)
-                    lstPnlData41.Add(word[40].Replace("'", "''").Trim());
+                    lstPnlData41.Add(UnwrapTsvField(word[40]).Replace("'", "''"));
                 else
                     lstPnlData41.Add("");
 
                 if (word.Length > 41)
-                    lstPnlData42.Add(word[41].Replace("'", "''").Trim());
+                    lstPnlData42.Add(UnwrapTsvField(word[41]).Replace("'", "''"));
                 else
                     lstPnlData42.Add("");
 
                 if (word.Length > 42)
-                    lstPnlData43.Add(word[42].Replace("'", "''").Trim());
+                    lstPnlData43.Add(UnwrapTsvField(word[42]).Replace("'", "''"));
                 else
                     lstPnlData43.Add("");
 
                 if (word.Length > 43)
-                    lstPnlData44.Add(word[43].Replace("'", "''").Trim());
+                    lstPnlData44.Add(UnwrapTsvField(word[43]).Replace("'", "''"));
                 else
                     lstPnlData44.Add("");
 
                 if (word.Length > 44)
-                    lstPnlData45.Add(word[44].Replace("'", "''").Trim());
+                    lstPnlData45.Add(UnwrapTsvField(word[44]).Replace("'", "''"));
                 else
                     lstPnlData45.Add("");
 
                 if (word.Length > 45)
-                    lstPnlData46.Add(word[45].Replace("'", "''").Trim());
+                    lstPnlData46.Add(UnwrapTsvField(word[45]).Replace("'", "''"));
                 else
                     lstPnlData46.Add("");
 
                 if (word.Length > 46)
-                    lstPnlData47.Add(word[46].Replace("'", "''").Trim());
+                    lstPnlData47.Add(UnwrapTsvField(word[46]).Replace("'", "''"));
                 else
                     lstPnlData47.Add("");
 
                 if (word.Length > 47)
-                    lstPnlData48.Add(word[47].Replace("'", "''").Trim());
+                    lstPnlData48.Add(UnwrapTsvField(word[47]).Replace("'", "''"));
                 else
                     lstPnlData48.Add("");
 
                 if (word.Length > 48)
-                    lstPnlData49.Add(word[48].Replace("'", "''").Trim());
+                    lstPnlData49.Add(UnwrapTsvField(word[48]).Replace("'", "''"));
                 else
                     lstPnlData49.Add("");
 
                 if (word.Length > 49)
-                    lstPnlData50.Add(word[49].Replace("'", "''").Trim());
+                    lstPnlData50.Add(UnwrapTsvField(word[49]).Replace("'", "''"));
                 else
                     lstPnlData50.Add("");
 
