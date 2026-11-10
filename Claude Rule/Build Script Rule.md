@@ -242,6 +242,7 @@ Terminate Question not exist
 | `*MIN n` | NoOfResponseMin = n (numeric) |
 | `*MAX n` | NoOfResponseMax = n (numeric) |
 | `*OPTIONAL` | NoOfResponseMin = "0" — makes a `*CAPTUREIMAGE` / `*CAPTUREVIDEO` question optional (see below) |
+| `*MAXTIME n` | NumberOfColumn = n — maximum video length in minutes for `*CAPTUREVIDEO` (see below) |
 | `*COLUMN n` | NumberOfColumn = n (numeric) |
 | `*HORIZONTAL` | NumberOfColumn = "2" |
 | `*IMGADJBY n` | HasMediaPath = n (numeric) |
@@ -275,6 +276,23 @@ Q16. Take a photo of the shop front
 - Cannot be combined with `*MIN n` (n > 0). `*MAX n` still sets the file limit in gallery mode (`*DIRIMAGE`).
   - Error: `"*OPTIONAL cannot be combined with *MIN n"`
 - The older form `*MIN 0` still works and means the same.
+
+### *MAXTIME (capture video length)
+
+```
+*QUESTION Q11 *CAPTUREVIDEO *MAXTIME 2.5
+Q11. Record a short video of the shelf
+```
+
+- Maximum video length in **minutes**; whole or decimal (`2`, `2.5`), must be greater than 0.
+  - Error: `"*MAXTIME must be a positive number of minutes (e.g. 2 or 2.5) x"`
+- Only for `*CAPTUREVIDEO` (QType 11); can be written anywhere on the question line.
+  - Error: `"Question : QId  *MAXTIME can only be used with *CAPTUREVIDEO"`
+- Written to `T_Question.NumberOfColumn` exactly as typed; the Android app reads it from there.
+- Cannot be combined with `*COLUMN`, `*HORIZONTAL`, `*SHOWASFORM` etc., which also write NumberOfColumn.
+  - Error: `"*MAXTIME cannot be combined with *COLUMN (or another layout keyword), both use NumberOfColumn"`
+- Without `*MAXTIME`, NumberOfColumn stays empty for a capture video question, as before.
+- Like `*MAX`, it is not allowed on `@LANGUAGE` question lines.
 
 ---
 

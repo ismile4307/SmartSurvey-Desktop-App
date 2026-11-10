@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -2426,6 +2427,7 @@ namespace DBI_Scripting.Forms.Scripting
             List<string> listOfQuestionProperties = new List<string>();
             String currentGridListName = "";
             bool hasOptional = false;   // *OPTIONAL on the question line (QType 11 / 16)
+            string maxVideoMinutes = null;   // *MAXTIME n on the question line (QType 11)
             String GridFilterQId = "";
             String GridFilterType = "";
             int qTypeForGridQid = 0;
@@ -2698,6 +2700,24 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
 
+                }
+                else if (myText.ToUpper().Trim().StartsWith("*MAXTIME"))
+                {
+                    // Maximum video length in minutes for *CAPTUREVIDEO (e.g. 2 or 2.5), stored in
+                    // NumberOfColumn. Must come before *MAX, which would also match "*MAXTIME".
+                    string[] xyz = word[n].Trim().Split(' ');
+                    if (xyz.Length == 2)
+                    {
+                        listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
+
+                        decimal minutes;
+                        if (Regex.IsMatch(xyz[1].Trim(), @"^\d+(\.\d+)?$")
+                            && decimal.TryParse(xyz[1].Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out minutes)
+                            && minutes > 0)
+                            maxVideoMinutes = xyz[1].Trim();
+                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " *MAXTIME must be a positive number of minutes (e.g. 2 or 2.5) " + xyz[1].Trim());
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MAXTIME is invalid, use *MAXTIME 2 ");
                 }
                 else if (myText.ToUpper().Trim().Contains("*MAX") && !myText.ToUpper().Trim().Contains("*MAXDIFF"))
                 {
@@ -4118,6 +4138,7 @@ namespace DBI_Scripting.Forms.Scripting
             }
 
             checkOptionalMedia(myQuestion, hasOptional, txtWriter);
+            checkMaxVideoTime(myQuestion, maxVideoMinutes, txtWriter);
             checkGridColumnTypes(myQuestion, listOfAttributeMain, txtWriter);
 
             if (myQuestion.QId != null)
@@ -4151,6 +4172,23 @@ namespace DBI_Scripting.Forms.Scripting
                 txtWriter.WriteLine("Question : " + myQuestion.QId + "  *OPTIONAL can only be used with *CAPTUREIMAGE or *CAPTUREVIDEO");
             else if (myQuestion.NoOfResponseMin != "0")
                 txtWriter.WriteLine("Question : " + myQuestion.QId + "  *OPTIONAL cannot be combined with *MIN " + myQuestion.NoOfResponseMin);
+        }
+
+        /// <summary>
+        /// *MAXTIME n sets the maximum video length (minutes) of a capture video question (QType 11);
+        /// the app reads it from T_Question.NumberOfColumn. Applied once the whole question line is
+        /// read, because the type token may come after *MAXTIME and other tokens (*COLUMN,
+        /// *HORIZONTAL, ...) also write NumberOfColumn.
+        /// </summary>
+        private void checkMaxVideoTime(Question myQuestion, string maxVideoMinutes, TextWriter txtWriter)
+        {
+            if (maxVideoMinutes == null) return;
+            if (myQuestion.QType != "11")
+                txtWriter.WriteLine("Question : " + myQuestion.QId + "  *MAXTIME can only be used with *CAPTUREVIDEO");
+            else if (!string.IsNullOrEmpty(myQuestion.NumberOfColumn))
+                txtWriter.WriteLine("Question : " + myQuestion.QId + "  *MAXTIME cannot be combined with *COLUMN (or another layout keyword), both use NumberOfColumn");
+            else
+                myQuestion.NumberOfColumn = maxVideoMinutes;
         }
 
         private void checkGridColumnTypes(Question myQuestion, List<AttributeMain> listOfAttributeMain, TextWriter txtWriter)
@@ -4734,6 +4772,7 @@ namespace DBI_Scripting.Forms.Scripting
             List<string> listOfQuestionProperties = new List<string>();
             String currentGridListName = "";
             bool hasOptional = false;   // *OPTIONAL on the question line (QType 11 / 16)
+            string maxVideoMinutes = null;   // *MAXTIME n on the question line (QType 11)
             String GridFilterQId = "";
             String GridFilterType = "";
             int qTypeForGridQid = 0;
@@ -5003,6 +5042,24 @@ namespace DBI_Scripting.Forms.Scripting
                     }
                     else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MIN is invalid ");
 
+                }
+                else if (myText.ToUpper().Trim().StartsWith("*MAXTIME"))
+                {
+                    // Maximum video length in minutes for *CAPTUREVIDEO (e.g. 2 or 2.5), stored in
+                    // NumberOfColumn. Must come before *MAX, which would also match "*MAXTIME".
+                    string[] xyz = word[n].Trim().Split(' ');
+                    if (xyz.Length == 2)
+                    {
+                        listOfQuestionProperties.Add(xyz[0].ToUpper().Trim());
+
+                        decimal minutes;
+                        if (Regex.IsMatch(xyz[1].Trim(), @"^\d+(\.\d+)?$")
+                            && decimal.TryParse(xyz[1].Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out minutes)
+                            && minutes > 0)
+                            maxVideoMinutes = xyz[1].Trim();
+                        else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " *MAXTIME must be a positive number of minutes (e.g. 2 or 2.5) " + xyz[1].Trim());
+                    }
+                    else txtWriter.WriteLine("Line : " + dicLine[i + 1] + " Syntax for *MAXTIME is invalid, use *MAXTIME 2 ");
                 }
                 else if (myText.ToUpper().Trim().Contains("*MAX") && !myText.ToUpper().Trim().Contains("*MAXDIFF"))
                 {
@@ -6389,6 +6446,7 @@ namespace DBI_Scripting.Forms.Scripting
             }
 
             checkOptionalMedia(myQuestion, hasOptional, txtWriter);
+            checkMaxVideoTime(myQuestion, maxVideoMinutes, txtWriter);
             checkGridColumnTypes(myQuestion, listOfAttributeMain, txtWriter);
 
             if (myQuestion.QId != null)
@@ -9553,6 +9611,7 @@ namespace DBI_Scripting.Forms.Scripting
             listOfKeyWords.Add("MIN");
             listOfKeyWords.Add("OPTIONAL");
             listOfKeyWords.Add("MAX");
+            listOfKeyWords.Add("MAXTIME");
             listOfKeyWords.Add("MANDATORY");
             listOfKeyWords.Add("COLUMN");
             listOfKeyWords.Add("INCLUDE");
